@@ -164,9 +164,45 @@ public partial class @InputSystemController : IInputActionCollection2, IDisposab
             ""id"": ""c80337c6-0d2d-4859-81b0-5fc5d515d516"",
             ""actions"": [
                 {
-                    ""name"": ""New action"",
+                    ""name"": ""Test1"",
                     ""type"": ""Button"",
                     ""id"": ""40460c9b-bc84-4b88-8ab0-bc7ee66b20bd"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Test2"",
+                    ""type"": ""Button"",
+                    ""id"": ""7e7e456e-e305-4f31-8179-e722cf361380"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Test3"",
+                    ""type"": ""Button"",
+                    ""id"": ""cf7ea418-fcb2-46fa-9c53-2677cf6089bc"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Test4"",
+                    ""type"": ""Button"",
+                    ""id"": ""cbda5465-2074-4eec-8738-d040145f320f"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Test5"",
+                    ""type"": ""Button"",
+                    ""id"": ""6427dfe7-ad65-4a5b-a39f-b93658784ee4"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -177,11 +213,55 @@ public partial class @InputSystemController : IInputActionCollection2, IDisposab
                 {
                     ""name"": """",
                     ""id"": ""186cfb52-334a-4e79-9aaf-848a66932859"",
-                    ""path"": """",
+                    ""path"": ""<Keyboard>/1"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""KeyboardMouse"",
-                    ""action"": ""New action"",
+                    ""action"": ""Test1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e87031ef-1b2a-42ad-82e3-cf4a310a242d"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""KeyboardMouse"",
+                    ""action"": ""Test2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0c1e8a71-3add-41f0-bd56-d148aea2d5e5"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""KeyboardMouse"",
+                    ""action"": ""Test3"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""44496e20-ef1d-4abb-be90-930a8efb54ac"",
+                    ""path"": ""<Keyboard>/4"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""KeyboardMouse"",
+                    ""action"": ""Test4"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4eab43de-fd54-4ab4-8158-ced0dc13b98a"",
+                    ""path"": ""<Keyboard>/5"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""KeyboardMouse"",
+                    ""action"": ""Test5"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -213,7 +293,11 @@ public partial class @InputSystemController : IInputActionCollection2, IDisposab
         m_Player_Mouse = m_Player.FindAction("Mouse", throwIfNotFound: true);
         // TestKeyboard
         m_TestKeyboard = asset.FindActionMap("TestKeyboard", throwIfNotFound: true);
-        m_TestKeyboard_Newaction = m_TestKeyboard.FindAction("New action", throwIfNotFound: true);
+        m_TestKeyboard_Test1 = m_TestKeyboard.FindAction("Test1", throwIfNotFound: true);
+        m_TestKeyboard_Test2 = m_TestKeyboard.FindAction("Test2", throwIfNotFound: true);
+        m_TestKeyboard_Test3 = m_TestKeyboard.FindAction("Test3", throwIfNotFound: true);
+        m_TestKeyboard_Test4 = m_TestKeyboard.FindAction("Test4", throwIfNotFound: true);
+        m_TestKeyboard_Test5 = m_TestKeyboard.FindAction("Test5", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -314,12 +398,20 @@ public partial class @InputSystemController : IInputActionCollection2, IDisposab
     // TestKeyboard
     private readonly InputActionMap m_TestKeyboard;
     private ITestKeyboardActions m_TestKeyboardActionsCallbackInterface;
-    private readonly InputAction m_TestKeyboard_Newaction;
+    private readonly InputAction m_TestKeyboard_Test1;
+    private readonly InputAction m_TestKeyboard_Test2;
+    private readonly InputAction m_TestKeyboard_Test3;
+    private readonly InputAction m_TestKeyboard_Test4;
+    private readonly InputAction m_TestKeyboard_Test5;
     public struct TestKeyboardActions
     {
         private @InputSystemController m_Wrapper;
         public TestKeyboardActions(@InputSystemController wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Newaction => m_Wrapper.m_TestKeyboard_Newaction;
+        public InputAction @Test1 => m_Wrapper.m_TestKeyboard_Test1;
+        public InputAction @Test2 => m_Wrapper.m_TestKeyboard_Test2;
+        public InputAction @Test3 => m_Wrapper.m_TestKeyboard_Test3;
+        public InputAction @Test4 => m_Wrapper.m_TestKeyboard_Test4;
+        public InputAction @Test5 => m_Wrapper.m_TestKeyboard_Test5;
         public InputActionMap Get() { return m_Wrapper.m_TestKeyboard; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -329,16 +421,40 @@ public partial class @InputSystemController : IInputActionCollection2, IDisposab
         {
             if (m_Wrapper.m_TestKeyboardActionsCallbackInterface != null)
             {
-                @Newaction.started -= m_Wrapper.m_TestKeyboardActionsCallbackInterface.OnNewaction;
-                @Newaction.performed -= m_Wrapper.m_TestKeyboardActionsCallbackInterface.OnNewaction;
-                @Newaction.canceled -= m_Wrapper.m_TestKeyboardActionsCallbackInterface.OnNewaction;
+                @Test1.started -= m_Wrapper.m_TestKeyboardActionsCallbackInterface.OnTest1;
+                @Test1.performed -= m_Wrapper.m_TestKeyboardActionsCallbackInterface.OnTest1;
+                @Test1.canceled -= m_Wrapper.m_TestKeyboardActionsCallbackInterface.OnTest1;
+                @Test2.started -= m_Wrapper.m_TestKeyboardActionsCallbackInterface.OnTest2;
+                @Test2.performed -= m_Wrapper.m_TestKeyboardActionsCallbackInterface.OnTest2;
+                @Test2.canceled -= m_Wrapper.m_TestKeyboardActionsCallbackInterface.OnTest2;
+                @Test3.started -= m_Wrapper.m_TestKeyboardActionsCallbackInterface.OnTest3;
+                @Test3.performed -= m_Wrapper.m_TestKeyboardActionsCallbackInterface.OnTest3;
+                @Test3.canceled -= m_Wrapper.m_TestKeyboardActionsCallbackInterface.OnTest3;
+                @Test4.started -= m_Wrapper.m_TestKeyboardActionsCallbackInterface.OnTest4;
+                @Test4.performed -= m_Wrapper.m_TestKeyboardActionsCallbackInterface.OnTest4;
+                @Test4.canceled -= m_Wrapper.m_TestKeyboardActionsCallbackInterface.OnTest4;
+                @Test5.started -= m_Wrapper.m_TestKeyboardActionsCallbackInterface.OnTest5;
+                @Test5.performed -= m_Wrapper.m_TestKeyboardActionsCallbackInterface.OnTest5;
+                @Test5.canceled -= m_Wrapper.m_TestKeyboardActionsCallbackInterface.OnTest5;
             }
             m_Wrapper.m_TestKeyboardActionsCallbackInterface = instance;
             if (instance != null)
             {
-                @Newaction.started += instance.OnNewaction;
-                @Newaction.performed += instance.OnNewaction;
-                @Newaction.canceled += instance.OnNewaction;
+                @Test1.started += instance.OnTest1;
+                @Test1.performed += instance.OnTest1;
+                @Test1.canceled += instance.OnTest1;
+                @Test2.started += instance.OnTest2;
+                @Test2.performed += instance.OnTest2;
+                @Test2.canceled += instance.OnTest2;
+                @Test3.started += instance.OnTest3;
+                @Test3.performed += instance.OnTest3;
+                @Test3.canceled += instance.OnTest3;
+                @Test4.started += instance.OnTest4;
+                @Test4.performed += instance.OnTest4;
+                @Test4.canceled += instance.OnTest4;
+                @Test5.started += instance.OnTest5;
+                @Test5.performed += instance.OnTest5;
+                @Test5.canceled += instance.OnTest5;
             }
         }
     }
@@ -359,6 +475,10 @@ public partial class @InputSystemController : IInputActionCollection2, IDisposab
     }
     public interface ITestKeyboardActions
     {
-        void OnNewaction(InputAction.CallbackContext context);
+        void OnTest1(InputAction.CallbackContext context);
+        void OnTest2(InputAction.CallbackContext context);
+        void OnTest3(InputAction.CallbackContext context);
+        void OnTest4(InputAction.CallbackContext context);
+        void OnTest5(InputAction.CallbackContext context);
     }
 }
