@@ -24,6 +24,7 @@ public class DsTestPlayer : MonoBehaviour
     public Action PotionUse;
     public Action WeaponGet;
     public Action ShieldGet;
+    public Action PlayerDie;
     public bool weaponGet = false;
     public bool shieldGet = false;
     public bool potionGet = false;
@@ -36,6 +37,33 @@ public class DsTestPlayer : MonoBehaviour
         get => heart;
         set
         {
+            Debug.Log($"heart:{Heart},value:{value}");
+            if ( heart<value)            //회복
+            {
+                
+                Debug.Log("회복 시퀀스 가동");
+                if( value > 3)
+                    Debug.Log("이미 최대 체력입니다.");
+                else
+                {
+                    heart = value;
+                    HeartPlus?.Invoke(1);
+                }
+            }
+            else if(heart>value)                               //피격
+            {
+                Debug.Log("피격 시퀀스 가동");
+
+                if(value<=0)
+                {
+                    PlayerDie?.Invoke();
+                }
+                else
+                {
+                    heart = value;
+                    HeartMinus?.Invoke(1);
+                }
+            }
 
         }
     }
@@ -44,7 +72,17 @@ public class DsTestPlayer : MonoBehaviour
         get => coin;
         set
         {
+            if (coin > value)
+            {
+                coin = value;
+                CoinMinus?.Invoke(1);
+            }
 
+            else if (coin < value)
+            {
+                coin = value;
+                CoinPlus?.Invoke(1);
+            }
         }
     }
 
@@ -55,6 +93,7 @@ public class DsTestPlayer : MonoBehaviour
 
     private void Awake()
     {
+        Heart = 3;
         inputController = new InputSystemController();
         rigid = GetComponent<Rigidbody>();
     }
@@ -74,6 +113,7 @@ public class DsTestPlayer : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Enemy"))
         {
+            Debug.Log("적");
             Heart--;
         }
         else if (collision.gameObject.CompareTag("Coin"))
@@ -82,6 +122,7 @@ public class DsTestPlayer : MonoBehaviour
         }
         else if (collision.gameObject.CompareTag("Heart"))
         {
+            Debug.Log("하트");
             Heart++;
         }
         else if (collision.gameObject.CompareTag("Shop"))
@@ -90,36 +131,51 @@ public class DsTestPlayer : MonoBehaviour
         }
         else if (collision.gameObject.CompareTag("Weapon"))
         {
-            if (weaponGet == true)
+            if (weaponGet == false)
+            {
+                weaponGet = true;
                 WeaponGet?.Invoke();
+            }
             else
                 Debug.Log("이미 무기가 있습니다.");
         }
         else if (collision.gameObject.CompareTag("Shield"))
         {
             if(shieldGet==false)
+            {
+                shieldGet = true;
                 ShieldGet?.Invoke();
+            }
             else
                 Debug.Log("이미 방패가 있습니다.");
         }
         else if (collision.gameObject.CompareTag("Potion"))
         {
             if (potionGet == false)
+            {
+                potionGet = true;
                 PotionGet?.Invoke();
+            }
             else
                 Debug.Log("이미 포션이 있습니다.");
         }
     }
 
-    void die()
+    void Die()
     {
+        Debug.LogWarning("당신은 사망했습니다.");
 
     }
 
-    void OnPotionKey(InputAction.CallbackContext obj)
+    void OnPotionUse(InputAction.CallbackContext obj)
     {
-        if(potionGet==true)
+        if (potionGet == true)
+        {
+            Heart++;
             PotionUse?.Invoke();
+        }
+        else
+            Debug.Log("획득한 포션이 없습니다.");
     }
 
     private void OnEnable()
@@ -128,6 +184,9 @@ public class DsTestPlayer : MonoBehaviour
         inputController.TestKeyboard.Enable();
         inputController.Player.Move.performed += OnMove;
         inputController.Player.Move.canceled += OnMove;
+        inputController.Player.Potion.performed += OnPotionUse;
+
+        PlayerDie += Die;
 
         inputController.TestKeyboard.Test1.performed += OnTest1;
         inputController.TestKeyboard.Test2.performed += OnTest2;
@@ -143,6 +202,7 @@ public class DsTestPlayer : MonoBehaviour
         inputController.TestKeyboard.Test4.performed -= OnTest4;
         inputController.TestKeyboard.Test5.performed -= OnTest5;
 
+        inputController.Player.Potion.performed -= OnPotionUse;
         inputController.Player.Move.performed -= OnMove;
         inputController.Player.Move.canceled -= OnMove;
         inputController.Player.Disable();
@@ -164,12 +224,10 @@ public class DsTestPlayer : MonoBehaviour
     void OnTest3(InputAction.CallbackContext obj)
     {
         Debug.Log("Test 3 Press");
-        HeartPlus?.Invoke(1);
     }
     void OnTest4(InputAction.CallbackContext obj)
     {
         Debug.Log("Test 4 Press");
-        HeartMinus?.Invoke(1);
     }
     void OnTest5(InputAction.CallbackContext obj)
     {
