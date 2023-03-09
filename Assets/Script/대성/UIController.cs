@@ -39,13 +39,15 @@ public class UIController : MonoBehaviour
     }
     private void Start()
     {
+        heartNum = 3;
         heartText.text = null;
         for (int i = 0; i < heartNum; i++)
             heartText.text = heartText.text + "♥";
         coinNum = 0;
+        
 
-        player.HeartPlus = HeartPlusUpdate;
-        player.HeartPlus = HeartMinusUpdate;
+        player.HeartPlus += HeartPlusUpdate;
+        player.HeartMinus += HeartMinusUpdate;
         player.CoinPlus += CoinPlusUpdate;
         player.CoinMinus += CoinMinusUpdate;
         player.PotionGet += PotionGetUpdate;
@@ -63,13 +65,15 @@ public class UIController : MonoBehaviour
 
     private void HeartPlusUpdate(int x)
     {
-        heartNum += x;
+        heartNum = heartNum + x;
+        heartText.text = null;
         for (int i = 0; i < heartNum; i++)
             heartText.text = heartText.text + "♥";
     }
     private void HeartMinusUpdate(int x)
     {
-        heartNum -= x;
+        heartNum = heartNum - x;
+        heartText.text = null;
         for (int i = 0; i < heartNum; i++)
             heartText.text = heartText.text + "♥";
     }

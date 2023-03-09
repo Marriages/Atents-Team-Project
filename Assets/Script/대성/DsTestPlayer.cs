@@ -12,7 +12,7 @@ public class DsTestPlayer : MonoBehaviour
     Rigidbody rigid;
     Vector3 dir = Vector3.zero;
 
-    [Range(1f,10f)]
+    [Range(1f, 10f)]
     public float speed = 5f;
 
     [Header("Delegate Action")]
@@ -24,6 +24,33 @@ public class DsTestPlayer : MonoBehaviour
     public Action PotionUse;
     public Action WeaponGet;
     public Action ShieldGet;
+    public bool weaponGet = false;
+    public bool shieldGet = false;
+    public bool potionGet = false;
+
+    private int heart = 3;
+    private int coin = 0;
+
+    public int Heart
+    {
+        get => heart;
+        set
+        {
+
+        }
+    }
+    public int Coin
+    {
+        get => coin;
+        set
+        {
+
+        }
+    }
+
+
+    // heart 프로퍼티
+    // coin 프로퍼티
 
 
     private void Awake()
@@ -37,28 +64,62 @@ public class DsTestPlayer : MonoBehaviour
         rigid.MovePosition(transform.position + Time.fixedDeltaTime * speed * dir);
     }
 
-
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        if(collision.gameObject.CompareTag("Enemy"))
-        {
-            HeartMinus?.Invoke(1);
-        }
-        else if (collision.gameObject.CompareTag("Coin"))
-        {
-            CoinPlus?.Invoke(1);
-        }
-        else if (collision.gameObject.CompareTag("Heart"))
-        {
-            HeartPlus?.Invoke(1);
-        }
-
-    }
-
     // W(위) S(아래) A(왼쪽) D(오른쪽) , Space(점프)
     private void OnMove(InputAction.CallbackContext obj) {
         dir = obj.ReadValue<Vector3>();
+        //움직임에따라 회전도 구현할 것
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            Heart--;
+        }
+        else if (collision.gameObject.CompareTag("Coin"))
+        {
+            Coin++;
+        }
+        else if (collision.gameObject.CompareTag("Heart"))
+        {
+            Heart++;
+        }
+        else if (collision.gameObject.CompareTag("Shop"))
+        {
+            Coin--;
+        }
+        else if (collision.gameObject.CompareTag("Weapon"))
+        {
+            if (weaponGet == true)
+                WeaponGet?.Invoke();
+            else
+                Debug.Log("이미 무기가 있습니다.");
+        }
+        else if (collision.gameObject.CompareTag("Shield"))
+        {
+            if(shieldGet==false)
+                ShieldGet?.Invoke();
+            else
+                Debug.Log("이미 방패가 있습니다.");
+        }
+        else if (collision.gameObject.CompareTag("Potion"))
+        {
+            if (potionGet == false)
+                PotionGet?.Invoke();
+            else
+                Debug.Log("이미 포션이 있습니다.");
+        }
+    }
+
+    void die()
+    {
+
+    }
+
+    void OnPotionKey(InputAction.CallbackContext obj)
+    {
+        if(potionGet==true)
+            PotionUse?.Invoke();
     }
 
     private void OnEnable()
@@ -115,4 +176,5 @@ public class DsTestPlayer : MonoBehaviour
         Debug.Log("Test 5 Press");
 
     }
+    //-------------------------------------------------- T E S T --------------------------------------------------
 }

@@ -44,6 +44,15 @@ public partial class @InputSystemController : IInputActionCollection2, IDisposab
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Potion"",
+                    ""type"": ""Button"",
+                    ""id"": ""d94b208f-832c-44b8-9f12-890c266c4cbe"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -154,6 +163,17 @@ public partial class @InputSystemController : IInputActionCollection2, IDisposab
                     ""processors"": """",
                     ""groups"": ""KeyboardMouse"",
                     ""action"": ""Mouse"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""32b15ab1-a991-4708-81dc-a7f9d8567784"",
+                    ""path"": ""<Keyboard>/t"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""KeyboardMouse"",
+                    ""action"": ""Potion"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -291,6 +311,7 @@ public partial class @InputSystemController : IInputActionCollection2, IDisposab
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
         m_Player_Mouse = m_Player.FindAction("Mouse", throwIfNotFound: true);
+        m_Player_Potion = m_Player.FindAction("Potion", throwIfNotFound: true);
         // TestKeyboard
         m_TestKeyboard = asset.FindActionMap("TestKeyboard", throwIfNotFound: true);
         m_TestKeyboard_Test1 = m_TestKeyboard.FindAction("Test1", throwIfNotFound: true);
@@ -359,12 +380,14 @@ public partial class @InputSystemController : IInputActionCollection2, IDisposab
     private IPlayerActions m_PlayerActionsCallbackInterface;
     private readonly InputAction m_Player_Move;
     private readonly InputAction m_Player_Mouse;
+    private readonly InputAction m_Player_Potion;
     public struct PlayerActions
     {
         private @InputSystemController m_Wrapper;
         public PlayerActions(@InputSystemController wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_Player_Move;
         public InputAction @Mouse => m_Wrapper.m_Player_Mouse;
+        public InputAction @Potion => m_Wrapper.m_Player_Potion;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -380,6 +403,9 @@ public partial class @InputSystemController : IInputActionCollection2, IDisposab
                 @Mouse.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMouse;
                 @Mouse.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMouse;
                 @Mouse.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMouse;
+                @Potion.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPotion;
+                @Potion.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPotion;
+                @Potion.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPotion;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -390,6 +416,9 @@ public partial class @InputSystemController : IInputActionCollection2, IDisposab
                 @Mouse.started += instance.OnMouse;
                 @Mouse.performed += instance.OnMouse;
                 @Mouse.canceled += instance.OnMouse;
+                @Potion.started += instance.OnPotion;
+                @Potion.performed += instance.OnPotion;
+                @Potion.canceled += instance.OnPotion;
             }
         }
     }
@@ -472,6 +501,7 @@ public partial class @InputSystemController : IInputActionCollection2, IDisposab
     {
         void OnMove(InputAction.CallbackContext context);
         void OnMouse(InputAction.CallbackContext context);
+        void OnPotion(InputAction.CallbackContext context);
     }
     public interface ITestKeyboardActions
     {

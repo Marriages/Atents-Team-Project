@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 219352358165909157}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -64,7 +64,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 96d4324c1a5ee994ea6e7da0cc5b869a, type: 2}
+  - {fileID: 2100000, guid: 12876e2033f4f4c4bb28b9fa5522d600, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -129,3 +129,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 5
+  weaponGet: 0
+  shieldGet: 0
+  potionGet: 0
