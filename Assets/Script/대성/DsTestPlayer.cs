@@ -6,31 +6,41 @@ using UnityEngine.InputSystem;
 
 //강대성 UI 테스트용 Script 코드
 
+
 public class DsTestPlayer : MonoBehaviour
 {
-    InputSystemController inputController;
-    Rigidbody rigid;
-    Vector3 dir = Vector3.zero;
+    //--------변수 선언--------변수 선언--------변수 선언--------변수 선언--------변수 선언--------변수 선언
 
-    [Range(1f, 10f)]
-    public float speed = 5f;
+
+    [Header("Component")]
+        InputSystemController inputController;
+        Rigidbody rigid;
+        Vector3 dir = Vector3.zero;
+
+    [Header("Player Info")]
+        public float speed = 5f;
+        private int heart = 3;
+        private int coin = 0;
+        public bool weaponGet = false;
+        public bool shieldGet = false;
+        public bool potionGet = false;
 
     [Header("Delegate Action")]
-    public Action<int> HeartPlus;
-    public Action<int> HeartMinus;
-    public Action<int> CoinPlus;
-    public Action<int> CoinMinus;
-    public Action PotionGet;
-    public Action PotionUse;
-    public Action WeaponGet;
-    public Action ShieldGet;
-    public Action PlayerDie;
-    public bool weaponGet = false;
-    public bool shieldGet = false;
-    public bool potionGet = false;
+        public Action<int> HeartPlus;
+        public Action<int> HeartMinus;
+        public Action<int> CoinPlus;
+        public Action<int> CoinMinus;
+        public Action PotionGet;
+        public Action PotionUse;
+        public Action WeaponGet;
+        public Action ShieldGet;
+        public Action PlayerDie;
 
-    private int heart = 3;
-    private int coin = 0;
+
+
+    //--------변수 선언--------변수 선언--------변수 선언--------변수 선언--------변수 선언--------변수 선언
+
+    //--------프로퍼티선언--------프로퍼티선언--------프로퍼티선언--------프로퍼티선언--------프로퍼티선언--------프로퍼티선언
 
     public int Heart
     {
@@ -64,9 +74,11 @@ public class DsTestPlayer : MonoBehaviour
                     HeartMinus?.Invoke(1);
                 }
             }
-
         }
     }
+
+    //------------------------------------------------------------------------------------------------------------------------------------------------
+
     public int Coin
     {
         get => coin;
@@ -86,11 +98,9 @@ public class DsTestPlayer : MonoBehaviour
         }
     }
 
+    //--------프로퍼티선언--------프로퍼티선언--------프로퍼티선언--------프로퍼티선언--------프로퍼티선언--------프로퍼티선언
 
-    // heart 프로퍼티
-    // coin 프로퍼티
-
-
+    //--------생명주기--------생명주기--------생명주기--------생명주기--------생명주기--------생명주기
     private void Awake()
     {
         Heart = 3;
@@ -103,11 +113,31 @@ public class DsTestPlayer : MonoBehaviour
         rigid.MovePosition(transform.position + Time.fixedDeltaTime * speed * dir);
     }
 
-    // W(위) S(아래) A(왼쪽) D(오른쪽) , Space(점프)
-    private void OnMove(InputAction.CallbackContext obj) {
-        dir = obj.ReadValue<Vector3>();
-        //움직임에따라 회전도 구현할 것
+    private void OnEnable()
+    {
+        inputController.Player.Enable();
+        inputController.TestKeyboard.Enable();
+        inputController.Player.Move.performed += OnMove;
+        inputController.Player.Move.canceled += OnMove;
+        inputController.Player.Potion.performed += OnPotionUse;
+
+        PlayerDie += Die;
+
+        TestOnSetting();
     }
+    private void OnDisable()
+    {
+        inputController.Player.Potion.performed -= OnPotionUse;
+        inputController.Player.Move.performed -= OnMove;
+        inputController.Player.Move.canceled -= OnMove;
+        inputController.Player.Disable();
+
+        TestOffSetting();
+    }
+
+    //--------생명주기--------생명주기--------생명주기--------생명주기--------생명주기--------생명주기
+
+    //--------충돌이벤트--------충돌이벤트--------충돌이벤트--------충돌이벤트--------충돌이벤트--------충돌이벤트
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -141,7 +171,7 @@ public class DsTestPlayer : MonoBehaviour
         }
         else if (collision.gameObject.CompareTag("Shield"))
         {
-            if(shieldGet==false)
+            if (shieldGet == false)
             {
                 shieldGet = true;
                 ShieldGet?.Invoke();
@@ -161,6 +191,17 @@ public class DsTestPlayer : MonoBehaviour
         }
     }
 
+    //--------충돌이벤트--------충돌이벤트--------충돌이벤트--------충돌이벤트--------충돌이벤트--------충돌이벤트
+
+    //--------함수 구현--------함수 구현--------함수 구현--------함수 구현--------함수 구현--------함수 구현
+
+
+    // W(위) S(아래) A(왼쪽) D(오른쪽) , Space(점프)
+    private void OnMove(InputAction.CallbackContext obj) {
+        dir = obj.ReadValue<Vector3>();
+        //움직임에따라 회전도 구현할 것
+    }
+
     void Die()
     {
         Debug.LogWarning("당신은 사망했습니다.");
@@ -178,60 +219,58 @@ public class DsTestPlayer : MonoBehaviour
             Debug.Log("획득한 포션이 없습니다.");
     }
 
-    private void OnEnable()
+    //--------함수 구현--------함수 구현--------함수 구현--------함수 구현--------함수 구현--------함수 구현
+
+    //-------------------------------------------------- T E S T --------------------------------------------------
+
+    Action Test1;
+    Action Test2;
+    Action Test3;
+    Action Test4;
+    Action Test5;
+
+    void TestOnSetting()
     {
-        inputController.Player.Enable();
-        inputController.TestKeyboard.Enable();
-        inputController.Player.Move.performed += OnMove;
-        inputController.Player.Move.canceled += OnMove;
-        inputController.Player.Potion.performed += OnPotionUse;
-
-        PlayerDie += Die;
-
         inputController.TestKeyboard.Test1.performed += OnTest1;
         inputController.TestKeyboard.Test2.performed += OnTest2;
         inputController.TestKeyboard.Test3.performed += OnTest3;
         inputController.TestKeyboard.Test4.performed += OnTest4;
         inputController.TestKeyboard.Test5.performed += OnTest5;
     }
-    private void OnDisable()
+    void TestOffSetting()
     {
         inputController.TestKeyboard.Test1.performed -= OnTest1;
         inputController.TestKeyboard.Test2.performed -= OnTest2;
         inputController.TestKeyboard.Test3.performed -= OnTest3;
         inputController.TestKeyboard.Test4.performed -= OnTest4;
         inputController.TestKeyboard.Test5.performed -= OnTest5;
-
-        inputController.Player.Potion.performed -= OnPotionUse;
-        inputController.Player.Move.performed -= OnMove;
-        inputController.Player.Move.canceled -= OnMove;
-        inputController.Player.Disable();
     }
 
-
-
-
-    //-------------------------------------------------- T E S T --------------------------------------------------
 
     void OnTest1(InputAction.CallbackContext obj)
     {
         Debug.Log("Test 1 Press");
+        Test1?.Invoke();
     }
     void OnTest2(InputAction.CallbackContext obj)
     {
         Debug.Log("Test 2 Press");
+        Test2?.Invoke();
     }
     void OnTest3(InputAction.CallbackContext obj)
     {
         Debug.Log("Test 3 Press");
+        Test3?.Invoke();
     }
     void OnTest4(InputAction.CallbackContext obj)
     {
         Debug.Log("Test 4 Press");
+        Test4?.Invoke();
     }
     void OnTest5(InputAction.CallbackContext obj)
     {
         Debug.Log("Test 5 Press");
+        Test5?.Invoke();
 
     }
     //-------------------------------------------------- T E S T --------------------------------------------------

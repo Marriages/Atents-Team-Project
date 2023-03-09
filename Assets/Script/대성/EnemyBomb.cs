@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DsTestCoin : MonoBehaviour
+public class EnemyBomb : EnemyBase
 {
-    
+
 }
