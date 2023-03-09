@@ -9,7 +9,7 @@ using UnityEngine.InputSystem;
 public class DsTestPlayer : MonoBehaviour
 {
     InputSystemController inputController;
-    Rigidbody rigidbody;
+    Rigidbody rigid;
     Vector3 dir = Vector3.zero;
 
     [Range(1f,10f)]
@@ -29,22 +29,29 @@ public class DsTestPlayer : MonoBehaviour
     private void Awake()
     {
         inputController = new InputSystemController();
-        rigidbody = GetComponent<Rigidbody>();
+        rigid = GetComponent<Rigidbody>();
     }
 
     private void FixedUpdate()
     {
-        rigidbody.MovePosition(transform.position + Time.fixedDeltaTime * speed * dir);
+        rigid.MovePosition(transform.position + Time.fixedDeltaTime * speed * dir);
     }
 
 
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Coin"))
+        if(collision.gameObject.CompareTag("Enemy"))
         {
-            int coin = 1;
-            CoinPlus?.Invoke(coin);
+            HeartMinus?.Invoke(1);
+        }
+        else if (collision.gameObject.CompareTag("Coin"))
+        {
+            CoinPlus?.Invoke(1);
+        }
+        else if (collision.gameObject.CompareTag("Heart"))
+        {
+            HeartPlus?.Invoke(1);
         }
 
     }
