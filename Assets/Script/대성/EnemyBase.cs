@@ -15,25 +15,24 @@ public class EnemyBase : MonoBehaviour
     public Rigidbody rigid;
 
     [Header("Enemy Information")]
-    public float moveSpeed;             // 적 이동속도
+    public float moveSpeed=5;             // 적 이동속도
     public float coinDropRate;          // 적 사망시 코인 드랍 확률
     public float heartDropRate;         // 적 사망시 코인 드랍 확률
     public int heart;                           // 적 생명력
-    public float detectRange;           // 플에이어 감지 거리
-    public bool detectPlayer = false;   //플레이어 감지 여부
-    public Vector3 returnPosition=Vector3.zero;
+    public float detectRange=5;           // 플레이어 감지 거리
+
+    [Header("Enemy Scout Root")]
+    public Vector3[] scoutPoint;
+    public Vector3 returnPosition=Vector3.zero;     //감지를 끝내고 돌아갈 처음 위치
     public Vector3 targetDirection= Vector3.zero;
+    public int scoutPointRoot=0;          //정찰할 포인트를 결정지을 변수.
+    public bool detectPlayer = false;   //플레이어 감지 여부
 
+    [Header("Enemy Condiction Checking")]
+    bool callScoutFlag = true;
+    public bool moveStart= false;
+    public float scoutWaitTime = 3f;
 
-
-    // --- test value
-    bool testFlag = true;
-    int testPointNum;
-    Vector3[] testPoint = new Vector3[5];
-    //float x = 5f;
-    //float z = 5f;
-    public bool moveStart=false;
-    // --- test value
 
     //--------Value----------------Value----------------Value----------------Value----------------Value----------------Value----------------Value----------------
 
@@ -44,82 +43,62 @@ public class EnemyBase : MonoBehaviour
         rigid = GetComponent<Rigidbody>();
         returnPosition = transform.position;
     }
+    private void Awake()
+    {
+        Transform trans = transform.GetChild(3);
+        scoutPoint = new Vector3[trans.childCount];
+        for (int i = 0; i < trans.childCount; i++)
+        {
+            scoutPoint[i] = trans.GetChild(i).position;
+        }
+    }
     private void Start()
     {
-        testPointNum = 0;
-        testPoint[0] = new Vector3(5,0,5);
-        testPoint[1] = new Vector3(5,0,0);
-        testPoint[2] = new Vector3(0,0,5);
-        testPoint[3] = new Vector3(-5, 0, 5);
-        testPoint[4] = new Vector3(-5, 0, 0);
-
-        //EnemyModeScout();  이새끼가 처음부터 플래그들을 다 망쳐놨네 시발
-
-        StartCoroutine(TestCorutine());
+        targetDirection = scoutPoint[scoutPointRoot];       // 초기 정찰위치 지정
+        EnemyModeScout();
     }
+
     private void FixedUpdate()
     {
-        
-        if ( (targetDirection - transform.position).sqrMagnitude > 0.25f && moveStart==true)       //목표와 떨어져있고, moveStart가 treu라면 
+
+        if ((targetDirection - transform.position).sqrMagnitude > 0.25f && moveStart == true)       //목표와 떨어져있고, moveStart가 treu라면 
         {
             //transform.LookAt(-targetDirection);
-            rigid.MovePosition(transform.position + Time.fixedDeltaTime * moveSpeed * targetDirection.normalized);
+            rigid.MovePosition(Vector3.MoveTowards(transform.position, targetDirection, moveSpeed * Time.deltaTime));
         }
-        else if((targetDirection - transform.position).sqrMagnitude < 0.25f )       //목표와 떨어져있지만, moveStart가 false라면 정지
+        else if ((targetDirection - transform.position).sqrMagnitude < 0.25f)       //목표와 떨어져있지만, moveStart가 false라면 정지
         {
             moveStart = false;
-            Debug.Log($"{testPointNum}번째 목표 도착");
+            //Debug.Log($"{scoutPointRoot}번째 목표 도착");
             //rigid.MovePosition(transform.position);
             // EnemyModeScout을 호출하기. 한 번 만
-            if(testFlag==true)
+            if (callScoutFlag == true)
             {
-                Debug.Log("testFlag Enter");
-                testFlag = false;
+                callScoutFlag = false;
                 EnemyModeScout();
             }
-            
         }
-
-        //Vector3.Lerp(transform.position, targetDirection , Time.fixedDeltaTime ));
-        //도착하면 멈춰야하는뎅... 도착하면 EnemyModeScout실행하기.
-        /*if((targetDirection - transform.position).magnitude>0.5f && moveStart )       //목표까지 남은 거리가 0.5보다 크다면 계속 이동
-        {
-            transform.LookAt(targetDirection);
-            rigid.MovePosition(transform.position + Time.fixedDeltaTime * moveSpeed * targetDirection.normalized);
-        }
-        else
-        {
-            moveStart = false;
-            EnemyModeScout();
-        }
-        if( (targetDirection- transform.position).magnitude < 1f )                  //목적지까지 도착했는지 ?
-        {
-            targetDirection = Vector3.zero;
-            StartCoroutine(WaitScout());
-            EnemyModeScout();
-        }*/
     }
 
     //--------LifeCycle----------------LifeCycle----------------LifeCycle----------------LifeCycle----------------LifeCycle----------------LifeCycle----------------
 
     //--------Coroutine----------------Coroutine----------------Coroutine----------------Coroutine----------------Coroutine----------------Coroutine----------------
 
-    IEnumerator TestCorutine()
+    
+    // 정찰에 사용될 알고리즘 코루틴
+    IEnumerator WaitAndTargetSetting()
     {
-        //Vector3.MoveTowards(transform.position, targetDirection, 0.1f);
-        while (true)
-        {
-            Debug.Log($"현재위치 : {transform.position}, 목표벡터: {targetDirection-transform.position} / 남은거리 : {(targetDirection-transform.position).magnitude} / T3 :");
-            yield return new WaitForSeconds(1);
-            
-        }
-    }
+        yield return new WaitForSeconds(scoutWaitTime);
 
-    IEnumerator WaitThreeSecond()
-    {
-        Debug.Log("코루틴 시작");
-        yield return new WaitForSeconds(5f);
-        Debug.Log("코루틴 끝");
+        
+        targetDirection = scoutPoint[scoutPointRoot];
+        Debug.Log($"{gameObject.name}이 {scoutPoint[scoutPointRoot]}로 정찰 시작.");
+
+        scoutPointRoot++;
+        scoutPointRoot = scoutPointRoot % scoutPoint.Length;
+        moveStart = true;
+        callScoutFlag = true;
+        
     }
 
     //--------Coroutine----------------Coroutine----------------Coroutine----------------Coroutine----------------Coroutine----------------Coroutine----------------
@@ -128,22 +107,7 @@ public class EnemyBase : MonoBehaviour
 
     void EnemyModeScout()       // 순찰모드
     {
-        //float x = transform.position.x + Random.Range(0f, 10f);
-        //float z = transform.position.y + Random.Range(0f, 10f);
-
-        //0,0,0 -> 5,0,5로 이동하는 것 테스트하기.
-        Debug.Log($"{gameObject.name}이 {testPoint[testPointNum]}로 정찰.");
-        StartCoroutine(WaitThreeSecond());
-        // 기다린 후 위치값을 바꿔야 update가 돌아가지 않는다.
-
-        targetDirection = testPoint[testPointNum] - transform.position;         //목적지까지의 방향벡터 설정 -> Fixed Update에 영향
-
-        
-        testPointNum++;
-        moveStart = true;
-        testFlag = true;
-        Debug.Log("moveStart 플래그 On");
-
+        StartCoroutine(WaitAndTargetSetting());
     }
     void EnemyModeMove(Vector3 playerPosition)      //플레이어를 발견해서 플레이어 방향으로 이동함.
     {
@@ -196,12 +160,13 @@ public class EnemyBase : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.white;
+        //적의 감지범위를 파랑 구로 표현.
+        Gizmos.color = Color.blue;
         Gizmos.DrawWireSphere(transform.position, detectRange);     //감지범위
 
+        //적의 현재 위치-목적지 까지를 빨간 선으로 표현
         Gizmos.color = Color.red;
         Gizmos.DrawLine(transform.position, targetDirection);
-        //Gizmos.DrawSphere(transform.position, detectRange);
     }
     //------------------------GIZMO------------------------------------------------GIZMO------------------------------------------------GIZMO------------------------
 
