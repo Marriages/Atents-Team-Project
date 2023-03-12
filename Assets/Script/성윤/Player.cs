@@ -10,13 +10,15 @@ public class Player : MonoBehaviour
 
     // 플레이어 회전 속도
     public float rotateSpeed = 10.0f;
-
     float h, v;
 
     // 플레이어 점프 속도
     public float jumpPower;
-
     private bool IsJumping;
+
+    // 플레이어 방패
+    public GameObject target;
+    private bool state;
 
     // 입력처리용 인풋액션
     PlayerInputActions inputActions;
@@ -24,12 +26,8 @@ public class Player : MonoBehaviour
     // 현재 입력된 입력 방향
     Vector3 inputDir = Vector3.zero;
 
+    // 플레이어 리지드바디
     private Rigidbody rigid;
-
-    // 플레이어 방패
-    public GameObject target;
-    private bool state;
-
 
     private void Awake()
     {
@@ -73,8 +71,8 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
-
         Move();
+       
     }
 
 
