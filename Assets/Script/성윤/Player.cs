@@ -81,7 +81,8 @@ public class Player : MonoBehaviour
     {
         
     }
-
+    
+    //dasdasdasdasd
     void Move()
     {
         //transform.Translate(Time.deltaTime * speed * inputDir);
