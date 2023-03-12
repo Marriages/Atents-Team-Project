@@ -11,6 +11,7 @@ TagManager:
   - Weapon
   - Shield
   - Potion
+  - Ground
   layers:
   - Default
   - TransparentFX
