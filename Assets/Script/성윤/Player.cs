@@ -95,7 +95,7 @@ public class Player : MonoBehaviour
         if (!(h == 0 && v == 0))
         {
             // 이동과 회전을 함께 처리
-            transform.position += dir * speed * Time.deltaTime;
+            transform.position += dir.normalized * speed * Time.deltaTime;
             // 회전하는 부분. Point 1.
             transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * rotateSpeed);
         }
