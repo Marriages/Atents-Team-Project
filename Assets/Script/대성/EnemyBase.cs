@@ -33,6 +33,8 @@ public class EnemyBase : MonoBehaviour
     public bool moveStart= false;
     public float scoutWaitTime = 3f;
 
+    Animator anim;
+    GameObject player;
 
     //--------Value----------------Value----------------Value----------------Value----------------Value----------------Value----------------Value----------------
 
@@ -45,6 +47,7 @@ public class EnemyBase : MonoBehaviour
     }
     private void Awake()
     {
+        anim = GetComponent<Animator>();
         Transform trans = transform.GetChild(3);
         scoutPoint = new Vector3[trans.childCount];
         for (int i = 0; i < trans.childCount; i++)
@@ -60,24 +63,39 @@ public class EnemyBase : MonoBehaviour
 
     private void FixedUpdate()
     {
+        transform.LookAt(targetDirection);
+        if(detectPlayer==true)
+            targetDirection = player.transform.position;
+        
 
-        if ((targetDirection - transform.position).sqrMagnitude > 0.25f && moveStart == true)       //목표와 떨어져있고, moveStart가 treu라면 
+        //(목표와 떨어져있고, moveStart가 treu) 또는 플레이어 감지상태라면, 해당 방향으로 계속 이동.
+        if ( ((targetDirection - transform.position).sqrMagnitude > 0.25f && moveStart == true ) )
         {
-            //transform.LookAt(-targetDirection);
+            Debug.Log("플레이어 감지 또는 이동");
             rigid.MovePosition(Vector3.MoveTowards(transform.position, targetDirection, moveSpeed * Time.deltaTime));
         }
-        else if ((targetDirection - transform.position).sqrMagnitude < 0.25f)       //목표와 떨어져있지만, moveStart가 false라면 정지
+        //목표와 가깝지만 플레이어 감지상태가 아닐 경우, 다시 정찰모드.
+        else if ((targetDirection - transform.position).sqrMagnitude < 0.25f && detectPlayer==false)       //목표와 떨어져있지만, moveStart가 false라면 정지
         {
+            Debug.Log("플레이어 감지X, 대기");
             moveStart = false;
             //Debug.Log($"{scoutPointRoot}번째 목표 도착");
             //rigid.MovePosition(transform.position);
             // EnemyModeScout을 호출하기. 한 번 만
             if (callScoutFlag == true)
             {
+                //anim.SetTrigger("Atack");
                 callScoutFlag = false;
                 EnemyModeScout();
             }
         }
+        //목표와 가깝고 플레이어 감지상태인 경우, 공격 실행.
+        else if ((targetDirection - transform.position).sqrMagnitude < 0.2f && detectPlayer == true)       //목표와 가깝고, 플레이어를 감지한 상태라면
+        {
+            Debug.Log("플레이어 감지, 공격!");
+            EnemyModeAtack();
+        }
+
     }
 
     //--------LifeCycle----------------LifeCycle----------------LifeCycle----------------LifeCycle----------------LifeCycle----------------LifeCycle----------------
@@ -100,6 +118,11 @@ public class EnemyBase : MonoBehaviour
         callScoutFlag = true;
         
     }
+    IEnumerator WaitAndTargetAtack()
+    {
+        yield return new WaitForSeconds(0.5f);
+        anim.SetTrigger("Atack");
+    }
 
     //--------Coroutine----------------Coroutine----------------Coroutine----------------Coroutine----------------Coroutine----------------Coroutine----------------
 
@@ -109,17 +132,24 @@ public class EnemyBase : MonoBehaviour
     {
         StartCoroutine(WaitAndTargetSetting());
     }
-    void EnemyModeMove(Vector3 playerPosition)      //플레이어를 발견해서 플레이어 방향으로 이동함.
+    void EnemyModeMove(GameObject playerObject)      //플레이어를 발견해서 플레이어 방향으로 이동함.
     {
+        StopAllCoroutines();
+        player = playerObject;
+        moveStart = true;
+        targetDirection = player.transform.position;
         
     }
     void EnemyModeAtack()                           //일정거리 도달 후 플레이어를 공격.
     {
+        StartCoroutine(WaitAndTargetAtack());
+
 
     }
     void EnemyModeReturn()                          //플레이어가 감지 범위 밖으로 벗어나서 순찰모드로 복귀
     {
-        targetDirection = (returnPosition - transform.position).normalized;
+        moveStart = false;
+        EnemyModeScout();
     }
     void EnemyDie()
     {
@@ -138,8 +168,9 @@ public class EnemyBase : MonoBehaviour
         if (obj.gameObject.CompareTag("Player") && !detectPlayer )
         {
             Debug.Log($"{gameObject.name}이 player를 발견했다.");
-            EnemyModeMove(obj.transform.position);
+
             detectPlayer = true;
+            EnemyModeMove(obj.gameObject);
             //EnemyDetectPlayer?.Invoke(detectPlayer);
         }
     }
@@ -148,8 +179,9 @@ public class EnemyBase : MonoBehaviour
         if (obj.gameObject.CompareTag("Player") && detectPlayer)
         {
             Debug.Log($"{gameObject.name}에게서 플레이어가 떠났다.");
-            EnemyModeReturn();
+
             detectPlayer = false;
+            EnemyModeReturn();
             //EnemyDetectPlayer?.Invoke(detectPlayer);
         }
     }
