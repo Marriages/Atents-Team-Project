@@ -22,7 +22,7 @@ public class MainCamera_Action : MonoBehaviour
 
         transform.position = Vector3.Lerp(transform.position,
             TargetPos, Time.deltaTime * CameraSpeed);
-
+        //이것은 테스트 코드입니다.
         
     }
 }
