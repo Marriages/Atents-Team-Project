@@ -5,13 +5,15 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
+    // 현재 입력된 입력 방향
+    public Vector3 inputDir;
+
     // 플레이어 이동 속도
-    public float speed = 10.0f;
+    public float speed = 5.0f;
 
     // 플레이어 회전 속도
-    public float rotateSpeed = 10.0f;
-    float h, v;
-
+    public float rotateSpeed = 20.0f;
+    
     // 플레이어 점프 속도
     public float jumpPower;
     private bool IsJumping;
@@ -22,9 +24,6 @@ public class Player : MonoBehaviour
 
     // 입력처리용 인풋액션
     PlayerInputActions inputActions;
-
-    // 현재 입력된 입력 방향
-    Vector3 inputDir = Vector3.zero;
 
     // 플레이어 리지드바디
     private Rigidbody rigid;
@@ -66,39 +65,28 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        
     }
 
     private void FixedUpdate()
     {
         Move();
-       
     }
 
 
     // 플레이어 이동 관련 이벤트 함수
     private void PlayerMove(InputAction.CallbackContext context)
     {
-        
+        Vector3 dir = context.ReadValue<Vector3>();
+        inputDir = dir;
+        Debug.Log(inputDir);
     }
-    
-    //dasdasdasdasd
+
     void Move()
     {
-        //transform.Translate(Time.deltaTime * speed * inputDir);
-        h = Input.GetAxis("Horizontal");
-        v = Input.GetAxis("Vertical");
+        transform.Translate(Time.fixedDeltaTime * speed * inputDir, Space.World);
+        transform.forward = Vector3.Lerp(transform.forward, inputDir, Time.fixedDeltaTime * rotateSpeed); ;
+        //transform.rotation = Quaternion.Euler(Time.deltaTime * rotateSpeed * inputDir);
 
-        Vector3 dir = new Vector3(h, 0, v); // new Vector3(h, 0, v)가 자주 쓰이게 되었으므로 dir이라는 변수에 넣고 향후 편하게 사용할 수 있게 함
-
-        // 바라보는 방향으로 회전 후 다시 정면을 바라보는 현상을 막기 위해 설정
-        if (!(h == 0 && v == 0))
-        {
-            // 이동과 회전을 함께 처리
-            transform.position += dir.normalized * speed * Time.deltaTime;
-            // 회전하는 부분. Point 1.
-            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * rotateSpeed);
-        }
     }
 
     // 플레이어 점프 관련 이벤트 함수
@@ -109,11 +97,10 @@ public class Player : MonoBehaviour
     
     void Jump()
     {
-        if (!IsJumping)
+        if (IsJumping == false)
         {
             IsJumping = true;
             rigid.AddForce(Vector3.up * jumpPower * 0.5f, ForceMode.Impulse);
-            Debug.Log("점프");
         }
         else
         {
@@ -121,11 +108,12 @@ public class Player : MonoBehaviour
         }
     }
 
+    // 플레이어 충돌 관련 이벤트 함수
     private void OnCollisionEnter(Collision collision)
     {
         if(collision.gameObject.CompareTag("Ground"))
         {
-            IsJumping = false;
+            IsJumping = false;  // 그라운드에 닿았을 때 점프중이 아니다.
         }
     }
 
@@ -141,6 +129,7 @@ public class Player : MonoBehaviour
         Shield();
     }
 
+    // 실드 나오게하기/안나오게하기
     void Shield()
     {
         if(state == true)
