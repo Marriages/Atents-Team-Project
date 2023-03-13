@@ -111,8 +111,8 @@ public class Player : MonoBehaviour
     {
         if (!IsJumping)
         {
-            IsJumping = true;
             rigid.AddForce(Vector3.up * jumpPower * 0.5f, ForceMode.Impulse);
+            IsJumping = true;
             Debug.Log("점프");
         }
         else

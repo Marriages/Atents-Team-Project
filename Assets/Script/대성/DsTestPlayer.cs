@@ -223,12 +223,6 @@ public class DsTestPlayer : MonoBehaviour
 
     //-------------------------------------------------- T E S T --------------------------------------------------
 
-    Action Test1;
-    Action Test2;
-    Action Test3;
-    Action Test4;
-    Action Test5;
-
     void TestOnSetting()
     {
         inputController.TestKeyboard.Test1.performed += OnTest1;
@@ -250,27 +244,27 @@ public class DsTestPlayer : MonoBehaviour
     void OnTest1(InputAction.CallbackContext obj)
     {
         Debug.Log("Test 1 Press");
-        Test1?.Invoke();
+        //Test1?.Invoke();
     }
     void OnTest2(InputAction.CallbackContext obj)
     {
         Debug.Log("Test 2 Press");
-        Test2?.Invoke();
+        //Test2?.Invoke();
     }
     void OnTest3(InputAction.CallbackContext obj)
     {
         Debug.Log("Test 3 Press");
-        Test3?.Invoke();
+        //Test3?.Invoke();
     }
     void OnTest4(InputAction.CallbackContext obj)
     {
         Debug.Log("Test 4 Press");
-        Test4?.Invoke();
+        //Test4?.Invoke();
     }
     void OnTest5(InputAction.CallbackContext obj)
     {
         Debug.Log("Test 5 Press");
-        Test5?.Invoke();
+        //Test5?.Invoke();
 
     }
     //-------------------------------------------------- T E S T --------------------------------------------------
