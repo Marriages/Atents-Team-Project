@@ -1439,6 +1439,7 @@ GameObject:
   - component: {fileID: 1555371338}
   - component: {fileID: 1555371344}
   - component: {fileID: 1555371342}
+  - component: {fileID: 1555371345}
   m_Layer: 0
   m_Name: EnemyWizard
   m_TagString: Untagged
@@ -1521,13 +1522,14 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2049650432863922583}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 75aef4c98a3457e42a7d82e9f0842392, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   rigid: {fileID: 0}
-  moveSpeed: 5
+  normalSpeed: 5
+  chaseSpeed: 8
   coinDropRate: 0
   heartDropRate: 0
   heart: 0
@@ -1539,6 +1541,29 @@ MonoBehaviour:
   detectPlayer: 0
   moveStart: 0
   scoutWaitTime: 3
+  atackDelayTime: 1
+--- !u!114 &1555371345
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2049650432863922583}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7d8295cbf824d64aaa2f5d99dfe784d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  heart: 3
+  enemySpeed: 5
+  normalSpeed: 5
+  chaseSpeed: 8
+  detectRange: 0
+  scoutIndex: 0
+  isdetectPlayer: 0
+  isAtacking: 0
+  intervalScout: 3
+  intervalAtack: 1
 --- !u!1 &2049657757599667617
 GameObject:
   m_ObjectHideFlags: 0
@@ -2605,6 +2630,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2045834067123175831}
   - component: {fileID: 2131174957743311477}
+  - component: {fileID: 1606373646}
+  - component: {fileID: 1606373645}
   m_Layer: 0
   m_Name: Staff
   m_TagString: Untagged
@@ -2739,3 +2766,32 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.85365343, y: -0.98339593, z: 0.61344194}
     m_Extent: {x: 1.0942292, y: 0.54370964, z: 0.2890674}
   m_DirtyAABB: 0
+--- !u!54 &1606373646
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2051379921815889691}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!135 &1606373645
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2051379921815889691}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.3
+  m_Center: {x: -0.7, y: 0.4, z: 0.4}
