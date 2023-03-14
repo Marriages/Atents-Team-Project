@@ -4,7 +4,18 @@ using UnityEngine;
 using System;
 using UnityEngine.AI;
 using UnityEngine.InputSystem;
-
+/*
+ * 문제점
+ * 1. 애니메이션 컨트롤러가 내마음대로 움직이지 않는다.
+ * 트리거가 움직이는 속도가 너무나도 빨라서 그런것일까? 이부분은 물어보아야 할 것 같다.
+ * Atack쪽에서 발생하는 문제.
+ * 
+ * 
+ * 추가적으로 구현해야 할 것
+ * 감지범위가 5이며, 이 안에 플레이어가 들어올 경우, 공격을 시작.
+ * 플레이어가 이 감지범위에서 깔짝깔짝 할 수 있기 때문에, 추적하는 범위는 8정도로 설정해둘 필요.
+ * 감지범위에 들어온 플레이어가 추적범위보다 많이 나갈 경우 추적을 종료하는 스크립트 구현 필요.
+*/
 public class EnemyBaseTest : MonoBehaviour
 {
     //--------Value----------------Value----------------Value----------------Value----------------Value----------------Value----------------Value----------------
@@ -35,6 +46,7 @@ public class EnemyBaseTest : MonoBehaviour
     public bool isdetectPlayer = false;
     public bool isAtacking = false;
     public bool isWaitScout = false;
+    public bool isAtackWaiting = false;
 
     // 시간 간격 변수명은 interval로 시작
     [Header("Timer")]
@@ -65,15 +77,19 @@ public class EnemyBaseTest : MonoBehaviour
         }
         set
         {
-            if (_state == EnemyState.IDLE)
+            if (value == EnemyState.IDLE)
             {
-                agent.Stop();
-                StartCoroutine(WaitScout());
+                Debug.Log("IDLE Property");
                 anim.SetTrigger("Idle");
-            }
-            else if (_state == EnemyState.SCOUT)
-            {
+                agent.isStopped = true;
+                //agent.Stop();
+                StartCoroutine(WaitScout());
                 
+            }
+            else if (value == EnemyState.SCOUT)
+            {
+                Debug.Log("SCOUT Property");
+                anim.ResetTrigger("Idle");
                 anim.SetTrigger("Scout");
 
                 targetDirection = scoutPoint[scoutIndex];
@@ -83,15 +99,24 @@ public class EnemyBaseTest : MonoBehaviour
 
                 agent.speed = enemySpeed;
                 agent.SetDestination(targetDirection);
-                agent.Resume();
+                agent.isStopped = false;
+                //agent.Resume();
             }
-            else if (_state == EnemyState.CHASE)
+            else if (value == EnemyState.CHASE)
             {
+                Debug.Log("CHASE Property");
                 anim.SetTrigger("Chase");
+                agent.speed = chaseSpeed;
+                scoutIndex = 0;
+                agent.isStopped = false;
+                //agent.Resume();
             }
-            else if (_state == EnemyState.ATACK)
+            else if (value == EnemyState.ATACK)
             {
-                anim.SetTrigger("Atack");
+                Debug.Log("ATACK Property");
+                agent.speed = 0f;
+                agent.isStopped = true;
+                //agent.Stop();
             }
 
             _state = value;
@@ -152,21 +177,33 @@ public class EnemyBaseTest : MonoBehaviour
 
     void EnemyModeIdle()
     {
-        if(isWaitScout==false)
+        if (isWaitScout == false)
+        {
+            Debug.Log("정찰 시작");
             State = EnemyState.SCOUT;
+        }
     }
     void EnemyModeScout()
     {
         if(agent.remainingDistance < 0.2f)
+        {
+            Debug.Log("목표 도착");
             State = EnemyState.IDLE;
+        }
     }
     void EnemyModeChase()
     {
-
+        agent.destination=player.transform.position;
+        if (agent.remainingDistance < 2.5f)
+            State = EnemyState.ATACK;
     }
     void EnemyModeAtack()
     {
-
+        // 공격 알고리즘 작성.
+        if(isAtacking==false)
+        {
+            StartCoroutine(WaitAtack());
+        }
     }
 
     //--------AI----------------AI----------------AI----------------AI----------------AI----------------AI----------------AI----------------AI----------------AI--------
@@ -177,7 +214,23 @@ public class EnemyBaseTest : MonoBehaviour
         isWaitScout = true;
         yield return new WaitForSeconds(intervalScout);
         isWaitScout = false;
+    }
 
+    IEnumerator WaitAtack()
+    {
+        agent.isStopped = true;
+        //agent.Stop();
+        isAtacking = true;
+        anim.SetTrigger("Atack");
+        yield return new WaitForSeconds(1f);      // 공격시간에 맞춰서 멈추지않게
+
+        anim.SetTrigger("AtackWait");
+
+        //agent.Resume();
+        yield return new WaitForSeconds(1f);      // 공격 대기시간동안 플레이어를 바라보게
+        isAtacking = false;
+        
+        
     }
 
     //--------Coroutine----------------Coroutine----------------Coroutine----------------Coroutine----------------Coroutine----------------Coroutine----------------
@@ -186,15 +239,23 @@ public class EnemyBaseTest : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log($"★ '{transform.gameObject.name}' 가 '{other}' 를 발견");
-        State = EnemyState.ATACK;
+        if(other.CompareTag("Player"))
+        {
+            Debug.Log($"★ '{transform.gameObject.name}' 가 '{other}' 를 발견");
+            player = other.gameObject;
+            State = EnemyState.CHASE;
+        }
            
     }
     private void OnTriggerExit(Collider other)
     {
-        Debug.Log($"☆ '{transform.gameObject.name}' 가 '{other}' 를 떠남");
-        scoutIndex = 0;
-        State = EnemyState.SCOUT;
+        if(other.CompareTag("Player"))
+        { 
+            Debug.Log($"☆ '{transform.gameObject.name}' 가 '{other}' 를 떠남");
+            player = null;
+            agent.speed = normalSpeed;
+            State = EnemyState.SCOUT;
+        }
     }
 
     //--------ON----------------ON----------------ON----------------ON----------------ON----------------ON----------------ON----------------ON----------------ON--------
