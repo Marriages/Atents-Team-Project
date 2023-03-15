@@ -47,7 +47,7 @@ public class DsTestPlayer : MonoBehaviour
         get => heart;
         set
         {
-            Debug.Log($"heart:{Heart},value:{value}");
+            //Debug.Log($"heart:{Heart},value:{value}");
             if ( heart<value)            //회복
             {
                 
