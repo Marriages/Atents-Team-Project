@@ -83,10 +83,10 @@ public class Player : MonoBehaviour
 
     void Move()
     {
+        // 플레이어 이동
         transform.Translate(Time.fixedDeltaTime * speed * inputDir, Space.World);
-        transform.forward = Vector3.Lerp(transform.forward, inputDir, Time.fixedDeltaTime * rotateSpeed); ;
-        //transform.rotation = Quaternion.Euler(Time.deltaTime * rotateSpeed * inputDir);
-
+        // 플레이어 이동하는 방향에 따라 바라보기
+        transform.forward = Vector3.Lerp(transform.forward, inputDir, Time.fixedDeltaTime * rotateSpeed);
     }
 
     // 플레이어 점프 관련 이벤트 함수
