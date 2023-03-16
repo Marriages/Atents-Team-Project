@@ -15,6 +15,7 @@ using UnityEngine.InputSystem;
  * 감지범위가 5이며, 이 안에 플레이어가 들어올 경우, 공격을 시작.
  * 플레이어가 이 감지범위에서 깔짝깔짝 할 수 있기 때문에, 추적하는 범위는 8정도로 설정해둘 필요.
  * 감지범위에 들어온 플레이어가 추적범위보다 많이 나갈 경우 추적을 종료하는 스크립트 구현 필요.
+ * 해결!
 */
 public class EnemyBaseTest : MonoBehaviour
 {
@@ -22,10 +23,10 @@ public class EnemyBaseTest : MonoBehaviour
 
     //컴포넌트 이름은 컴포넌트 명의 축소형
     [Header("Component")]
-    Rigidbody rigid;
     Animator anim;
     GameObject player;
     NavMeshAgent agent;
+    SphereCollider detectRangeCollider;
 
     [Header("Enemy Information")]
     public int heart = 3;
@@ -33,12 +34,13 @@ public class EnemyBaseTest : MonoBehaviour
     public float normalSpeed = 5f;
     public float chaseSpeed = 8f;
     public float detectRange=5f;
+    public float atackRange=8f;
+
 
     
     [Header("Scout Information")]
     Vector3[] scoutPoint;
     public int scoutIndex=0;
-    Vector3 initializePosition= Vector3.zero;
     Vector3 targetDirection= Vector3.zero;
 
     //Flag변수는 항상 is로 시작
@@ -47,12 +49,13 @@ public class EnemyBaseTest : MonoBehaviour
     public bool isAtacking = false;
     public bool isWaitScout = false;
     public bool isAtackWaiting = false;
+    public bool playerDetect = false;
 
     // 시간 간격 변수명은 interval로 시작
     [Header("Timer")]
     public float intervalScout = 3f;
     public float intervalAtack = 1f;
-
+    IEnumerator waitAtack;
 
 
     [Header("Test")]
@@ -89,6 +92,7 @@ public class EnemyBaseTest : MonoBehaviour
             else if (value == EnemyState.SCOUT)
             {
                 Debug.Log("SCOUT Property");
+                anim.SetBool("Chase", false);
                 anim.ResetTrigger("Idle");
                 anim.SetTrigger("Scout");
 
@@ -104,8 +108,9 @@ public class EnemyBaseTest : MonoBehaviour
             }
             else if (value == EnemyState.CHASE)
             {
+                agent.destination = player.transform.position;
                 Debug.Log("CHASE Property");
-                anim.SetTrigger("Chase");
+                anim.SetBool("Chase",true);
                 agent.speed = chaseSpeed;
                 scoutIndex = 0;
                 agent.isStopped = false;
@@ -114,8 +119,9 @@ public class EnemyBaseTest : MonoBehaviour
             else if (value == EnemyState.ATACK)
             {
                 Debug.Log("ATACK Property");
+                anim.SetBool("Chase", false);
                 agent.speed = 0f;
-                agent.isStopped = true;
+                //agent.isStopped = true;
                 //agent.Stop();
             }
 
@@ -129,11 +135,12 @@ public class EnemyBaseTest : MonoBehaviour
 
     private void Awake()
     {
-        rigid = GetComponent<Rigidbody>();
         anim = GetComponent<Animator>();
         agent = GetComponent<NavMeshAgent>();
+        detectRangeCollider = GetComponent<SphereCollider>();
 
-        initializePosition = transform.position;
+        waitAtack = WaitAtack();
+
         Transform trans = transform.GetChild(3);
         scoutPoint = new Vector3[trans.childCount];
         for (int i = 0; i < scoutPoint.Length; i++)
@@ -142,11 +149,6 @@ public class EnemyBaseTest : MonoBehaviour
         //TEST//
         inputController = new InputSystemController();
         //TEST//
-    }
-    private void Start()
-    {
-        scoutIndex = 0;
-        State = EnemyState.IDLE;
     }
 
     private void FixedUpdate()
@@ -164,6 +166,9 @@ public class EnemyBaseTest : MonoBehaviour
     private void OnEnable()
     {
         TestSettingOn();
+        scoutIndex = 0;
+        State = EnemyState.IDLE;
+        detectRangeCollider.radius = detectRange;
     }
 
     private void OnDisable()
@@ -179,7 +184,7 @@ public class EnemyBaseTest : MonoBehaviour
     {
         if (isWaitScout == false)
         {
-            Debug.Log("정찰 시작");
+            //Debug.Log("정찰 시작");
             State = EnemyState.SCOUT;
         }
     }
@@ -187,23 +192,21 @@ public class EnemyBaseTest : MonoBehaviour
     {
         if(agent.remainingDistance < 0.2f)
         {
-            Debug.Log("목표 도착");
+            //Debug.Log("목표 도착");
             State = EnemyState.IDLE;
         }
     }
     void EnemyModeChase()
     {
-        agent.destination=player.transform.position;
         if (agent.remainingDistance < 2.5f)
+        {
             State = EnemyState.ATACK;
+        }
+        
     }
     void EnemyModeAtack()
     {
-        // 공격 알고리즘 작성.
-        if(isAtacking==false)
-        {
-            StartCoroutine(WaitAtack());
-        }
+        StartCoroutine(waitAtack);
     }
 
     //--------AI----------------AI----------------AI----------------AI----------------AI----------------AI----------------AI----------------AI----------------AI--------
@@ -218,17 +221,10 @@ public class EnemyBaseTest : MonoBehaviour
 
     IEnumerator WaitAtack()
     {
-        agent.isStopped = true;
-        //agent.Stop();
-        isAtacking = true;
+        transform.LookAt(player.transform.position);
+        yield return new WaitForSeconds(3f);      // 공격 대기시간동안 플레이어를 바라보게
         anim.SetTrigger("Atack");
-        yield return new WaitForSeconds(1f);      // 공격시간에 맞춰서 멈추지않게
-
-        anim.SetTrigger("AtackWait");
-
-        //agent.Resume();
-        yield return new WaitForSeconds(1f);      // 공격 대기시간동안 플레이어를 바라보게
-        isAtacking = false;
+        
         
         
     }
@@ -239,9 +235,12 @@ public class EnemyBaseTest : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("Player"))
+        if(other.CompareTag("Player") && playerDetect==false)
         {
-            Debug.Log($"★ '{transform.gameObject.name}' 가 '{other}' 를 발견");
+            playerDetect = true;
+            //Debug.LogWarning("감지범위 들어옴");
+            //Debug.Log($"★ '{transform.gameObject.name}' 가 '{other}' 를 발견");
+            detectRangeCollider.radius = atackRange;
             player = other.gameObject;
             State = EnemyState.CHASE;
         }
@@ -250,8 +249,11 @@ public class EnemyBaseTest : MonoBehaviour
     private void OnTriggerExit(Collider other)
     {
         if(other.CompareTag("Player"))
-        { 
-            Debug.Log($"☆ '{transform.gameObject.name}' 가 '{other}' 를 떠남");
+        {
+            playerDetect = false;
+            //Debug.LogWarning("감지범위 나감");
+            //Debug.Log($"☆ '{transform.gameObject.name}' 가 '{other}' 를 떠남");
+            detectRangeCollider.radius = detectRange;
             player = null;
             agent.speed = normalSpeed;
             State = EnemyState.SCOUT;
@@ -300,4 +302,16 @@ public class EnemyBaseTest : MonoBehaviour
         
     }
     //--------TEST----------------TEST----------------TEST----------------TEST----------------TSET----------------TSET----------------TSET----------------TSET----------------TSET--------
+
+    private void OnDrawGizmos()
+    {
+        //적의 감지범위를 파랑 구로 표현.
+        Gizmos.color = Color.blue;
+        if(detectRangeCollider!=null)
+            Gizmos.DrawWireSphere(transform.position, detectRangeCollider.radius);     //감지범위
+
+        //적의 현재 위치-목적지 까지를 빨간 선으로 표현
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(transform.position, targetDirection);
+    }
 }

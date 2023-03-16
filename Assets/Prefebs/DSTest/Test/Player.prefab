@@ -129,7 +129,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07c84d317bae5b24a8da4a785e055c8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
+  speed: 8
   weaponGet: 0
   shieldGet: 0
   potionGet: 0
