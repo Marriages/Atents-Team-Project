@@ -13,28 +13,31 @@ public class DsTestPlayer : MonoBehaviour
 
 
     [Header("Component")]
-        InputSystemController inputController;
-        Rigidbody rigid;
-        Vector3 dir = Vector3.zero;
+    InputSystemController inputController;
+    Rigidbody rigid;
+    Vector3 dir = Vector3.zero;
+    Animator anim;
 
     [Header("Player Info")]
-        public float speed = 5f;
-        private int heart = 3;
-        private int coin = 0;
-        public bool weaponGet = false;
-        public bool shieldGet = false;
-        public bool potionGet = false;
+    public float speed = 5f;
+    private int heart = 3;
+    private int coin = 0;
+    public bool weaponGet = false;
+    public bool shieldGet = false;
+    public bool potionGet = false;
 
     [Header("Delegate Action")]
-        public Action<int> HeartPlus;
-        public Action<int> HeartMinus;
-        public Action<int> CoinPlus;
-        public Action<int> CoinMinus;
-        public Action PotionGet;
-        public Action PotionUse;
-        public Action WeaponGet;
-        public Action ShieldGet;
-        public Action PlayerDie;
+    public Action<int> HeartPlus;
+    public Action<int> HeartMinus;
+    public Action<int> CoinPlus;
+    public Action<int> CoinMinus;
+    public Action PotionGet;
+    public Action PotionUse;
+    public Action WeaponGet;
+    public Action ShieldGet;
+    public Action PlayerDie;
+
+    Quaternion rotate;
 
 
 
@@ -106,11 +109,13 @@ public class DsTestPlayer : MonoBehaviour
         Heart = 3;
         inputController = new InputSystemController();
         rigid = GetComponent<Rigidbody>();
+        anim = GetComponent<Animator>();
     }
 
     private void FixedUpdate()
     {
         rigid.MovePosition(transform.position + Time.fixedDeltaTime * speed * dir);
+        //rigid.MoveRotation(rotate);
     }
 
     private void OnEnable()
@@ -199,6 +204,11 @@ public class DsTestPlayer : MonoBehaviour
     // W(위) S(아래) A(왼쪽) D(오른쪽) , Space(점프)
     private void OnMove(InputAction.CallbackContext obj) {
         dir = obj.ReadValue<Vector3>();
+        
+
+        
+
+
         //움직임에따라 회전도 구현할 것
     }
 
@@ -244,7 +254,7 @@ public class DsTestPlayer : MonoBehaviour
     void OnTest1(InputAction.CallbackContext obj)
     {
         Debug.Log("Test 1 Press");
-        //Test1?.Invoke();
+        anim.SetTrigger("atack");
     }
     void OnTest2(InputAction.CallbackContext obj)
     {

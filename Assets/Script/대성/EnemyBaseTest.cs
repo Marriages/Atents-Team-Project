@@ -27,9 +27,11 @@ public class EnemyBaseTest : MonoBehaviour
     GameObject player;
     NavMeshAgent agent;
     SphereCollider detectRangeCollider;
+    Spawner spawner;
 
     [Header("Enemy Information")]
-    public int heart = 3;
+    public int heart;
+    public int maxHeart = 3;
     public float enemySpeed = 5f;
     public float normalSpeed = 5f;
     public float chaseSpeed = 8f;
@@ -64,6 +66,20 @@ public class EnemyBaseTest : MonoBehaviour
     //--------Value----------------Value----------------Value----------------Value----------------Value----------------Value----------------Value-------------
 
     //--------Property----------------Property----------------Property----------------Property----------------Property----------------Property----------------
+    
+    public int Heart
+    {
+        get => heart;
+        set
+        {
+            heart = value;
+            if(heart==0)
+            {
+                Die();
+            }
+        }
+    }
+    
     public enum EnemyState
     {
         IDLE,
@@ -135,14 +151,16 @@ public class EnemyBaseTest : MonoBehaviour
 
     private void Awake()
     {
+
+        spawner = transform.parent.GetComponent<Spawner>();
         anim = GetComponent<Animator>();
         agent = GetComponent<NavMeshAgent>();
         detectRangeCollider = GetComponent<SphereCollider>();
 
         waitAtack = WaitAtack();
 
-        Transform trans = transform.GetChild(3);
-        scoutPoint = new Vector3[trans.childCount];
+        Transform trans = transform.parent;
+        scoutPoint = new Vector3[trans.childCount-1];
         for (int i = 0; i < scoutPoint.Length; i++)
             scoutPoint[i] = trans.GetChild(i).position;
 
@@ -165,7 +183,9 @@ public class EnemyBaseTest : MonoBehaviour
 
     private void OnEnable()
     {
+        
         TestSettingOn();
+        Heart = maxHeart;
         scoutIndex = 0;
         State = EnemyState.IDLE;
         detectRangeCollider.radius = detectRange;
@@ -180,7 +200,7 @@ public class EnemyBaseTest : MonoBehaviour
 
     //--------AI----------------AI----------------AI----------------AI----------------AI----------------AI----------------AI----------------AI----------------AI--------
 
-    void EnemyModeIdle()
+    protected virtual void EnemyModeIdle()
     {
         if (isWaitScout == false)
         {
@@ -188,7 +208,7 @@ public class EnemyBaseTest : MonoBehaviour
             State = EnemyState.SCOUT;
         }
     }
-    void EnemyModeScout()
+    protected virtual void EnemyModeScout()
     {
         if(agent.remainingDistance < 0.2f)
         {
@@ -196,7 +216,7 @@ public class EnemyBaseTest : MonoBehaviour
             State = EnemyState.IDLE;
         }
     }
-    void EnemyModeChase()
+    protected virtual void EnemyModeChase()
     {
         if (agent.remainingDistance < 2.5f)
         {
@@ -204,9 +224,15 @@ public class EnemyBaseTest : MonoBehaviour
         }
         
     }
-    void EnemyModeAtack()
+    protected virtual void EnemyModeAtack()
     {
         StartCoroutine(waitAtack);
+    }
+
+    protected virtual void Die()
+    {
+        spawner.IsAlive = false;
+        this.gameObject.SetActive(false);
     }
 
     //--------AI----------------AI----------------AI----------------AI----------------AI----------------AI----------------AI----------------AI----------------AI--------
@@ -244,7 +270,12 @@ public class EnemyBaseTest : MonoBehaviour
             player = other.gameObject;
             State = EnemyState.CHASE;
         }
-           
+        if (other.CompareTag("Weapon"))
+        {
+            Debug.LogWarning("아야!");
+            Heart--;
+        }
+
     }
     private void OnTriggerExit(Collider other)
     {
@@ -256,6 +287,7 @@ public class EnemyBaseTest : MonoBehaviour
             detectRangeCollider.radius = detectRange;
             player = null;
             agent.speed = normalSpeed;
+            heart = maxHeart;
             State = EnemyState.SCOUT;
         }
     }
