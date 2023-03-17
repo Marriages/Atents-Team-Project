@@ -1082,9 +1082,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   heart: 0
   maxHeart: 3
-  enemySpeed: 2
+  enemySpeed: 5
   normalSpeed: 2
-  chaseSpeed: 4
+  chaseSpeed: 3
   detectRange: 5
   atackRange: 8
   scoutIndex: 0
@@ -1094,7 +1094,10 @@ MonoBehaviour:
   isAtackWaiting: 0
   playerDetect: 0
   intervalScout: 3
-  intervalAtack: 1
+  intervalAtack: 3
+  intervalAtackCurrent: 3
+  intervalAtackWait: 1
+  intervalAtackWaitCurrent: 1
 --- !u!1 &2049657757599667617
 GameObject:
   m_ObjectHideFlags: 0

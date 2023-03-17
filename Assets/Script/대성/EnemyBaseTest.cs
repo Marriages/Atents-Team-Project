@@ -56,7 +56,12 @@ public class EnemyBaseTest : MonoBehaviour
     // 시간 간격 변수명은 interval로 시작
     [Header("Timer")]
     public float intervalScout = 3f;
-    public float intervalAtack = 1f;
+    
+    public float intervalAtack = 3f;            //공격 쿨타임.
+    public float intervalAtackCurrent = 3f;     //점점 줄어들어 0보다 작아지면 공격을 실행. 이후 intervalAtack 값으로 복귀
+    public float intervalAtackWait = 1f;        //공격 시 움직이지 않을 타이머
+    public float intervalAtackWaitCurrent = 1f; //점점 줄어들어 0보다 작아지면 플레이어 추적여부를 결정.
+
     IEnumerator waitAtack;
 
 
@@ -98,7 +103,7 @@ public class EnemyBaseTest : MonoBehaviour
         {
             if (value == EnemyState.IDLE)
             {
-                Debug.Log("IDLE Property");
+                //Debug.Log("IDLE Property");
                 anim.SetTrigger("Idle");
                 agent.isStopped = true;
                 //agent.Stop();
@@ -107,7 +112,7 @@ public class EnemyBaseTest : MonoBehaviour
             }
             else if (value == EnemyState.SCOUT)
             {
-                Debug.Log("SCOUT Property");
+                //Debug.Log("SCOUT Property");
                 anim.SetBool("Chase", false);
                 anim.ResetTrigger("Idle");
                 anim.SetTrigger("Scout");
@@ -125,7 +130,7 @@ public class EnemyBaseTest : MonoBehaviour
             else if (value == EnemyState.CHASE)
             {
                 agent.destination = player.transform.position;
-                Debug.Log("CHASE Property");
+                //Debug.Log("CHASE Property");
                 anim.SetBool("Chase",true);
                 agent.speed = chaseSpeed;
                 scoutIndex = 0;
@@ -134,11 +139,14 @@ public class EnemyBaseTest : MonoBehaviour
             }
             else if (value == EnemyState.ATACK)
             {
-                Debug.Log("ATACK Property");
-                anim.SetBool("Chase", false);
-                agent.speed = 0f;
-                //agent.isStopped = true;
-                //agent.Stop();
+                
+                //Debug.Log("ATACK Property");
+                anim.SetBool("Chase", false);       //해제함과 동시에 1회 공격할예정.
+                //agent.speed = 0f;
+                agent.isStopped = true;
+
+                intervalAtackCurrent = Time.time;       //최초 1회 공격 이후 타이머마다 공격
+
             }
 
             _state = value;
@@ -157,7 +165,6 @@ public class EnemyBaseTest : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         detectRangeCollider = GetComponent<SphereCollider>();
 
-        waitAtack = WaitAtack();
 
         Transform trans = transform.parent;
         scoutPoint = new Vector3[trans.childCount-1];
@@ -218,7 +225,7 @@ public class EnemyBaseTest : MonoBehaviour
     }
     protected virtual void EnemyModeChase()
     {
-        if (agent.remainingDistance < 2.5f)
+        if (agent.remainingDistance < 3f)
         {
             State = EnemyState.ATACK;
         }
@@ -226,7 +233,47 @@ public class EnemyBaseTest : MonoBehaviour
     }
     protected virtual void EnemyModeAtack()
     {
-        StartCoroutine(waitAtack);
+        //Debug.Log($"Time:{Time.time} / Interval:{intervalAtack} / Time-Inter:{Time.time - intervalAtackCurrent}");
+        if(Time.time - intervalAtackCurrent > intervalAtack )
+        {
+            //Debug.Log("Atack");
+            anim.SetTrigger("Atack");
+            intervalAtackCurrent = Time.time;
+            intervalAtackWaitCurrent = Time.time;
+        }
+        else
+        {
+            if(Time.time - intervalAtackWaitCurrent > intervalAtackWait)
+            {
+                Debug.Log("zz");
+            }
+            else
+            {
+                transform.LookAt(player.transform.position);
+            }
+            
+        }
+
+
+
+        //else if(Time.time - intervalAtackWaitCurrent > intervalAtackWait)
+        //{
+
+        //}
+        //StartCoroutine(waitAtack);
+        /*
+        if (Time < 0)
+        {
+            anim.SetTrigger("Atack");
+            Time 초기화
+        }
+        else
+        {
+            Time--;
+            look
+        }*/
+
+        //이중 시간 카운트(쿨타임)을 이용해서 구현할 것
     }
 
     protected virtual void Die()
@@ -245,15 +292,6 @@ public class EnemyBaseTest : MonoBehaviour
         isWaitScout = false;
     }
 
-    IEnumerator WaitAtack()
-    {
-        transform.LookAt(player.transform.position);
-        yield return new WaitForSeconds(3f);      // 공격 대기시간동안 플레이어를 바라보게
-        anim.SetTrigger("Atack");
-        
-        
-        
-    }
 
     //--------Coroutine----------------Coroutine----------------Coroutine----------------Coroutine----------------Coroutine----------------Coroutine----------------
 
