@@ -82,7 +82,7 @@ public class Player : MonoBehaviour
     {
         Vector3 dir = context.ReadValue<Vector3>();
         inputDir = dir;
-        //Debug.Log(inputDir);
+        Debug.Log(inputDir);
         anim.SetBool("IsMove", !context.canceled);
 
     }
