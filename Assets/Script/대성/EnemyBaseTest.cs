@@ -6,16 +6,9 @@ using UnityEngine.AI;
 using UnityEngine.InputSystem;
 /*
  * 문제점
- * 1. 애니메이션 컨트롤러가 내마음대로 움직이지 않는다.
- * 트리거가 움직이는 속도가 너무나도 빨라서 그런것일까? 이부분은 물어보아야 할 것 같다.
- * Atack쪽에서 발생하는 문제.
+ * 1. 피격이 뭔가 이상함. 한번에 여러번 공격을 당하게 됨.
  * 
  * 
- * 추가적으로 구현해야 할 것
- * 감지범위가 5이며, 이 안에 플레이어가 들어올 경우, 공격을 시작.
- * 플레이어가 이 감지범위에서 깔짝깔짝 할 수 있기 때문에, 추적하는 범위는 8정도로 설정해둘 필요.
- * 감지범위에 들어온 플레이어가 추적범위보다 많이 나갈 경우 추적을 종료하는 스크립트 구현 필요.
- * 해결!
 */
 public class EnemyBaseTest : MonoBehaviour
 {
@@ -23,11 +16,12 @@ public class EnemyBaseTest : MonoBehaviour
 
     //컴포넌트 이름은 컴포넌트 명의 축소형
     [Header("Component")]
-    Animator anim;
-    GameObject player;
-    NavMeshAgent agent;
-    SphereCollider detectRangeCollider;
+    protected Animator anim;
+    protected GameObject player;
+    protected NavMeshAgent agent;
+    protected SphereCollider detectRangeCollider;
     Spawner spawner;
+    EnemyDetectAtack detector;
 
     [Header("Enemy Information")]
     public int heart;
@@ -59,8 +53,8 @@ public class EnemyBaseTest : MonoBehaviour
     
     public float intervalAtack = 3f;            //공격 쿨타임.
     public float intervalAtackCurrent = 3f;     //점점 줄어들어 0보다 작아지면 공격을 실행. 이후 intervalAtack 값으로 복귀
-    public float intervalAtackWait = 1f;        //공격 시 움직이지 않을 타이머
-    public float intervalAtackWaitCurrent = 1f; //점점 줄어들어 0보다 작아지면 플레이어 추적여부를 결정.
+    public float intervalAtackWait = 0.7f;        //공격 시 움직이지 않을 타이머
+    public float intervalAtackWaitCurrent = 0.7f; //점점 줄어들어 0보다 작아지면 플레이어 추적여부를 결정.
 
     IEnumerator waitAtack;
 
@@ -77,6 +71,9 @@ public class EnemyBaseTest : MonoBehaviour
         get => heart;
         set
         {
+            // 피격 애니메이션 실행할 것
+            Debug.Log("Ouch");
+            anim.SetTrigger("Ouch");
             heart = value;
             if(heart==0)
             {
@@ -103,7 +100,7 @@ public class EnemyBaseTest : MonoBehaviour
         {
             if (value == EnemyState.IDLE)
             {
-                //Debug.Log("IDLE Property");
+                Debug.Log("IDLE Property");
                 anim.SetTrigger("Idle");
                 agent.isStopped = true;
                 //agent.Stop();
@@ -112,9 +109,8 @@ public class EnemyBaseTest : MonoBehaviour
             }
             else if (value == EnemyState.SCOUT)
             {
-                //Debug.Log("SCOUT Property");
+                Debug.Log($"SCOUT Property, Destiny : {scoutPoint[scoutIndex]}");
                 anim.SetBool("Chase", false);
-                anim.ResetTrigger("Idle");
                 anim.SetTrigger("Scout");
 
                 targetDirection = scoutPoint[scoutIndex];
@@ -130,7 +126,7 @@ public class EnemyBaseTest : MonoBehaviour
             else if (value == EnemyState.CHASE)
             {
                 agent.destination = player.transform.position;
-                //Debug.Log("CHASE Property");
+                Debug.Log("CHASE Property");
                 anim.SetBool("Chase",true);
                 agent.speed = chaseSpeed;
                 scoutIndex = 0;
@@ -140,7 +136,7 @@ public class EnemyBaseTest : MonoBehaviour
             else if (value == EnemyState.ATACK)
             {
                 
-                //Debug.Log("ATACK Property");
+                Debug.Log("ATACK Property");
                 anim.SetBool("Chase", false);       //해제함과 동시에 1회 공격할예정.
                 //agent.speed = 0f;
                 agent.isStopped = true;
@@ -159,7 +155,7 @@ public class EnemyBaseTest : MonoBehaviour
 
     private void Awake()
     {
-
+        detector = transform.GetComponentInChildren<EnemyDetectAtack>();
         spawner = transform.parent.GetComponent<Spawner>();
         anim = GetComponent<Animator>();
         agent = GetComponent<NavMeshAgent>();
@@ -167,9 +163,13 @@ public class EnemyBaseTest : MonoBehaviour
 
 
         Transform trans = transform.parent;
-        scoutPoint = new Vector3[trans.childCount-1];
+        scoutPoint = new Vector3[trans.childCount-2];
         for (int i = 0; i < scoutPoint.Length; i++)
-            scoutPoint[i] = trans.GetChild(i).position;
+        {
+            scoutPoint[i] = trans.GetChild(i + 1).position;
+            Debug.Log($"경로설정 <{i}> 완료. {scoutPoint[i]}");
+        }
+            
 
         //TEST//
         inputController = new InputSystemController();
@@ -192,10 +192,21 @@ public class EnemyBaseTest : MonoBehaviour
     {
         
         TestSettingOn();
-        Heart = maxHeart;
+        heart = maxHeart;
         scoutIndex = 0;
+
+
+        anim.ResetTrigger("Idle");
+        anim.ResetTrigger("Scout");
+        anim.ResetTrigger("Atack");
+        anim.ResetTrigger("AtackWait");
+        anim.ResetTrigger("Ouch");
+        Debug.Log("초기화 완료");
+
         State = EnemyState.IDLE;
         detectRangeCollider.radius = detectRange;
+        detector.enemyDamaged += OnDamaged;
+
     }
 
     private void OnDisable()
@@ -211,7 +222,7 @@ public class EnemyBaseTest : MonoBehaviour
     {
         if (isWaitScout == false)
         {
-            //Debug.Log("정찰 시작");
+            Debug.Log("정찰 시작");
             State = EnemyState.SCOUT;
         }
     }
@@ -219,7 +230,7 @@ public class EnemyBaseTest : MonoBehaviour
     {
         if(agent.remainingDistance < 0.2f)
         {
-            //Debug.Log("목표 도착");
+            Debug.Log("목표 도착");
             State = EnemyState.IDLE;
         }
     }
@@ -233,47 +244,7 @@ public class EnemyBaseTest : MonoBehaviour
     }
     protected virtual void EnemyModeAtack()
     {
-        //Debug.Log($"Time:{Time.time} / Interval:{intervalAtack} / Time-Inter:{Time.time - intervalAtackCurrent}");
-        if(Time.time - intervalAtackCurrent > intervalAtack )
-        {
-            //Debug.Log("Atack");
-            anim.SetTrigger("Atack");
-            intervalAtackCurrent = Time.time;
-            intervalAtackWaitCurrent = Time.time;
-        }
-        else
-        {
-            if(Time.time - intervalAtackWaitCurrent > intervalAtackWait)
-            {
-                Debug.Log("zz");
-            }
-            else
-            {
-                transform.LookAt(player.transform.position);
-            }
-            
-        }
-
-
-
-        //else if(Time.time - intervalAtackWaitCurrent > intervalAtackWait)
-        //{
-
-        //}
-        //StartCoroutine(waitAtack);
-        /*
-        if (Time < 0)
-        {
-            anim.SetTrigger("Atack");
-            Time 초기화
-        }
-        else
-        {
-            Time--;
-            look
-        }*/
-
-        //이중 시간 카운트(쿨타임)을 이용해서 구현할 것
+        
     }
 
     protected virtual void Die()
@@ -287,8 +258,10 @@ public class EnemyBaseTest : MonoBehaviour
 
     IEnumerator WaitScout()
     {
+        Debug.Log("대기 시작");
         isWaitScout = true;
         yield return new WaitForSeconds(intervalScout);
+        Debug.Log("대기 끝");
         isWaitScout = false;
     }
 
@@ -302,16 +275,11 @@ public class EnemyBaseTest : MonoBehaviour
         if(other.CompareTag("Player") && playerDetect==false)
         {
             playerDetect = true;
-            //Debug.LogWarning("감지범위 들어옴");
+            Debug.LogWarning("감지범위 들어옴");
             //Debug.Log($"★ '{transform.gameObject.name}' 가 '{other}' 를 발견");
             detectRangeCollider.radius = atackRange;
             player = other.gameObject;
             State = EnemyState.CHASE;
-        }
-        if (other.CompareTag("Weapon"))
-        {
-            Debug.LogWarning("아야!");
-            Heart--;
         }
 
     }
@@ -330,6 +298,13 @@ public class EnemyBaseTest : MonoBehaviour
         }
     }
 
+    void OnDamaged()
+    {
+        Debug.LogError("Damaged!");
+        //피격했기에, 공격대기시간 초기화
+        intervalAtackCurrent = Time.time;
+        Heart--;
+    }
     //--------ON----------------ON----------------ON----------------ON----------------ON----------------ON----------------ON----------------ON----------------ON--------
 
     //--------TEST----------------TEST----------------TEST----------------TEST----------------TSET----------------TSET----------------TSET----------------TSET----------------TSET--------
