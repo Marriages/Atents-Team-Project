@@ -28,9 +28,13 @@ public class Player : MonoBehaviour
     // 플레이어 리지드바디
     private Rigidbody rigid;
 
+    Animator anim;
+
     private void Awake()
     {
+        rigid = GetComponent<Rigidbody>();
         inputActions = new PlayerInputActions();
+        anim = GetComponent<Animator>();
 
     }
 
@@ -58,7 +62,7 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
-        rigid = GetComponent<Rigidbody>();
+        
         IsJumping = false;
         state = false;
     }
@@ -78,7 +82,9 @@ public class Player : MonoBehaviour
     {
         Vector3 dir = context.ReadValue<Vector3>();
         inputDir = dir;
-        Debug.Log(inputDir);
+        //Debug.Log(inputDir);
+        anim.SetBool("IsMove", !context.canceled);
+
     }
 
     void Move()
@@ -120,7 +126,7 @@ public class Player : MonoBehaviour
     // 플레이어 공격 관련 이벤트 함수
     private void PlayerAttack(InputAction.CallbackContext context)
     {
-        
+        anim.SetTrigger("IsAttack"); //playerAnimator의 isAttack 트리거를 작동한다
     }
 
     // 플레이어 실드 관련 이벤트 함수
