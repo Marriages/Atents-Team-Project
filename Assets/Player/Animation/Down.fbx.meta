@@ -1,5 +1,17 @@
 fileFormatVersion: 2
+<<<<<<< Updated upstream
+<<<<<<<< Updated upstream:Assets/Player/Animation/Down.fbx.meta
 guid: 4f7b552b13b62a947990c458fb09292c
+========
+guid: 2d50b1728a9470b438ecdc024dad40d1
+>>>>>>>> Stashed changes:Assets/Player/Animation/Drinking.fbx.meta
+=======
+<<<<<<<< Updated upstream:Assets/Player/Animation/Block Impact.fbx.meta
+guid: 4ea9a2bde936e8c41a5ac518ae73ca94
+========
+guid: 4f7b552b13b62a947990c458fb09292c
+>>>>>>>> Stashed changes:Assets/Player/Animation/Down.fbx.meta
+>>>>>>> Stashed changes
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable:
