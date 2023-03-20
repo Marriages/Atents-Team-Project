@@ -2086,11 +2086,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3302208258096524890}
+  - component: {fileID: -2363701938332104527}
+  - component: {fileID: 1111680375149091678}
+  - component: {fileID: -8500129303534823811}
   - component: {fileID: -4984240073141080446}
   - component: {fileID: 1258041032322958954}
-  - component: {fileID: 1111680375149091678}
-  - component: {fileID: -2363701938332104527}
-  - component: {fileID: -8500129303534823811}
   m_Layer: 0
   m_Name: EnemySward
   m_TagString: Untagged
@@ -2118,6 +2118,70 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-2363701938332104527
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3305193717099281616}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4d550dde2669da49a96203934425f06, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  heart: 0
+  maxHeart: 3
+  enemySpeed: 5
+  normalSpeed: 5
+  chaseSpeed: 8
+  detectRange: 5
+  atackRange: 8
+  scoutIndex: 0
+  isdetectPlayer: 0
+  isAtacking: 0
+  isWaitScout: 0
+  isAtackWaiting: 0
+  playerDetect: 0
+  idleWaitTimeMax: 3
+--- !u!195 &1111680375149091678
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3305193717099281616}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 10
+  avoidancePriority: 50
+  m_AngularSpeed: 360
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 0
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
+--- !u!54 &-8500129303534823811
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3305193717099281616}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 80
+  m_CollisionDetection: 0
 --- !u!95 &-4984240073141080446
 Animator:
   serializedVersion: 4
@@ -2151,74 +2215,6 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 5
   m_Center: {x: 0, y: 0, z: 0}
---- !u!195 &1111680375149091678
-NavMeshAgent:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3305193717099281616}
-  m_Enabled: 1
-  m_AgentTypeID: 0
-  m_Radius: 0.5
-  m_Speed: 3.5
-  m_Acceleration: 10
-  avoidancePriority: 50
-  m_AngularSpeed: 360
-  m_StoppingDistance: 0
-  m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
-  m_AutoRepath: 1
-  m_Height: 2
-  m_BaseOffset: 0
-  m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
---- !u!114 &-2363701938332104527
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3305193717099281616}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4d550dde2669da49a96203934425f06, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  heart: 4
-  maxHeart: 4
-  enemySpeed: 6
-  normalSpeed: 6
-  chaseSpeed: 9
-  detectRange: 5
-  atackRange: 7
-  scoutIndex: 0
-  isdetectPlayer: 0
-  isAtacking: 0
-  isWaitScout: 0
-  isAtackWaiting: 0
-  playerDetect: 0
-  intervalScout: 3
-  intervalAtack: 3
-  intervalAtackCurrent: 3
-  intervalAtackWait: 0.7
-  intervalAtackWaitCurrent: 0.7
---- !u!54 &-8500129303534823811
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3305193717099281616}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 0
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!1 &3305219542585422908
 GameObject:
   m_ObjectHideFlags: 0

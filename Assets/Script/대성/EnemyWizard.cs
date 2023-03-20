@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyWizard  : EnemyBaseTest
+public class EnemyWizard  : EnemyBase
 {
     override protected void SettingInformation()
     {
@@ -16,14 +16,17 @@ public class EnemyWizard  : EnemyBaseTest
     }
     protected override void EnemyModeAtack()
     {
+    }
+
+
+
+        /*
         //Debug.Log($"Time:{Time.time} / Interval:{intervalAtack} / Time-Inter:{Time.time - intervalAtackCurrent}");
         if (Time.time - intervalAtackCurrent > intervalAtack)
         {
             //Debug.Log("Atack");
             anim.SetTrigger("Atack");
-            /*
-             * 공격 이펙트 추가할 것
-             */
+            
             intervalAtackCurrent = Time.time;
             intervalAtackWaitCurrent = Time.time;
         }
@@ -31,5 +34,5 @@ public class EnemyWizard  : EnemyBaseTest
         {
             transform.LookAt(player.transform.position);
         }
-    }
+    }*/
 }

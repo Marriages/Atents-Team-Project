@@ -1,437 +1,244 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Random = UnityEngine.Random;
+using System;
+using UnityEngine.AI;
+using UnityEngine.InputSystem;
 
 public class EnemyBase : MonoBehaviour
 {
     //--------Value----------------Value----------------Value----------------Value----------------Value----------------Value----------------Value----------------
 
-    [Header("Action")]
-    public Action<bool> EnemyDetectPlayer;
-
+    //컴포넌트 이름은 컴포넌트 명의 축소형
     [Header("Component")]
-    public Rigidbody rigid;
-    Animator anim;
-    GameObject player;
+    protected Animator anim;
+    protected GameObject player;
+    protected NavMeshAgent agent;
+    protected SphereCollider detectRangeCollider;
+    Spawner spawner;
+    EnemyDetectAtack detector;
+    Transform spownPoint;
 
     [Header("Enemy Information")]
-    private float enemySpeed = 5f;
-    public float normalSpeed = 5f;             // 적 이동속도
+    public int heart;
+    public int maxHeart = 3;
+    public float enemySpeed = 5f;
+    public float normalSpeed = 5f;
     public float chaseSpeed = 8f;
-    public float coinDropRate;          // 적 사망시 코인 드랍 확률
-    public float heartDropRate;         // 적 사망시 코인 드랍 확률
-    public int heart = 2;                           // 적 생명력
-    public float detectRange = 5;           // 플레이어 감지 거리
+    public float detectRange = 5f;
+    public float atackRange = 8f;
 
-    [Header("Enemy Scout Root")]
-    public Vector3[] scoutPoint;
-    public Vector3 returnPosition = Vector3.zero;     //감지를 끝내고 돌아갈 처음 위치
-    public Vector3 targetDirection = Vector3.zero;
-    public int scoutPointRoot = 0;          //정찰할 포인트를 결정지을 변수.
-    public bool detectPlayer = false;   //플레이어 감지 여부
+    [Header("Scout Information")]
+    Vector3[] scoutPoint;
+    public int scoutIndex = 0;
+    Vector3 targetDirection = Vector3.zero;
 
-    [Header("Enemy Condiction Checking")]
-    bool callScoutFlag = true;
-    public bool moveStart = false;
-    public float scoutWaitTime = 3f;
-    GameObject targetObject = null;
+    //Flag변수는 항상 is로 시작
+    [Header("Flag")]
+    public bool isdetectPlayer = false;
+    public bool isAtacking = false;
+    public bool isWaitScout = false;
+    public bool isAtackWaiting = false;
+    public bool playerDetect = false;
 
-    public float atackDelayTime = 1f;
-    private bool atackFlag = true;
+    // 시간 간격 변수명은 interval로 시작
+    [Header("Timer")]
+    public float idleWaitTimeMax=3f;            //정찰가기 전 대기시간 3초
+    float idleWaitTime;                                 //정찰대기시간을 저장
+    
 
-    // Idea2 상태 들어올떄의 델리게이트, 상대 나올때의 델리게이트.
-    //Exit 델리게이트, Enter델리게이트
-    // idea1ENUM을 프로퍼티로 설정해서 애니메이션, 상태 컨트롤 할수 있도록 SET처리할 것.
+
+    IEnumerator waitAtack;
+
+    [Header("Test")]
+    InputSystemController inputController;
+
     public enum EnemyState
     {
-        Idle,
-        Scout,
-        Chase,
-        Atack,
-        Comeback
+        IDLE,
+        SCOUT,
+        CHASE,
+        ATACKWAIT,
+        ATACK
     }
-    EnemyState enemyState;
-    //--------Value----------------Value----------------Value----------------Value----------------Value----------------Value----------------Value----------------
+    EnemyState _state;
+    public EnemyState State
+    {
+        get
+        {
+            return _state;
+        }
+        set
+        {
+            if (value == EnemyState.IDLE)
+            {
+                Debug.LogWarning("Idle상태 검사.");
+                if (State!=EnemyState.IDLE)      //테스트가 모두 끝나고 if를 하나로 합칠 것: if(value==EnemyState.Idle && State!=EnemyState.IDLE)
+                {
+                    Debug.LogWarning("Idle상태 진입.");
 
-    //--------LifeCycle----------------LifeCycle----------------LifeCycle----------------LifeCycle----------------LifeCycle----------------LifeCycle----------------
+                    anim.SetBool("Scout", false);
+                    anim.SetBool("Idle", true);
+                    agent.isStopped = true;     //멈춰!
+                    idleWaitTime = Time.time;
+                
+                    _state = value;
+
+                }
+            }
+            else if (value == EnemyState.SCOUT)
+            {
+                Debug.LogWarning("Scout상태 진입.");
+                if (State!=EnemyState.SCOUT)     //중복 실행 방지를 위하여 조건을 걸어둠.
+                {
+                    Debug.LogWarning("Scout상태 진입.");
+                    anim.SetBool("Idle", false);
+                    anim.SetBool("Scout", true);
+                    agent.SetDestination( scoutPoint[scoutIndex]);
+
+                    scoutIndex++;
+                    if (scoutIndex == scoutPoint.Length)
+                    {
+                        scoutIndex %= scoutPoint.Length;
+                        Debug.Log("scoutIndex가 초기화되었습니다.");
+                    }
+
+                    agent.isStopped = false;        //가라!
+
+                    _state = value;
+                }
+            }
+            else if (value == EnemyState.CHASE)
+            {
+                _state = value;
+            }
+            else if (value == EnemyState.ATACK)
+            {
+                _state = value;
+            }
+            else if (value == EnemyState.ATACKWAIT)
+            {
+                _state = value;
+            }
+        }
+    }
+    public int Heart
+    {
+        get => heart;
+        set
+        {
+            heart = value;
+            if (heart == 0)
+            {
+                Die();
+            }
+        }
+    }
+    protected virtual void Die()
+    {
+
+    }
 
     private void OnEnable()
     {
-
+        RespownSetting();
     }
+    protected virtual void RespownSetting()
+    {
+        heart = maxHeart;
+        scoutIndex = 0;
+        transform.position = spownPoint.position; ;
+        State = EnemyState.IDLE;
+    }
+
+
+
+
     private void Awake()
     {
-        rigid = GetComponent<Rigidbody>();
-
-        anim = GetComponent<Animator>();
-
-        Transform trans = transform.GetChild(3);
-        scoutPoint = new Vector3[trans.childCount];
-        for (int i = 0; i < trans.childCount; i++)
-            scoutPoint[i] = trans.GetChild(i).position;
-
+        SettingInformation();
+        FindComponent();
+        SetupPath();
     }
-    private void Start()
+    protected virtual void SettingInformation(){}
+    void FindComponent()
     {
-        scoutPointRoot = 0;
-        returnPosition = transform.position;
-        targetDirection = scoutPoint[scoutPointRoot];       // 초기 정찰위치 지정
-        enemyState = EnemyState.Idle;
+        detector = transform.GetComponentInChildren<EnemyDetectAtack>();
+        spawner = transform.parent.GetComponent<Spawner>();
+        anim = GetComponent<Animator>();
+        agent = GetComponent<NavMeshAgent>();
+        detectRangeCollider = GetComponent<SphereCollider>();
     }
-
+    void SetupPath()
+    {
+        Transform trans = transform.parent;
+        spownPoint = trans.GetChild(0).transform;
+        scoutPoint = new Vector3[trans.childCount - 2];
+        for (int i = 0; i < scoutPoint.Length; i++)
+        {
+            scoutPoint[i] = trans.GetChild(i + 1).position;
+            Debug.Log($"경로설정 <{i}> 완료. {scoutPoint[i]}");
+        }
+    }
     private void FixedUpdate()
     {
-        if (enemyState == EnemyState.Idle)
+        if (State == EnemyState.IDLE)
             EnemyModeIdle();
-        else if (enemyState == EnemyState.Scout)
+        else if (State == EnemyState.SCOUT)
             EnemyModeScout();
-        else if (enemyState == EnemyState.Chase)
-            EnemyModeChaseAndAtack();
-        else if (enemyState == EnemyState.Comeback)
-            EnemyModeComeback();
-    }
-
-    //--------LifeCycle----------------LifeCycle----------------LifeCycle----------------LifeCycle----------------LifeCycle----------------LifeCycle----------------
-
-    //--------Coroutine----------------Coroutine----------------Coroutine----------------Coroutine----------------Coroutine----------------Coroutine----------------
-
-    IEnumerator EnemyScoutCoroutine()
-    {
-        Debug.Log("EnemyState : Start EnemyScoutCoroutine");
-        callScoutFlag = false;
-        Debug.Log("EnemyState : ScoutCoroutine.....");
-        yield return new WaitForSeconds(scoutWaitTime);
-        targetDirection = scoutPoint[scoutPointRoot];
-        scoutPointRoot++;
-        if (scoutPointRoot == scoutPoint.Length)
-            scoutPointRoot %= scoutPoint.Length;
-        callScoutFlag = true;
-    }
-    IEnumerator EnemyAtackCoroutine()
-    {
-        Debug.LogWarning("Start ATack Coroutine");
-        atackFlag = false;
-        enemySpeed = 0f;
-        anim.SetTrigger("Atack");
-        yield return new WaitForSeconds(atackDelayTime);
-        atackFlag = true;
-        enemySpeed = chaseSpeed;
-        Debug.LogWarning("End Atack Coroutine");
-    }
-
-
-
-    //--------Coroutine----------------Coroutine----------------Coroutine----------------Coroutine----------------Coroutine----------------Coroutine----------------
-
-    //--------AI----------------AI----------------AI----------------AI----------------AI----------------AI----------------AI----------------AI----------------AI--------
-
-    //초기화시키는 구문. 
-    virtual protected void EnemyModeIdle()
-    {
-        Debug.LogWarning("EnemyMode : IDLE");
-        scoutPointRoot = 0;
-        enemySpeed = normalSpeed;
-        callScoutFlag = true;
-        targetDirection = returnPosition;
-        enemyState = EnemyState.Scout;
-    }
-    virtual protected void EnemyModeScout()
-    {
-        if ((targetDirection - transform.position).sqrMagnitude > 0.1f)
-        {
-            transform.LookAt(targetDirection);
-            //Debug.Log("EnemyState : Scout Move");
-            rigid.MovePosition(Vector3.MoveTowards(transform.position, targetDirection, enemySpeed * Time.fixedDeltaTime)); ;
-        }
-        else if ((targetDirection - transform.position).sqrMagnitude < 0.1f)
-        {
-            //Debug.Log("EnemyState : Scout Move End");
-            if (callScoutFlag == true)
-            {
-                StartCoroutine(EnemyScoutCoroutine());
-            }
-        }
-
-
-    }
-    virtual protected void EnemyModeChaseAndAtack()
-    {
-        targetDirection = targetObject.transform.position;
-        if ((targetDirection - transform.position).sqrMagnitude > 2f)
-        {
-            //Debug.Log("EnemyState : Chase Move");
-            transform.LookAt(targetDirection);
-            rigid.MovePosition(Vector3.MoveTowards(transform.position, targetDirection, enemySpeed * Time.fixedDeltaTime));
-        }
-        else if ((targetDirection - transform.position).sqrMagnitude < 2f)
-        {
-            Debug.Log("Process Atack Logic");
-            if (atackFlag == true)
-            {
-                StartCoroutine(EnemyAtackCoroutine());
-            }
-
-        }
-    }
-    virtual protected void EnemyModeComeback()
-    {
-        Debug.LogWarning("EnemyMode : Comeback");
-        if ((targetDirection - transform.position).sqrMagnitude > 0.1f)
-        {
-            transform.LookAt(targetDirection);
-            rigid.MovePosition(Vector3.MoveTowards(transform.position, targetDirection, enemySpeed * Time.fixedDeltaTime)); ;
-        }
-        else if ((targetDirection - transform.position).sqrMagnitude < 0.1f)
-        {
-            enemyState = EnemyState.Idle;
-        }
-
-    }
-
-    //--------AI----------------AI----------------AI----------------AI----------------AI----------------AI----------------AI----------------AI----------------AI--------
-
-    //--------ON----------------ON----------------ON----------------ON----------------ON----------------ON----------------ON----------------ON----------------ON--------
-
-    private void OnTriggerEnter(Collider obj)
-    {
-        if (obj.gameObject.CompareTag("Player"))
-        {
-            Debug.Log($"{gameObject.name}이 player를 발견했다.");
-            enemySpeed = chaseSpeed;
-            StopCoroutine(EnemyScoutCoroutine());
-            targetObject = obj.gameObject;
-            enemyState = EnemyState.Chase;
-
-        }
-    }
-    private void OnTriggerExit(Collider obj)
-    {
-        if (obj.gameObject.CompareTag("Player"))
-        {
-            Debug.Log($"{gameObject.name}에게서 플레이어가 떠났다.");
-            StopAllCoroutines();
-            targetObject = null;
-            atackFlag = true;
-            targetDirection = returnPosition;
-            enemyState = EnemyState.Comeback;
-        }
-    }
-
-    //--------ON----------------ON----------------ON----------------ON----------------ON----------------ON----------------ON----------------ON----------------ON--------
-
-    //------------------------GIZMO------------------------------------------------GIZMO------------------------------------------------GIZMO------------------------
-
-    private void OnDrawGizmos()
-    {
-        //적의 감지범위를 파랑 구로 표현.
-        Gizmos.color = Color.blue;
-        Gizmos.DrawWireSphere(transform.position, detectRange);     //감지범위
-
-        //적의 현재 위치-목적지 까지를 빨간 선으로 표현
-        Gizmos.color = Color.red;
-        Gizmos.DrawLine(transform.position, targetDirection);
-    }
-    //------------------------GIZMO------------------------------------------------GIZMO------------------------------------------------GIZMO------------------------
-}
-
-/* 과거의 유산
- 
-    //--------Value----------------Value----------------Value----------------Value----------------Value----------------Value----------------Value----------------
-
-    [Header("Action")]
-    public Action<bool> EnemyDetectPlayer;
-
-    [Header("Component")]
-    public Rigidbody rigid;
-
-    [Header("Enemy Information")]
-    public float moveSpeed=5;             // 적 이동속도
-    public float coinDropRate;          // 적 사망시 코인 드랍 확률
-    public float heartDropRate;         // 적 사망시 코인 드랍 확률
-    public int heart;                           // 적 생명력
-    public float detectRange=5;           // 플레이어 감지 거리
-
-    [Header("Enemy Scout Root")]
-    public Vector3[] scoutPoint;
-    public Vector3 returnPosition=Vector3.zero;     //감지를 끝내고 돌아갈 처음 위치
-    public Vector3 targetDirection= Vector3.zero;
-    public int scoutPointRoot=0;          //정찰할 포인트를 결정지을 변수.
-    public bool detectPlayer = false;   //플레이어 감지 여부
-
-    [Header("Enemy Condiction Checking")]
-    bool callScoutFlag = true;
-    public bool moveStart= false;
-    public float scoutWaitTime = 3f;
-
-    Animator anim;
-    GameObject player;
-
-    //--------Value----------------Value----------------Value----------------Value----------------Value----------------Value----------------Value----------------
-
-    //--------LifeCycle----------------LifeCycle----------------LifeCycle----------------LifeCycle----------------LifeCycle----------------LifeCycle----------------
-
-    private void OnEnable()
-    {
-        rigid = GetComponent<Rigidbody>();
-        returnPosition = transform.position;
-    }
-    private void Awake()
-    {
-        anim = GetComponent<Animator>();
-        Transform trans = transform.GetChild(3);
-        scoutPoint = new Vector3[trans.childCount];
-        for (int i = 0; i < trans.childCount; i++)
-        {
-            scoutPoint[i] = trans.GetChild(i).position;
-        }
-    }
-    private void Start()
-    {
-        targetDirection = scoutPoint[scoutPointRoot];       // 초기 정찰위치 지정
-        EnemyModeScout();
-    }
-
-    private void FixedUpdate()
-    {
-        transform.LookAt(targetDirection);
-        if(detectPlayer==true)
-            targetDirection = player.transform.position;
-        
-
-        //(목표와 떨어져있고, moveStart가 treu) 또는 플레이어 감지상태라면, 해당 방향으로 계속 이동.
-        if ( ((targetDirection - transform.position).sqrMagnitude > 0.25f && moveStart == true ) )
-        {
-            Debug.Log("플레이어 감지 또는 이동");
-            rigid.MovePosition(Vector3.MoveTowards(transform.position, targetDirection, moveSpeed * Time.deltaTime));
-        }
-        //목표와 가깝지만 플레이어 감지상태가 아닐 경우, 다시 정찰모드.
-        else if ((targetDirection - transform.position).sqrMagnitude < 0.25f && detectPlayer==false)       //목표와 떨어져있지만, moveStart가 false라면 정지
-        {
-            Debug.Log("플레이어 감지X, 대기");
-            moveStart = false;
-            //Debug.Log($"{scoutPointRoot}번째 목표 도착");
-            //rigid.MovePosition(transform.position);
-            // EnemyModeScout을 호출하기. 한 번 만
-            if (callScoutFlag == true)
-            {
-                //anim.SetTrigger("Atack");
-                callScoutFlag = false;
-                EnemyModeScout();
-            }
-        }
-        //목표와 가깝고 플레이어 감지상태인 경우, 공격 실행.
-        else if ((targetDirection - transform.position).sqrMagnitude < 0.2f && detectPlayer == true)       //목표와 가깝고, 플레이어를 감지한 상태라면
-        {
-            Debug.Log("플레이어 감지, 공격!");
+        else if (State == EnemyState.CHASE)
+            EnemyModeChase();
+        else if (State == EnemyState.ATACK)
             EnemyModeAtack();
-        }
-
+        else if (State == EnemyState.ATACKWAIT)
+            EnemyModeAtackWait();
+       
     }
 
-    //--------LifeCycle----------------LifeCycle----------------LifeCycle----------------LifeCycle----------------LifeCycle----------------LifeCycle----------------
-
-    //--------Coroutine----------------Coroutine----------------Coroutine----------------Coroutine----------------Coroutine----------------Coroutine----------------
-
-    
-    // 정찰에 사용될 알고리즘 코루틴
-    IEnumerator WaitAndTargetSetting()
+    protected virtual void EnemyModeIdle()
     {
-        yield return new WaitForSeconds(scoutWaitTime);
-
-        
-        targetDirection = scoutPoint[scoutPointRoot];
-        Debug.Log($"{gameObject.name}이 {scoutPoint[scoutPointRoot]}로 정찰 시작.");
-
-        scoutPointRoot++;
-        scoutPointRoot = scoutPointRoot % scoutPoint.Length;
-        moveStart = true;
-        callScoutFlag = true;
-        
-    }
-    IEnumerator WaitAndTargetAtack()
-    {
-        yield return new WaitForSeconds(0.5f);
-        anim.SetTrigger("Atack");
-    }
-
-    //--------Coroutine----------------Coroutine----------------Coroutine----------------Coroutine----------------Coroutine----------------Coroutine----------------
-
-    //--------AI----------------AI----------------AI----------------AI----------------AI----------------AI----------------AI----------------AI----------------AI--------
-
-    void EnemyModeScout()       // 순찰모드
-    {
-        StartCoroutine(WaitAndTargetSetting());
-    }
-    void EnemyModeMove(GameObject playerObject)      //플레이어를 발견해서 플레이어 방향으로 이동함.
-    {
-        StopAllCoroutines();
-        player = playerObject;
-        moveStart = true;
-        targetDirection = player.transform.position;
-        
-    }
-    void EnemyModeAtack()                           //일정거리 도달 후 플레이어를 공격.
-    {
-        StartCoroutine(WaitAndTargetAtack());
-
-
-    }
-    void EnemyModeReturn()                          //플레이어가 감지 범위 밖으로 벗어나서 순찰모드로 복귀
-    {
-        moveStart = false;
-        EnemyModeScout();
-    }
-    void EnemyDie()
-    {
-
-    }
-    void EnemyDamaged(int damageNum)
-    {
-
-    }
-    //--------AI----------------AI----------------AI----------------AI----------------AI----------------AI----------------AI----------------AI----------------AI--------
-
-    //--------ON----------------ON----------------ON----------------ON----------------ON----------------ON----------------ON----------------ON----------------ON--------
-
-    private void OnTriggerEnter(Collider obj)
-    {
-        if (obj.gameObject.CompareTag("Player") && !detectPlayer )
+        if(Time.time - idleWaitTime > idleWaitTimeMax )
         {
-            Debug.Log($"{gameObject.name}이 player를 발견했다.");
-
-            detectPlayer = true;
-            EnemyModeMove(obj.gameObject);
-            //EnemyDetectPlayer?.Invoke(detectPlayer);
+            Debug.Log("idle 대기 종료");
+            State = EnemyState.SCOUT;
         }
+
     }
-    private void OnTriggerExit(Collider obj)
+    protected virtual void EnemyModeScout()
     {
-        if (obj.gameObject.CompareTag("Player") && detectPlayer)
+        if( agent.velocity.sqrMagnitude < 0.1f)
         {
-            Debug.Log($"{gameObject.name}에게서 플레이어가 떠났다.");
-
-            detectPlayer = false;
-            EnemyModeReturn();
-            //EnemyDetectPlayer?.Invoke(detectPlayer);
+            State = EnemyState.IDLE;
         }
+
     }
-
-    //--------ON----------------ON----------------ON----------------ON----------------ON----------------ON----------------ON----------------ON----------------ON--------
-
-    //------------------------GIZMO------------------------------------------------GIZMO------------------------------------------------GIZMO------------------------
-
-    private void OnDrawGizmos()
+    protected virtual void EnemyModeChase()
     {
-        //적의 감지범위를 파랑 구로 표현.
-        Gizmos.color = Color.blue;
-        Gizmos.DrawWireSphere(transform.position, detectRange);     //감지범위
 
-        //적의 현재 위치-목적지 까지를 빨간 선으로 표현
-        Gizmos.color = Color.red;
-        Gizmos.DrawLine(transform.position, targetDirection);
     }
-    //------------------------GIZMO------------------------------------------------GIZMO------------------------------------------------GIZMO------------------------
+    protected virtual void EnemyModeAtackWait()
+    {
 
- */
+    }
+    protected virtual void EnemyModeAtack()
+    {
+
+    }
+
+
+
+
+
+
+
+    //비선공 몬스터가 존재할수 있으므로, Virtual로 선언함.
+    protected virtual void OnTriggerEnter(Collider other)
+    {
+        if(other.CompareTag("Player"))
+        {
+            State = EnemyState.CHASE;
+        }
+
+        
+    }
+}

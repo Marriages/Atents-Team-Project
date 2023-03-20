@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemySward : EnemyBaseTest
+public class EnemySward : EnemyBase
 {
     override protected void SettingInformation()
     {
@@ -13,5 +13,11 @@ public class EnemySward : EnemyBaseTest
         chaseSpeed = 7f;
         detectRange = 5f;
         atackRange = 8f;
+    }
+
+    protected override void EnemyModeAtack()
+    {
+
+
     }
 }

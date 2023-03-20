@@ -98,6 +98,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   responRange: 20
   positionReset: 0
+  positionRock: 1
 --- !u!1 &8671106730097146245
 GameObject:
   m_ObjectHideFlags: 0
@@ -148,7 +149,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba8c8d29e9dab3a47925a9bd7a526202, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyPrefab: {fileID: 2049650432863922583, guid: 3127753f7a698de409d0df5da0f1e2bf, type: 3}
+  enemyPrefab: {fileID: 3305193717099281616, guid: 52bd40c703dc6e54aa4c3acf99d3a312, type: 3}
 --- !u!1 &8671106730349693512
 GameObject:
   m_ObjectHideFlags: 0
@@ -330,6 +331,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   responRange: 20
   positionReset: 1
+  positionRock: 1
 --- !u!1 &8671106730647410752
 GameObject:
   m_ObjectHideFlags: 0
@@ -428,6 +430,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   responRange: 20
   positionReset: 0
+  positionRock: 1
 --- !u!1 &8671106730794863716
 GameObject:
   m_ObjectHideFlags: 0
@@ -526,6 +529,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   responRange: 20
   positionReset: 0
+  positionRock: 1
 --- !u!1 &8671106731144058825
 GameObject:
   m_ObjectHideFlags: 0
@@ -624,3 +628,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   responRange: 20
   positionReset: 0
+  positionRock: 1
