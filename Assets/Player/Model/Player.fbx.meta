@@ -1,22 +1,11 @@
 fileFormatVersion: 2
-<<<<<<< Updated upstream
-<<<<<<<< Updated upstream:Assets/Player/Model/Player.fbx.meta
 guid: 1ccfccc7674c46e4d9360280149d59ab
-========
-guid: 5157beac2b7f27b49b0a000c9237046e
->>>>>>>> Stashed changes:Assets/Player/Animation/Block Idle.fbx.meta
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable:
   - first:
       74: 1827226128182048838
     second: Take 001
-=======
-guid: 1ccfccc7674c46e4d9360280149d59ab
-ModelImporter:
-  serializedVersion: 21300
-  internalIDToNameTable: []
->>>>>>> Stashed changes
   externalObjects: {}
   materials:
     materialImportMode: 2
