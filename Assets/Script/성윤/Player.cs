@@ -1,26 +1,32 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Animations;
 using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
-    // 현재 입력된 입력 방향
-    public Vector3 inputDir;
+    Vector3 inputDir = Vector3.zero;
 
     // 플레이어 이동 속도
-    public float speed = 5.0f;
+    public float moveSpeed = 5.0f;
 
     // 플레이어 회전 속도
     public float rotateSpeed = 20.0f;
-    
+
+    //// 현재 이동 방향. -1(뒤) ~ 1(앞) 사이
+    //float moveDir = 0;
+
+    //// 현재 회전 방향. -1(좌) ~ 1(우) 사이
+    //float rotateDir = 0;
+
     // 플레이어 점프 속도
-    public float jumpPower;
-    private bool IsJumping;
+    public float jumpPower = 6.0f;
+    bool IsJumping = false;
 
     // 플레이어 방패
     public GameObject target;
-    private bool state;
+    //private bool state;
 
     // 입력처리용 인풋액션
     PlayerInputActions inputActions;
@@ -28,98 +34,99 @@ public class Player : MonoBehaviour
     // 플레이어 리지드바디
     private Rigidbody rigid;
 
+    // 애니메이터 컨트롤러
     Animator anim;
 
     private void Awake()
     {
         rigid = GetComponent<Rigidbody>();
-        inputActions = new PlayerInputActions();
         anim = GetComponent<Animator>();
 
+        inputActions = new PlayerInputActions();
     }
 
     private void OnEnable()
     {
         inputActions.Player.Enable();
+        inputActions.Player.Move.performed += PlayerMove;
+        inputActions.Player.Move.canceled += PlayerMove;
         inputActions.Player.Attack.performed += PlayerAttack;
         inputActions.Player.Shield.performed += PlayerShield;
         inputActions.Player.Potion.performed += PlayerPotion;
         inputActions.Player.Jump.performed += PlayerJump;
-        inputActions.Player.Move.performed += PlayerMove;
-        inputActions.Player.Move.canceled += PlayerMove;
+
     }
 
     private void OnDisable()
     {
-        inputActions.Player.Move.canceled -= PlayerMove;
-        inputActions.Player.Move.performed -= PlayerMove;
         inputActions.Player.Jump.performed -= PlayerJump;
         inputActions.Player.Potion.performed -= PlayerPotion;
         inputActions.Player.Shield.performed -= PlayerShield;
         inputActions.Player.Attack.performed -= PlayerAttack;
+        inputActions.Player.Move.canceled -= PlayerMove;
+        inputActions.Player.Move.performed -= PlayerMove;
         inputActions.Player.Disable();
-    }
-
-    private void Start()
-    {
-        
-        IsJumping = false;
-        state = false;
-    }
-
-    private void Update()
-    {
     }
 
     private void FixedUpdate()
     {
         Move();
+        //Rotate();
     }
 
 
     // 플레이어 이동 관련 이벤트 함수
     private void PlayerMove(InputAction.CallbackContext context)
     {
-        Vector3 dir = context.ReadValue<Vector3>();
+        Vector2 dir = context.ReadValue<Vector2>();
         inputDir = dir;
-        Debug.Log(inputDir);
+
+        //Vector2 input = context.ReadValue<Vector2>();
+        //moveDir = input.y;
+        //rotateDir = input.x;
+
         anim.SetBool("IsMove", !context.canceled);
 
     }
 
     void Move()
     {
-        // 플레이어 이동
-        transform.Translate(Time.fixedDeltaTime * speed * inputDir, Space.World);
-        // 플레이어 이동하는 방향에 따라 바라보기
-        transform.forward = Vector3.Lerp(transform.forward, inputDir, Time.fixedDeltaTime * rotateSpeed);
+        Vector3 v = new Vector3(inputDir.x, 0, inputDir.y);
+        transform.Translate(Time.fixedDeltaTime * moveSpeed * v, Space.World);
+        if (inputDir.sqrMagnitude > 0)
+        {
+            transform.forward = Vector3.Lerp(transform.forward, v, Time.fixedDeltaTime * rotateSpeed);
+        }
     }
 
     // 플레이어 점프 관련 이벤트 함수
     private void PlayerJump(InputAction.CallbackContext context)
     {
         Jump();
+        
     }
-    
+
     void Jump()
     {
-        if (IsJumping == false)
+        if (!IsJumping)         // 점프 중이 아닐 때만
         {
-            IsJumping = true;
-            rigid.AddForce(Vector3.up * jumpPower * 0.5f, ForceMode.Impulse);
+            rigid.AddForce(Vector3.up * jumpPower, ForceMode.Impulse);  // 월드의 Up방향으로 힘을 즉시 가하기
+            IsJumping = true;   // 점프중이라고 표시
+            anim.SetTrigger("IsJumping");
         }
-        else
-        {
-            return;
-        }
+    }
+    // 착지했을 때 처리 함수
+    private void OnGround()
+    {
+        IsJumping = false;      // 점프가 끝났다고 표시
     }
 
     // 플레이어 충돌 관련 이벤트 함수
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.CompareTag("Ground"))
+        if (collision.gameObject.CompareTag("Ground"))   // Ground와 충돌했을 때만
         {
-            IsJumping = false;  // 그라운드에 닿았을 때 점프중이 아니다.
+            OnGround();     // 착지 함수 실행
         }
     }
 
@@ -132,23 +139,24 @@ public class Player : MonoBehaviour
     // 플레이어 실드 관련 이벤트 함수
     private void PlayerShield(InputAction.CallbackContext context)
     {
-        Shield();
+        //anim.SetBool("IsSheild", !context.canceled);
+        //Shield();
     }
 
     // 실드 나오게하기/안나오게하기
-    void Shield()
-    {
-        if(state == true)
-        {
-            target.SetActive(false);
-            state = false;
-        }
-        else
-        {
-            target.SetActive(true);
-            state = true;
-        }
-    }
+    //void Shield()
+    //{
+    //    if(state == true)
+    //    {
+    //        target.SetActive(false);
+    //        state = false;
+    //    }
+    //    else
+    //    {
+    //        target.SetActive(true);
+    //        state = true;
+    //    }
+    //}
 
     // 플레이어 포션 관련 이벤트 함수
     private void PlayerPotion(InputAction.CallbackContext context)
