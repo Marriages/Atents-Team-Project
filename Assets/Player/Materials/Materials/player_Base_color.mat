@@ -65,13 +65,21 @@ Material:
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
+<<<<<<< Updated upstream
     - _GlossMapScale: 0.709
+=======
+    - _GlossMapScale: 0.6
+>>>>>>> Stashed changes
     - _Glossiness: 0.5
     - _GlossyReflections: 1
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
+<<<<<<< Updated upstream
     - _Parallax: 0.02
+=======
+    - _Parallax: 0.005
+>>>>>>> Stashed changes
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1

@@ -1,11 +1,28 @@
 fileFormatVersion: 2
+<<<<<<< Updated upstream
+<<<<<<<< Updated upstream:Assets/Player/Animation/Block Idle.fbx.meta
 guid: 5157beac2b7f27b49b0a000c9237046e
+========
+guid: 4ea9a2bde936e8c41a5ac518ae73ca94
+>>>>>>>> Stashed changes:Assets/Player/Animation/Block Impact.fbx.meta
+=======
+<<<<<<<< Updated upstream:Assets/Player/Model/Player.fbx.meta
+guid: 1ccfccc7674c46e4d9360280149d59ab
+========
+guid: 5157beac2b7f27b49b0a000c9237046e
+>>>>>>>> Stashed changes:Assets/Player/Animation/Block Idle.fbx.meta
+>>>>>>> Stashed changes
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable:
   - first:
+<<<<<<< Updated upstream
       74: -203655887218126122
     second: mixamo.com
+=======
+      74: 1827226128182048838
+    second: Take 001
+>>>>>>> Stashed changes
   externalObjects: {}
   materials:
     materialImportMode: 2
