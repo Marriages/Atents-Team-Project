@@ -4,16 +4,16 @@ using UnityEngine;
 
 public class EnemyBomb : EnemyBaseTest
 {
-    /*
-    [Header("Enemy Information")]
-    public new int maxHeart = 4;
-    public new float enemySpeed = 6f;
-    public new float normalSpeed = 6f;
-    public new float chaseSpeed = 9f;
-    public new float detectRange = 5f;
-    public new float atackRange = 7f;
-    */
-
+    override protected void SettingInformation()
+    {
+        heart = 1;
+        maxHeart = 1;
+        enemySpeed = 4f;
+        normalSpeed = 4f;
+        chaseSpeed = 7f;
+        detectRange = 7f;
+        atackRange = 8f;
+    }
     protected override void EnemyModeAtack()
     {
         //Debug.Log($"Time:{Time.time} / Interval:{intervalAtack} / Time-Inter:{Time.time - intervalAtackCurrent}");

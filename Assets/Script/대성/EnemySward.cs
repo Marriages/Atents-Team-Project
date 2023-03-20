@@ -4,13 +4,14 @@ using UnityEngine;
 
 public class EnemySward : EnemyBaseTest
 {
-    /*
-    [Header("Enemy Information")]
-    new int maxHeart = 4;
-    new float enemySpeed = 6f;
-    new float normalSpeed = 6f;
-    new float chaseSpeed = 9f;
-    new float detectRange = 5f;
-    new float atackRange = 7f;
-    */
+    override protected void SettingInformation()
+    {
+        heart = 4;
+        maxHeart = 4;
+        enemySpeed = 5f;
+        normalSpeed = 5f;
+        chaseSpeed = 7f;
+        detectRange = 5f;
+        atackRange = 8f;
+    }
 }

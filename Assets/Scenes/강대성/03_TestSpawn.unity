@@ -178,6 +178,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: Spawner (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 8671106730097146251, guid: 369f72a0ed746b14497a94209784a6d0, type: 3}
+      propertyPath: enemyPrefab
+      value: 
+      objectReference: {fileID: 2049650432863922583, guid: 3127753f7a698de409d0df5da0f1e2bf, type: 3}
+    - target: {fileID: 8671106730453197931, guid: 369f72a0ed746b14497a94209784a6d0, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -14.59
+      objectReference: {fileID: 0}
+    - target: {fileID: 8671106730794863723, guid: 369f72a0ed746b14497a94209784a6d0, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -12.24
+      objectReference: {fileID: 0}
+    - target: {fileID: 8671106730794863723, guid: 369f72a0ed746b14497a94209784a6d0, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -3.4
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 369f72a0ed746b14497a94209784a6d0, type: 3}
 --- !u!1001 &358437810
@@ -201,7 +217,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 219352358165909159, guid: 56a9702656c98cb4ba7ca92a2835280b, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -5.09
+      value: 37.9
       objectReference: {fileID: 0}
     - target: {fileID: 219352358165909159, guid: 56a9702656c98cb4ba7ca92a2835280b, type: 3}
       propertyPath: m_LocalRotation.w

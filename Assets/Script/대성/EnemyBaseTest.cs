@@ -101,7 +101,7 @@ public class EnemyBaseTest : MonoBehaviour
             if (value == EnemyState.IDLE)
             {
                 Debug.Log("IDLE Property");
-                anim.SetTrigger("Idle");
+                anim.SetBool("Scout", false);
                 agent.isStopped = true;
                 //agent.Stop();
                 StartCoroutine(WaitScout());
@@ -110,7 +110,7 @@ public class EnemyBaseTest : MonoBehaviour
             else if (value == EnemyState.SCOUT)
             {
                 Debug.Log($"SCOUT Property, Destiny : {scoutPoint[scoutIndex]}");
-                anim.SetBool("Chase", false);
+                anim.SetBool("Scout", true);
                 anim.SetTrigger("Scout");
 
                 targetDirection = scoutPoint[scoutIndex];
@@ -127,6 +127,7 @@ public class EnemyBaseTest : MonoBehaviour
             {
                 agent.destination = player.transform.position;
                 Debug.Log("CHASE Property");
+                anim.SetBool("Scout", false);
                 anim.SetBool("Chase",true);
                 agent.speed = chaseSpeed;
                 scoutIndex = 0;
@@ -153,8 +154,9 @@ public class EnemyBaseTest : MonoBehaviour
 
     //--------LifeCycle----------------LifeCycle----------------LifeCycle----------------LifeCycle----------------LifeCycle----------------LifeCycle----------------
 
-    private void Awake()
+    void Awake()
     {
+        SettingInformation();
         detector = transform.GetComponentInChildren<EnemyDetectAtack>();
         spawner = transform.parent.GetComponent<Spawner>();
         anim = GetComponent<Animator>();
@@ -174,6 +176,17 @@ public class EnemyBaseTest : MonoBehaviour
         //TEST//
         inputController = new InputSystemController();
         //TEST//
+    }
+
+    virtual protected void SettingInformation()
+    {
+        heart=3;
+        maxHeart = 3;
+        enemySpeed = 5f;
+        normalSpeed = 5f;
+        chaseSpeed = 8f;
+        detectRange = 5f;
+        atackRange = 8f;
     }
 
     private void FixedUpdate()
@@ -196,11 +209,6 @@ public class EnemyBaseTest : MonoBehaviour
         scoutIndex = 0;
 
 
-        anim.ResetTrigger("Idle");
-        anim.ResetTrigger("Scout");
-        anim.ResetTrigger("Atack");
-        anim.ResetTrigger("AtackWait");
-        anim.ResetTrigger("Ouch");
         Debug.Log("초기화 완료");
 
         State = EnemyState.IDLE;
@@ -269,6 +277,8 @@ public class EnemyBaseTest : MonoBehaviour
     //--------Coroutine----------------Coroutine----------------Coroutine----------------Coroutine----------------Coroutine----------------Coroutine----------------
 
     //--------ON----------------ON----------------ON----------------ON----------------ON----------------ON----------------ON----------------ON----------------ON--------
+
+
 
     private void OnTriggerEnter(Collider other)
     {
