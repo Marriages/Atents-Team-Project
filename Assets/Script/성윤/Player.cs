@@ -14,19 +14,13 @@ public class Player : MonoBehaviour
     // 플레이어 회전 속도
     public float rotateSpeed = 20.0f;
 
-    //// 현재 이동 방향. -1(뒤) ~ 1(앞) 사이
-    //float moveDir = 0;
-
-    //// 현재 회전 방향. -1(좌) ~ 1(우) 사이
-    //float rotateDir = 0;
-
     // 플레이어 점프 속도
     public float jumpPower = 6.0f;
     bool IsJumping = false;
 
     // 플레이어 방패
     public GameObject target;
-    //private bool state;
+    private bool state;
 
     // 입력처리용 인풋액션
     PlayerInputActions inputActions;
@@ -71,7 +65,6 @@ public class Player : MonoBehaviour
     private void FixedUpdate()
     {
         Move();
-        //Rotate();
     }
 
 
@@ -80,10 +73,6 @@ public class Player : MonoBehaviour
     {
         Vector2 dir = context.ReadValue<Vector2>();
         inputDir = dir;
-
-        //Vector2 input = context.ReadValue<Vector2>();
-        //moveDir = input.y;
-        //rotateDir = input.x;
 
         anim.SetBool("IsMove", !context.canceled);
 
@@ -140,23 +129,23 @@ public class Player : MonoBehaviour
     private void PlayerShield(InputAction.CallbackContext context)
     {
         //anim.SetBool("IsSheild", !context.canceled);
-        //Shield();
+        Shield();
     }
 
-    // 실드 나오게하기/안나오게하기
-    //void Shield()
-    //{
-    //    if(state == true)
-    //    {
-    //        target.SetActive(false);
-    //        state = false;
-    //    }
-    //    else
-    //    {
-    //        target.SetActive(true);
-    //        state = true;
-    //    }
-    //}
+    //실드 나오게하기/안나오게하기
+    void Shield()
+    {
+        if (state == true)
+        {
+            target.SetActive(false);
+            state = false;
+        }
+        else
+        {
+            target.SetActive(true);
+            state = true;
+        }
+    }
 
     // 플레이어 포션 관련 이벤트 함수
     private void PlayerPotion(InputAction.CallbackContext context)
