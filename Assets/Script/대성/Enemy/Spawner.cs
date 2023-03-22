@@ -1,22 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class Spawner : MonoBehaviour
 {
     public GameObject enemyPrefab;
     GameObject enemy;
+    EnemyBase enemyBase;
     Vector3 spawnPoint;
-    private bool isAlive;
-    public bool IsAlive
-    {
-        get => isAlive;
-        set
-        {
-            isAlive = value;
-            RespawnEnemy();
-        }
-    }
     
 
 
@@ -24,12 +16,15 @@ public class Spawner : MonoBehaviour
     {
         spawnPoint = transform.GetChild(0).position;
         enemy = Instantiate(enemyPrefab, transform);
+        enemyBase = enemy.GetComponent<EnemyBase>();
+        enemyBase.IAmDied += RespawnEnemy;
 
     }
 
     private void Start()
     {
         enemy.transform.position = spawnPoint;
+        
     }
 
     private void RespawnEnemy()
@@ -39,10 +34,9 @@ public class Spawner : MonoBehaviour
     }
     IEnumerator WaitAndRespawn()
     {
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(5f);
         enemy.transform.position = spawnPoint;
         enemy.SetActive(true);
-        
     }
 
     private void OnDrawGizmosSelected()

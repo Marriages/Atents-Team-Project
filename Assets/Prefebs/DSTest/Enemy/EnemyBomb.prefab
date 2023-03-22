@@ -212,7 +212,7 @@ GameObject:
   - component: {fileID: -2799873426868400425}
   m_Layer: 0
   m_Name: EnemyBomb
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -259,11 +259,18 @@ MonoBehaviour:
   isWaitScout: 0
   isAtackWaiting: 0
   playerDetect: 0
-  intervalScout: 3
-  intervalAtack: 3
-  intervalAtackCurrent: 3
-  intervalAtackWait: 0.7
-  intervalAtackWaitCurrent: 0.7
+  idleFlag: 0
+  scoutFlag: 0
+  chaseFlag: 0
+  atackFlag: 0
+  drawGizmo: 0
+  checkPath: 0
+  idleWaitTimeMax: 3
+  chaseLimitTimeMax: 3
+  atackWaitTimeMax: 2
+  atackWaitTime: 0
+  atackStayTImeMax: 0
+  atackStayTime: 0
 --- !u!195 &-2310424611093468889
 NavMeshAgent:
   m_ObjectHideFlags: 0

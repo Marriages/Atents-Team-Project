@@ -1,16 +1,17 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class EnemyDetector : MonoBehaviour
 {
     public Action<GameObject> detectPlayer;
-    Collider col;
+    SphereCollider col;
 
     private void Awake()
     {
-        col = GetComponent<Collider>();
+        col = transform.GetComponent<SphereCollider>();
     }
     private void OnEnable()
     {
@@ -24,5 +25,14 @@ public class EnemyDetector : MonoBehaviour
             col.enabled= false;
         }
             
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (col.enabled == true)
+        {
+            Gizmos.color = Color.white;
+            Gizmos.DrawWireSphere(transform.position, col.radius);
+        }
     }
 }
