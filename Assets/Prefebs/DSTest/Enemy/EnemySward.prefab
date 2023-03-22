@@ -2090,7 +2090,6 @@ GameObject:
   - component: {fileID: 1111680375149091678}
   - component: {fileID: -8500129303534823811}
   - component: {fileID: -4984240073141080446}
-  - component: {fileID: 1258041032322958954}
   m_Layer: 0
   m_Name: EnemySward
   m_TagString: Untagged
@@ -2130,7 +2129,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4d550dde2669da49a96203934425f06, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  heart: 0
+  heart: 3
   maxHeart: 3
   enemySpeed: 5
   normalSpeed: 5
@@ -2143,7 +2142,14 @@ MonoBehaviour:
   isWaitScout: 0
   isAtackWaiting: 0
   playerDetect: 0
+  idleFlag: 0
+  scoutFlag: 0
+  chaseFlag: 0
+  atackFlag: 0
+  drawGizmo: 0
+  checkPath: 0
   idleWaitTimeMax: 3
+  chaseLimitTimeMax: 3
 --- !u!195 &1111680375149091678
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -2154,18 +2160,18 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 3.5
+  m_Speed: 5
   m_Acceleration: 10
   avoidancePriority: 50
   m_AngularSpeed: 360
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
+  m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 2
 --- !u!54 &-8500129303534823811
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2202,19 +2208,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!135 &1258041032322958954
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3305193717099281616}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 5
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &3305219542585422908
 GameObject:
   m_ObjectHideFlags: 0
@@ -2257,7 +2250,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1904338514028956901}
   - component: {fileID: 1629438871338923955}
-  - component: {fileID: 4849122291936041504}
+  - component: {fileID: 2478118918740422630}
   m_Layer: 0
   m_Name: Detector
   m_TagString: Untagged
@@ -2292,8 +2285,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3d64f7aa4dd18c4fb362e8cfcb8339e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!136 &4849122291936041504
-CapsuleCollider:
+--- !u!135 &2478118918740422630
+SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -2302,7 +2295,6 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
+  serializedVersion: 2
+  m_Radius: 5
   m_Center: {x: 0, y: 0, z: 0}

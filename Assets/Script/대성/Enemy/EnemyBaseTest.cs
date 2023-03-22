@@ -7,7 +7,8 @@ using UnityEngine.InputSystem;
 
 
 public class EnemyBaseTest : MonoBehaviour
-{
+{ }
+    /*
     //--------Value----------------Value----------------Value----------------Value----------------Value----------------Value----------------Value----------------
 
     //컴포넌트 이름은 컴포넌트 명의 축소형
@@ -17,7 +18,7 @@ public class EnemyBaseTest : MonoBehaviour
     protected NavMeshAgent agent;
     protected SphereCollider detectRangeCollider;
     Spawner spawner;
-    EnemyDetectAtack detector;
+    EnemyDetector detector;
 
     [Header("Enemy Information")]
     public int heart;
@@ -162,7 +163,7 @@ public class EnemyBaseTest : MonoBehaviour
     void Awake()
     {
         SettingInformation();
-        detector = transform.GetComponentInChildren<EnemyDetectAtack>();
+        detector = transform.GetComponentInChildren<EnemyDetector>();
         spawner = transform.parent.GetComponent<Spawner>();
         anim = GetComponent<Animator>();
         agent = GetComponent<NavMeshAgent>();
@@ -218,7 +219,7 @@ public class EnemyBaseTest : MonoBehaviour
 
         State = EnemyState.IDLE;
         detectRangeCollider.radius = detectRange;
-        detector.enemyDamaged += OnDamaged;
+       // detector.enemyDamaged += OnDamaged;
 
     }
 
