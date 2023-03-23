@@ -27,7 +27,7 @@ public class EnemyDetector : MonoBehaviour
         }
             
     }
-
+/*
     private void OnDrawGizmos()
     {
         if (col.enabled == true)
@@ -35,5 +35,5 @@ public class EnemyDetector : MonoBehaviour
             Gizmos.color = Color.white;
             Gizmos.DrawWireSphere(transform.position, col.radius);
         }
-    }
+    }*/
 }

@@ -28,6 +28,7 @@ public class EnemyBase : MonoBehaviour
     public float chaseSpeed = 8f;
     public float detectRange = 5f;
     public float atackRange = 8f;
+    public float arriveDistance = 2f;
 
     [Header("Scout Information")]
     Vector3[] scoutPoint;
@@ -76,7 +77,7 @@ public class EnemyBase : MonoBehaviour
         GETHIT,
         NULL
     }
-    EnemyState _state=EnemyState.NULL;
+    protected EnemyState _state = EnemyState.NULL;
     public EnemyState State
     {
         get
@@ -339,7 +340,7 @@ public class EnemyBase : MonoBehaviour
         //{
         //    State = EnemyState.SCOUT;
         //}     추후, 3초이상 추적했는데도 도달 못하면 초기상태로 돌아가는 코드 구현하기.
-        if(agent.remainingDistance<2f)
+        if (agent.remainingDistance < arriveDistance)
         {
             //Debug.Log("플레이어에게 도착.");
             StopAllCoroutines();
@@ -379,7 +380,7 @@ public class EnemyBase : MonoBehaviour
     }
 
 
-
+    /*
     private void OnDrawGizmos()
     {
         if(drawGizmo==true)
@@ -388,5 +389,6 @@ public class EnemyBase : MonoBehaviour
             Gizmos.DrawLine(transform.position, agent.destination);
         }
     }
+    */
     
 }
