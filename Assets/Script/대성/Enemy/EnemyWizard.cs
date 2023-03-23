@@ -11,28 +11,25 @@ public class EnemyWizard  : EnemyBase
         enemySpeed = 2f;
         normalSpeed = 2f;
         chaseSpeed = 3f;
-        detectRange = 6f;
-        atackRange = 8f;
+        detectRange = 7f;
     }
-    protected override void EnemyModeAtack()
+
+    protected override void EnemyModeAtackWait()
     {
+        if (player != null)
+        {
+            transform.LookAt(player.transform);
+            //너무 멀어졌으면 다시 추적
+            if ((player.transform.position - transform.position).sqrMagnitude > 25.0f)
+            {
+                //Debug.LogWarning("거리가 너무 멀어짐. 추적 다시 시작");
+                State = EnemyState.CHASE;
+            }
+            else if (Time.time - atackWaitTime > atackWaitTimeMax)
+            {
+                //Debug.LogWarning("대기시간 종료. AtackWait로 이동");
+                State = EnemyState.ATACK;
+            }
+        }
     }
-
-
-
-        /*
-        //Debug.Log($"Time:{Time.time} / Interval:{intervalAtack} / Time-Inter:{Time.time - intervalAtackCurrent}");
-        if (Time.time - intervalAtackCurrent > intervalAtack)
-        {
-            //Debug.Log("Atack");
-            anim.SetTrigger("Atack");
-            
-            intervalAtackCurrent = Time.time;
-            intervalAtackWaitCurrent = Time.time;
-        }
-        else if (Time.time - intervalAtackWaitCurrent > intervalAtackWait)
-        {
-            transform.LookAt(player.transform.position);
-        }
-    }*/
 }

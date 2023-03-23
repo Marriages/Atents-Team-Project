@@ -988,10 +988,10 @@ GameObject:
   - component: {fileID: 1971913737}
   - component: {fileID: 2936925481661558859}
   - component: {fileID: 1555371344}
-  - component: {fileID: 1555371338}
+  - component: {fileID: -8142259816077211092}
   m_Layer: 0
   m_Name: EnemyWizard
-  m_TagString: Enemy
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1052,6 +1052,8 @@ MonoBehaviour:
   atackWaitTime: 0
   atackStayTImeMax: 0
   atackStayTime: 0
+  getHitWaitTimeMax: 1
+  getHitWaitTime: 0
 --- !u!195 &1971913737
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -1062,8 +1064,8 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 3.5
-  m_Acceleration: 8
+  m_Speed: 2
+  m_Acceleration: 100
   avoidancePriority: 50
   m_AngularSpeed: 360
   m_StoppingDistance: 0
@@ -1100,7 +1102,7 @@ Animator:
   m_GameObject: {fileID: 2049650432863922583}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: c494d9eff8644a94683dfd34b29171e7, type: 3}
-  m_Controller: {fileID: 9100000, guid: 8064fbe8dc909a349a91b8773900b921, type: 2}
+  m_Controller: {fileID: 22100000, guid: afe666cdddcba3540b9d1a659ee3bec3, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -1110,8 +1112,8 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!135 &1555371338
-SphereCollider:
+--- !u!136 &-8142259816077211092
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1120,9 +1122,10 @@ SphereCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 5
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Radius: 0.5
+  m_Height: 1.5
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.5, z: 0}
 --- !u!1 &2049657757599667617
 GameObject:
   m_ObjectHideFlags: 0
@@ -1661,7 +1664,7 @@ GameObject:
   - component: {fileID: 2045895116255945599}
   m_Layer: 0
   m_Name: Body
-  m_TagString: Enemy
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2347,7 +2350,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7862363973301059713}
   - component: {fileID: 4539868808111017965}
-  - component: {fileID: 7521807186225988929}
+  - component: {fileID: 466556938818104656}
   m_Layer: 0
   m_Name: Detector
   m_TagString: Untagged
@@ -2382,8 +2385,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3d64f7aa4dd18c4fb362e8cfcb8339e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!136 &7521807186225988929
-CapsuleCollider:
+--- !u!135 &466556938818104656
+SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -2392,7 +2395,6 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
+  serializedVersion: 2
+  m_Radius: 5
   m_Center: {x: 0, y: 0, z: 0}

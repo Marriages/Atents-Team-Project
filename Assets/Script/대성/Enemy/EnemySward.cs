@@ -9,8 +9,8 @@ public class EnemySward : EnemyBase
         heart=2;
         maxHeart = 2;
         enemySpeed = 1f;
-        normalSpeed = 1f;
-        chaseSpeed = 2f;
+        normalSpeed = 2f;
+        chaseSpeed = 4f;
         detectRange = 5f;
         atackRange = 8f;
     }
@@ -33,12 +33,5 @@ public class EnemySward : EnemyBase
             }
         }
         
-    }
-    protected override void EnemyModeAtack()
-    {
-        if(Time.time-atackStayTime > atackStayTImeMax)
-        {
-            State=EnemyState.ATACKWAIT;
-        }
     }
 }

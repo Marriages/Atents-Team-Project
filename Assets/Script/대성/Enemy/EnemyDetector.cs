@@ -9,6 +9,7 @@ public class EnemyDetector : MonoBehaviour
     public Action<GameObject> detectPlayer;
     SphereCollider col;
 
+
     private void Awake()
     {
         col = transform.GetComponent<SphereCollider>();

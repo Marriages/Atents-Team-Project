@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using UnityEngine.AI;
 using UnityEngine.InputSystem;
+using Newtonsoft.Json.Linq;
 
 public class EnemyBase : MonoBehaviour
 {
@@ -14,11 +15,9 @@ public class EnemyBase : MonoBehaviour
     protected Animator anim;
     protected GameObject player;
     protected NavMeshAgent agent;
-    protected SphereCollider detectRangeCollider;
-    Spawner spawner;
     EnemyDetector detector;
     Transform spownPoint;
-    CapsuleCollider enemyCollider;
+    Collider enemyCollider;
     public Action IAmDied;
 
     [Header("Enemy Information")]
@@ -37,15 +36,15 @@ public class EnemyBase : MonoBehaviour
 
     //Flag변수는 항상 is로 시작
     [Header("Flag")]
-    public bool isdetectPlayer = false;
-    public bool isAtacking = false;
-    public bool isWaitScout = false;
-    public bool isAtackWaiting = false;
-    public bool playerDetect = false;
-    public bool idleFlag = false;
-    public bool scoutFlag = false;
-    public bool chaseFlag = false;
-    public bool atackFlag = false;
+    //public bool isdetectPlayer = false;
+    //public bool isAtacking = false;
+    //public bool isWaitScout = false;
+    //public bool isAtackWaiting = false;
+    //public bool playerDetect = false;
+    //public bool idleFlag = false;
+    //public bool scoutFlag = false;
+    //public bool chaseFlag = false;
+    //public bool atackFlag = false;
     public bool drawGizmo = false;
     public bool checkPath = false;
 
@@ -59,17 +58,13 @@ public class EnemyBase : MonoBehaviour
     public float atackWaitTime;
     public float atackStayTImeMax=1f;
     public float atackStayTime;
-    public float getHitWaitTimeMax = 1f;
+    public float getHitWaitTimeMax = 0.6f;
     public float getHitWaitTime;
+
+
     public WaitForSeconds chaseRefreshTime = new WaitForSeconds(0.5f);
 
 
-
-
-    IEnumerator waitAtack;
-
-    [Header("Test")]
-    InputSystemController inputController;
 
     public enum EnemyState
     {
@@ -91,104 +86,102 @@ public class EnemyBase : MonoBehaviour
         set
         {
             if (value == EnemyState.IDLE)
-            {
-                Debug.LogWarning("Idle상태 설정완료. 대기 시작");
-
-                anim.SetBool("Scout", false);
-                agent.isStopped= true;
-
-                idleWaitTime = Time.time;
-                _state = value;
-
-            }
+                StateIdle(value);
             else if (value == EnemyState.SCOUT)
-            {
-                Debug.LogWarning("Scout상태 진입.");
-
-                anim.SetBool("Scout", true);
-
-                //Debug.Log($"agent Dest : {scoutPoint[scoutIndex]}");
-
-                checkPath = agent.SetDestination(scoutPoint[scoutIndex]);
-                if (checkPath == false)
-                    Debug.LogError("경로를 찾을 수 없습니다.");
-
-                agent.isStopped = false;
-
-                scoutIndex++;
-                if (scoutIndex == scoutPoint.Length)
-                {
-                    scoutIndex %= scoutPoint.Length;
-                    //Debug.Log("scoutIndex가 초기화되었습니다.");
-                }
-
-                _state = value;
-            }
+                StateScout(value);
             else if (value == EnemyState.CHASE)
-            {
-                Debug.LogWarning("Chase상태 진입.");
-
-                anim.SetBool("ChasePlayer", true);
-                anim.SetBool("ArrivePlayer", false);
-
-                agent.isStopped = false;
-                StartCoroutine(ChasePlayerRefresh());
-                chaseLimitTime= Time.time;
-                _state = value;
-            }
+                StateChase(value);
             else if (value == EnemyState.ATACKWAIT)
-            {
-                Debug.LogWarning("AtackWait.....");
-
-                agent.isStopped = true;
-
-                anim.SetBool("ChasePlayer", false);
-                anim.SetBool("ArrivePlayer", true);
-                atackWaitTime = Time.time;
-                _state = value;
-            }
+                StateAtackWait(value);
             else if (value == EnemyState.ATACK)
-            {
-                Debug.LogWarning("Atack!!!!!! and Wait..");
-
-                if (UnityEngine.Random.Range(0f, 1f) > 0.5f)
-                    anim.SetTrigger("Atack1");
-                else
-                    anim.SetTrigger("Atack2");
-                atackStayTime = Time.time;
-                _state = value;
-            }
+                StateAtack(value);
             else if (value == EnemyState.GETHIT)
-            {
-                Debug.LogWarning("Get Hit");
-
-                agent.isStopped = true;
-                Heart--;
-                if (Heart != 0)
-                {
-                    anim.SetTrigger("GetHit");
-                    getHitWaitTime = Time.time;
-                    _state = value;
-
-                }
-                else
-                {
-                    Die();
-                }
-                //이러면 Heart 프로퍼티는 사용하지 않아도 될 것 같음.
-            }
+             StateGetHit(value);
         }
     }
-    public int Heart
+    virtual protected void StateIdle(EnemyState value)
     {
-        get => heart;
-        set
+        Debug.LogWarning("Idle상태 설정완료. 대기 시작");
+
+        anim.SetBool("Scout", false);
+        agent.isStopped = true;
+
+        idleWaitTime = Time.time;
+        _state = value;
+    }
+    virtual protected void StateScout(EnemyState value)
+    {
+        Debug.LogWarning("Scout상태 진입.");
+
+        anim.SetBool("Scout", true);
+
+        //Debug.Log($"agent Dest : {scoutPoint[scoutIndex]}");
+
+        checkPath = agent.SetDestination(scoutPoint[scoutIndex]);
+        if (checkPath == false)
+            Debug.LogError("경로를 찾을 수 없습니다.");
+
+        agent.isStopped = false;
+
+        scoutIndex++;
+        if (scoutIndex == scoutPoint.Length)
         {
-            heart = value;
-            if (heart == 0)
-            {
-                //Die();
-            }
+            scoutIndex %= scoutPoint.Length;
+            //Debug.Log("scoutIndex가 초기화되었습니다.");
+        }
+
+        _state = value;
+    }
+    virtual protected void StateChase(EnemyState value)
+    {
+        Debug.LogWarning("Chase상태 진입.");
+
+        anim.SetBool("ChasePlayer", true);
+        anim.SetBool("ArrivePlayer", false);
+
+        agent.isStopped = false;
+        StartCoroutine(ChasePlayerRefresh());
+        chaseLimitTime = Time.time;
+        _state = value;
+    }
+    virtual protected void StateAtack(EnemyState value)
+    {
+        Debug.LogWarning("Atack!!!!!! and Wait..");
+
+        if (UnityEngine.Random.Range(0f, 1f) > 0.5f)
+            anim.SetTrigger("Atack1");
+        else
+            anim.SetTrigger("Atack2");
+        atackStayTime = Time.time;
+        _state = value;
+    }
+    virtual protected void StateAtackWait(EnemyState value)
+    {
+        Debug.LogWarning("AtackWait.....");
+
+        agent.isStopped = true;
+
+        anim.SetBool("ChasePlayer", false);
+        anim.SetBool("ArrivePlayer", true);
+        atackWaitTime = Time.time;
+        _state = value;
+    }
+    virtual protected void StateGetHit(EnemyState value)
+    {
+        Debug.LogWarning("Get Hit");
+
+        agent.isStopped = true;
+        heart--;
+        if (heart != 0)
+        {
+            anim.SetTrigger("GetHit");
+            getHitWaitTime = Time.time;
+            _state = value;
+
+        }
+        else
+        {
+            Die();
         }
     }
 
@@ -290,11 +283,9 @@ public class EnemyBase : MonoBehaviour
     void FindComponent()
     {
         detector = transform.GetComponentInChildren<EnemyDetector>();
-        spawner = transform.parent.GetComponent<Spawner>();
         anim = GetComponent<Animator>();
         agent = GetComponent<NavMeshAgent>();
-        detectRangeCollider = GetComponent<SphereCollider>();
-        enemyCollider = transform.GetComponent<CapsuleCollider>();
+        enemyCollider = transform.GetComponent<Collider>();
     }
     void SetupPath()
     {
@@ -362,7 +353,10 @@ public class EnemyBase : MonoBehaviour
     }
     protected virtual void EnemyModeAtack()
     {
-
+        if (Time.time - atackStayTime > atackStayTImeMax)
+        {
+            State = EnemyState.ATACKWAIT;
+        }
     }
     protected virtual void EnemyModeGetHit()
     {
@@ -383,9 +377,6 @@ public class EnemyBase : MonoBehaviour
         }
 
     }
-
-
-
 
 
 
