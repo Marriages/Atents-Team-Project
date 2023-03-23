@@ -6,8 +6,8 @@ public class EnemySward : EnemyBase
 {
     override protected void SettingInformation()
     {
-        heart = 4;
-        maxHeart = 4;
+        heart=2;
+        maxHeart = 2;
         enemySpeed = 1f;
         normalSpeed = 1f;
         chaseSpeed = 2f;
@@ -17,18 +17,22 @@ public class EnemySward : EnemyBase
 
     protected override void EnemyModeAtackWait()
     {
-        transform.LookAt(player.transform);
-        //너무 멀어졌으면 다시 추적
-        if( ( player.transform.position - transform.position ).sqrMagnitude >4.0f )
+        if(player!=null)
         {
-            //Debug.LogWarning("거리가 너무 멀어짐. 추적 다시 시작");
-            State = EnemyState.CHASE;
+            transform.LookAt(player.transform);
+            //너무 멀어졌으면 다시 추적
+            if ((player.transform.position - transform.position).sqrMagnitude > 4.0f)
+            {
+                //Debug.LogWarning("거리가 너무 멀어짐. 추적 다시 시작");
+                State = EnemyState.CHASE;
+            }
+            else if (Time.time - atackWaitTime > atackWaitTimeMax)
+            {
+                //Debug.LogWarning("대기시간 종료. AtackWait로 이동");
+                State = EnemyState.ATACK;
+            }
         }
-        else if(Time.time - atackWaitTime > atackWaitTimeMax)
-        {
-            //Debug.LogWarning("대기시간 종료. AtackWait로 이동");
-            State = EnemyState.ATACK;
-        }
+        
     }
     protected override void EnemyModeAtack()
     {

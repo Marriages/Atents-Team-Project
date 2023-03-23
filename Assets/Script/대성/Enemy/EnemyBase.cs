@@ -92,7 +92,8 @@ public class EnemyBase : MonoBehaviour
         {
             if (value == EnemyState.IDLE)
             {
-                //Debug.LogWarning("Idle상태 설정완료. 대기 시작");
+                Debug.LogWarning("Idle상태 설정완료. 대기 시작");
+
                 anim.SetBool("Scout", false);
                 agent.isStopped= true;
 
@@ -102,7 +103,8 @@ public class EnemyBase : MonoBehaviour
             }
             else if (value == EnemyState.SCOUT)
             {
-                //Debug.LogWarning("Scout상태 진입.");
+                Debug.LogWarning("Scout상태 진입.");
+
                 anim.SetBool("Scout", true);
 
                 //Debug.Log($"agent Dest : {scoutPoint[scoutIndex]}");
@@ -124,7 +126,8 @@ public class EnemyBase : MonoBehaviour
             }
             else if (value == EnemyState.CHASE)
             {
-                //Debug.LogWarning("Chase상태 진입.");
+                Debug.LogWarning("Chase상태 진입.");
+
                 anim.SetBool("ChasePlayer", true);
                 anim.SetBool("ArrivePlayer", false);
 
@@ -135,15 +138,19 @@ public class EnemyBase : MonoBehaviour
             }
             else if (value == EnemyState.ATACKWAIT)
             {
-                //Debug.LogWarning("AtackWait.....");
+                Debug.LogWarning("AtackWait.....");
+
                 agent.isStopped = true;
+
+                anim.SetBool("ChasePlayer", false);
                 anim.SetBool("ArrivePlayer", true);
                 atackWaitTime = Time.time;
                 _state = value;
             }
             else if (value == EnemyState.ATACK)
             {
-                //Debug.LogWarning("Atack!!!!!! and Wait..");
+                Debug.LogWarning("Atack!!!!!! and Wait..");
+
                 if (UnityEngine.Random.Range(0f, 1f) > 0.5f)
                     anim.SetTrigger("Atack1");
                 else
@@ -153,6 +160,8 @@ public class EnemyBase : MonoBehaviour
             }
             else if (value == EnemyState.GETHIT)
             {
+                Debug.LogWarning("Get Hit");
+
                 agent.isStopped = true;
                 Heart--;
                 if (Heart != 0)
@@ -220,19 +229,10 @@ public class EnemyBase : MonoBehaviour
     protected virtual void Die()
     {
         Debug.LogError("D I E");
-        State = EnemyState.NULL;
         StopAllCoroutines();
         agent.isStopped = true;
         player = null;
         anim.SetTrigger("Die");
-
-        anim.ResetTrigger("GetHit");
-        anim.ResetTrigger("Atack1");
-        anim.ResetTrigger("Atack2");
-        anim.ResetTrigger("Defense");
-        anim.ResetTrigger("DefenseHit");
-        anim.ResetTrigger("Die");
-        anim.ResetTrigger("Restart");
         anim.SetBool("Scout",false);
         anim.SetBool("ArrivePlayer", false);
         anim.SetBool("ChasePlayer", false);
@@ -265,7 +265,7 @@ public class EnemyBase : MonoBehaviour
     }
     protected virtual void RespownSetting()
     {
-        anim.SetTrigger("Restart");
+        //anim.SetTrigger("Restart");
         State = EnemyState.IDLE;
         heart = maxHeart;
         scoutIndex = 0;
@@ -367,7 +367,20 @@ public class EnemyBase : MonoBehaviour
     protected virtual void EnemyModeGetHit()
     {
         if (Time.time - getHitWaitTime > getHitWaitTimeMax)
-            State = EnemyState.ATACKWAIT;
+        {
+            if (agent.remainingDistance < 2f)
+            {
+                anim.SetBool("ChasePlayer", false);
+                anim.SetBool("ArrivePlayer", true);
+                State = EnemyState.ATACKWAIT;
+            }
+            else
+            {
+                anim.SetBool("ChasePlayer", true);
+                anim.SetBool("ArrivePlayer", false);
+                State = EnemyState.CHASE;
+            }
+        }
 
     }
 
