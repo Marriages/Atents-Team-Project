@@ -1,8 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Animations;
 using UnityEngine.InputSystem;
+
+//강대성 UI 테스트용 Script 코드
+
 
 public class Player : MonoBehaviour
 {
@@ -34,15 +37,94 @@ public class Player : MonoBehaviour
     // 플레이어 애니메이션 끝나는 시간
     float exitTime = 0.9f;
 
-    
+    // 플레이어 생명
+    private int heart = 3;
 
+    // 플레이어 점수
+    private int coin = 0;
+    public bool weaponGet = false;
+    public bool shieldGet = false;
+    public bool potionGet = false;
 
+    // 델리게이트
+    public Action<int> HeartPlus;
+    public Action<int> HeartMinus;
+    public Action<int> CoinPlus;
+    public Action<int> CoinMinus;
+    public Action PotionGet;
+    public Action PotionUse;
+    public Action WeaponGet;
+    public Action ShieldGet;
+    public Action PlayerDie;
+
+    // 하트 프로퍼티
+    public int Heart
+    {
+        get => heart;
+        set
+        {
+            //Debug.Log($"heart:{Heart},value:{value}");
+            if (heart < value)            //회복
+            {
+                Debug.Log("회복 시퀀스 가동");
+                if (value > 3)
+                    Debug.Log("이미 최대 체력입니다.");
+                else
+                {
+                    heart = value;
+                    HeartPlus?.Invoke(1);
+                }
+            }
+            else if (heart > value)                               //피격
+            {
+                Debug.Log("피격 시퀀스 가동");
+
+                if (value <= 0)
+                {
+                    PlayerDie?.Invoke();
+                }
+                else
+                {
+                    heart = value;
+                    HeartMinus?.Invoke(1);
+                }
+            }
+        }
+    }
+
+    // 코인 프로퍼티
+    public int Coin
+    {
+        get => coin;
+        set
+        {
+            if (coin > value)
+            {
+                coin = value;
+                CoinMinus?.Invoke(1);
+            }
+
+            else if (coin < value)
+            {
+                coin = value;
+                CoinPlus?.Invoke(1);
+            }
+        }
+    }
+
+    //--------생명주기--------생명주기--------생명주기--------생명주기--------생명주기--------생명주기
     private void Awake()
     {
+        Heart = 3;
         rigid = GetComponent<Rigidbody>();
         anim = GetComponent<Animator>();
 
         inputActions = new PlayerInputActions();
+    }
+
+    private void FixedUpdate()
+    {
+        Move();
     }
 
     private void OnEnable()
@@ -56,7 +138,6 @@ public class Player : MonoBehaviour
         inputActions.Player.Jump.performed += PlayerJump;
 
     }
-
     private void OnDisable()
     {
         inputActions.Player.Jump.performed -= PlayerJump;
@@ -67,12 +148,6 @@ public class Player : MonoBehaviour
         inputActions.Player.Move.performed -= PlayerMove;
         inputActions.Player.Disable();
     }
-
-    private void FixedUpdate()
-    {
-        Move();
-    }
-
 
     // 플레이어 이동 관련 이벤트 함수
     private void PlayerMove(InputAction.CallbackContext context)
@@ -98,7 +173,7 @@ public class Player : MonoBehaviour
     private void PlayerJump(InputAction.CallbackContext context)
     {
         Jump();
-        
+
     }
 
     void Jump()
@@ -111,21 +186,22 @@ public class Player : MonoBehaviour
     }
 
     // 착지했을 때 처리 함수
-    private void OnGround()
+    void OnGround()
     {
         IsJumping = false;      // 점프가 끝났다고 표시
     }
 
     // 플레이어 충돌 관련 이벤트 함수
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
-        if (collision.gameObject.CompareTag("Ground"))   // Ground와 충돌했을 때만
+        if (other.gameObject.CompareTag("Ground"))   // Ground와 충돌했을 때만
         {
             OnGround();     // 착지 함수 실행
         }
-        else if(collision.gameObject.CompareTag("Enemy"))
+        else if (other.gameObject.CompareTag("Enemy"))
         {
             anim.SetTrigger("IsHit");
+            Heart--;
             StartCoroutine(HitAnimationState());
         }
     }

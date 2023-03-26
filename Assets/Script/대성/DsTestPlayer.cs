@@ -48,9 +48,8 @@ public class DsTestPlayer : MonoBehaviour
         set
         {
             //Debug.Log($"heart:{Heart},value:{value}");
-            if ( heart<value)            //회복
+            if ( heart < value)            //회복
             {
-                
                 Debug.Log("회복 시퀀스 가동");
                 if( value > 3)
                     Debug.Log("이미 최대 체력입니다.");
@@ -60,11 +59,11 @@ public class DsTestPlayer : MonoBehaviour
                     HeartPlus?.Invoke(1);
                 }
             }
-            else if(heart>value)                               //피격
+            else if(heart > value)                               //피격
             {
                 Debug.Log("피격 시퀀스 가동");
 
-                if(value<=0)
+                if(value <= 0)
                 {
                     PlayerDie?.Invoke();
                 }

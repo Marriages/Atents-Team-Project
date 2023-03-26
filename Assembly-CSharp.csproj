@@ -68,6 +68,7 @@
     <Compile Include="Assets\InputSystem\InputSystemController.cs" />
     <Compile Include="Assets\Script\대성\EnemyBaseTest.cs" />
     <Compile Include="Assets\Script\대성\EnemyWizard.cs" />
+    <Compile Include="Assets\Script\성윤\UI.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
