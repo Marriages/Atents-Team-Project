@@ -51,11 +51,17 @@ public class EnemyWizard  : EnemyBase
     {
         Debug.LogWarning("Atack!!!!!! and Wait..");
         anim.SetTrigger("Atack1");
+        atackStayTime = Time.time;
+        StartCoroutine(AtackDelayTime());
+        _state = value;
+    }
+    IEnumerator AtackDelayTime()
+    {
+        yield return new WaitForSeconds(0.4f);
         GameObject obj = Instantiate(bullet);
-        obj.transform.position = firePosition.position;
+        obj.transform.position = firePosition.position+transform.forward;
         obj.GetComponent<EnemyBullet>().Target = player.transform;
 
-        atackStayTime = Time.time;
-        _state = value;
+        
     }
 }

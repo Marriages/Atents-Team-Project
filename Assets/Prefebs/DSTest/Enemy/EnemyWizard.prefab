@@ -1034,6 +1034,7 @@ MonoBehaviour:
   chaseSpeed: 3
   detectRange: 6
   atackRange: 8
+  arriveDistance: 2
   scoutIndex: 0
   drawGizmo: 0
   checkPath: 0
@@ -1045,7 +1046,7 @@ MonoBehaviour:
   atackStayTime: 0
   getHitWaitTimeMax: 1
   getHitWaitTime: 0
-  firePosition: {fileID: 2045902538816765207}
+  firePosition: {fileID: 2052285933219515123}
   bullet: {fileID: 634116773486186004, guid: bac2027c18303c248971f30fd76073d4, type: 3}
 --- !u!195 &1971913737
 NavMeshAgent:

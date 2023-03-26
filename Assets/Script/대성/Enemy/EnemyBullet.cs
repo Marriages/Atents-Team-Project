@@ -5,7 +5,8 @@ using UnityEngine;
 
 public class EnemyBullet : MonoBehaviour
 {
-    public float speed = 6f;
+    public float speed = 5f;
+    Vector3 dir;
     Transform target;
     Rigidbody rigid;
 
@@ -21,9 +22,10 @@ public class EnemyBullet : MonoBehaviour
     private void Start()
     {
         Destroy(gameObject,4f);
+        dir = (target.transform.position - transform.position).normalized;
     }
     private void FixedUpdate()
     {
-        rigid.MovePosition(transform.position + Time.fixedDeltaTime * speed * target.transform.position);
+        rigid.MovePosition(transform.position + Time.fixedDeltaTime * speed * dir );
     }
 }

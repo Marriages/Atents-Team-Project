@@ -97,7 +97,7 @@ public class EnemyBase : MonoBehaviour
             else if (value == EnemyState.ATACK)
                 StateAtack(value);
             else if (value == EnemyState.GETHIT)
-             StateGetHit(value);
+                StateGetHit(value);
         }
     }
     virtual protected void StateIdle(EnemyState value)

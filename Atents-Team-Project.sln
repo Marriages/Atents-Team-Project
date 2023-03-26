@@ -3,6 +3,10 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.csproj", "{679BFEC1-2801-637F-72B3-CBE533EB5053}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CFXRRuntime", "CFXRRuntime.csproj", "{6BC76E51-074E-6272-759D-9E6F230C9D8D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CFXREditor", "CFXREditor.csproj", "{4095BBD8-8299-E081-3DE7-ED302B4537C2}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{896A0B0B-8B01-4C3C-9C5B-984C5F4620BF}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
@@ -18,6 +22,14 @@ Global
 		{679BFEC1-2801-637F-72B3-CBE533EB5053}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{679BFEC1-2801-637F-72B3-CBE533EB5053}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{679BFEC1-2801-637F-72B3-CBE533EB5053}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BC76E51-074E-6272-759D-9E6F230C9D8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BC76E51-074E-6272-759D-9E6F230C9D8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BC76E51-074E-6272-759D-9E6F230C9D8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BC76E51-074E-6272-759D-9E6F230C9D8D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4095BBD8-8299-E081-3DE7-ED302B4537C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4095BBD8-8299-E081-3DE7-ED302B4537C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4095BBD8-8299-E081-3DE7-ED302B4537C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4095BBD8-8299-E081-3DE7-ED302B4537C2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
