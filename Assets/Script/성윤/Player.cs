@@ -86,11 +86,11 @@ public class Player : MonoBehaviour
 
     void Move()
     {
-        Vector3 v = new Vector3(inputDir.x, 0, inputDir.y);
-        transform.Translate(Time.fixedDeltaTime * moveSpeed * v, Space.World);
+        Vector3 dir = new Vector3(inputDir.x, 0, inputDir.y);
+        transform.Translate(Time.fixedDeltaTime * moveSpeed * dir, Space.World);
         if (inputDir.sqrMagnitude > 0)
         {
-            transform.forward = Vector3.Lerp(transform.forward, v, Time.fixedDeltaTime * rotateSpeed);
+            transform.forward = Vector3.Lerp(transform.forward, dir, Time.fixedDeltaTime * rotateSpeed);
         }
     }
 
@@ -126,7 +126,28 @@ public class Player : MonoBehaviour
         else if(collision.gameObject.CompareTag("Enemy"))
         {
             anim.SetTrigger("IsHit");
+            StartCoroutine(HitAnimationState());
         }
+    }
+
+    // 히트애니메이션 코루틴
+    IEnumerator HitAnimationState()
+    {
+        while (!anim.GetCurrentAnimatorStateInfo(0)
+        .IsName("Hit"))
+        {
+            // 전환 중일 때 실행되는 부분
+            yield return null;
+        }
+        while (anim.GetCurrentAnimatorStateInfo(0)
+        .normalizedTime < exitTime)
+        {
+            // 애니메이션 재생 중 실행되는 부분
+            inputActions.Player.Disable();  // 플레이어 입력 키 비활성화
+            yield return null;
+        }
+        // 애니메이션 완료 후 실행되는 부분
+        inputActions.Player.Enable();       // 플레이어 입력 키 활성화
     }
 
     // 플레이어 공격 관련 이벤트 함수
