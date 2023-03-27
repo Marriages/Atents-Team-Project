@@ -75,7 +75,7 @@ public class Player : MonoBehaviour
                     HeartPlus?.Invoke(1);
                 }
             }
-            else if (heart > value)                               //피격
+            else if (heart > value)       //피격
             {
                 Debug.Log("피격 시퀀스 가동");
 
@@ -162,11 +162,13 @@ public class Player : MonoBehaviour
     void Move()
     {
         Vector3 dir = new Vector3(inputDir.x, 0, inputDir.y);
-        transform.Translate(Time.fixedDeltaTime * moveSpeed * dir, Space.World);
-        if (inputDir.sqrMagnitude > 0)
+
+        rigid.MovePosition(transform.position + Time.fixedDeltaTime * moveSpeed * dir);
+        if(dir != Vector3.zero)
         {
-            transform.forward = Vector3.Lerp(transform.forward, dir, Time.fixedDeltaTime * rotateSpeed);
+            transform.forward = dir;
         }
+        
     }
 
     // 플레이어 점프 관련 이벤트 함수
