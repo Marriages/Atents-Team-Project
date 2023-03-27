@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.28085276, g: 0.36602777, b: 0.49832976, a: 1}
+  m_IndirectSpecularColor: {r: 0.28085268, g: 0.3660276, b: 0.49833208, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -453,7 +453,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8671106730097146244, guid: 369f72a0ed746b14497a94209784a6d0, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 4.7
       objectReference: {fileID: 0}
     - target: {fileID: 8671106730097146244, guid: 369f72a0ed746b14497a94209784a6d0, type: 3}
       propertyPath: m_LocalRotation.w
@@ -546,11 +546,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7604487368823159748, guid: a9c34ff7cd58a3b4d9c524fc139339ec, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 4.21
+      value: 23.6
       objectReference: {fileID: 0}
     - target: {fileID: 7604487368823159748, guid: a9c34ff7cd58a3b4d9c524fc139339ec, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -3.88
+      value: -15.1
       objectReference: {fileID: 0}
     - target: {fileID: 7604487368823159748, guid: a9c34ff7cd58a3b4d9c524fc139339ec, type: 3}
       propertyPath: m_LocalRotation.w
@@ -579,6 +579,14 @@ PrefabInstance:
     - target: {fileID: 7604487368823159748, guid: a9c34ff7cd58a3b4d9c524fc139339ec, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7604487368823159749, guid: a9c34ff7cd58a3b4d9c524fc139339ec, type: 3}
+      propertyPath: orthographic
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7604487368823159749, guid: a9c34ff7cd58a3b4d9c524fc139339ec, type: 3}
+      propertyPath: orthographic size
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a9c34ff7cd58a3b4d9c524fc139339ec, type: 3}

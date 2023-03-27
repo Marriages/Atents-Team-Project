@@ -10,60 +10,52 @@ public class EnemyBase : MonoBehaviour
 {
     //--------Value----------------Value----------------Value----------------Value----------------Value----------------Value----------------Value----------------
 
-    //컴포넌트 이름은 컴포넌트 명의 축소형
-    [Header("Component")]
-    protected Animator anim;
-    protected GameObject player;
-    protected NavMeshAgent agent;
-    EnemyDetector detector;
-    Transform spownPoint;
-    Collider enemyCollider;
-    public Action IAmDied;
+    [Header("Component")]       //각종 컴포넌트정보를 담은 헤더.
+    protected Animator anim;                    // 애니메이션 컨트롤러
+    protected GameObject player;            // 목표(플레이어)를 추적하기 위하여 사요오딤
+    protected NavMeshAgent agent;        // 길찾기 Navigation에 사용될 변수
+    EnemyDetector detector;                    // 자식오브젝트 Detector로부터 델리게이트를 수신하기 위함
+    Transform spownPoint;                       // 초기 
+    Collider enemyCollider;                      // 무적시간 설정을 위하여 선언.
+    public Action IAmDied;                       // Spawner에게 죽었다는 것을 알리고, 새로 Enable시키기 위함.
 
-    [Header("Enemy Information")]
-    public int heart;
-    public int maxHeart = 3;
-    public float enemySpeed = 5f;
-    public float normalSpeed = 5f;
-    public float chaseSpeed = 8f;
-    public float detectRange = 5f;
-    public float atackRange = 8f;
-    public float arriveDistance = 2f;
+    [Header("Enemy Information")]          // 해당 객체가 Enable되었을 때 셋팅할 SettingInformation()에 들어가게 될 변수들.
+    public int heart;                                  // 현재 생명력
+    public int maxHeart;                           // 최대 생명력. Enable 되었을 때 heart를 초기화할 목적으로 선언됨.
+    public float enemySpeed;                  // 현재 속도를 제어하기 위하여 설정됨. normalSpeed 는 정찰속도 / chaseSpsed는 추적 속도로 사용됨
+    public float normalSpeed;                  // 정찰 속도
+    public float chaseSpeed;                   // 추적 속도
+    public float detectRange;                   // 적 감지범위
+    public float atackRange;                    // 공격 범위
+    public float arriveDistance;                // 추적시 거리가 얼마나 남았을 떄 멈출 것인지 결정
 
     [Header("Scout Information")]
-    Vector3[] scoutPoint;
-    public int scoutIndex = 0;
-    Vector3 targetDirection = Vector3.zero;
+    Vector3[] scoutPoint;                      // 정찰 포인트. 최초 Awake시 SetPath 함수를 통해서 초기화됨.
+    public int scoutIndex = 0;               // 정찰 포인트를 제어할 인덱스
 
-    //Flag변수는 항상 is로 시작
+
+
     [Header("Flag")]
-    //public bool isdetectPlayer = false;
-    //public bool isAtacking = false;
-    //public bool isWaitScout = false;
-    //public bool isAtackWaiting = false;
-    //public bool playerDetect = false;
-    //public bool idleFlag = false;
-    //public bool scoutFlag = false;
-    //public bool chaseFlag = false;
-    //public bool atackFlag = false;
-    public bool drawGizmo = false;
-    public bool checkPath = false;
+    public bool drawGizmo = false;      // 기즈모를 그릴지 말지 결정할 변수. 이게없으면 에러가 나서 사용하게 되었다.
+    public bool checkPath = false;      //  Enemy Agent가 목표까지의 길이 존재하는지 판단하기 위하여 사용됨. checkPath는 agent.SetDestination의 리턴값임.
+    public bool isAlive = true;
+    public bool playerDetect = false;
 
     // 시간 간격 변수명은 interval로 시작
     [Header("Timer")]
     public float idleWaitTimeMax=3f;            //정찰가기 전 대기시간 3초
     float idleWaitTime;
-    public float chaseLimitTimeMax=3f;
-    float chaseLimitTime;
     public float atackWaitTimeMax = 2f;
     public float atackWaitTime;
     public float atackStayTImeMax=1f;
     public float atackStayTime;
-    public float getHitWaitTimeMax = 0.6f;
+    public float getHitWaitTimeMax = 1.5f;
     public float getHitWaitTime;
 
 
     public WaitForSeconds chaseRefreshTime = new WaitForSeconds(0.5f);
+    public WaitForSeconds OneSecondWait = new WaitForSeconds(1.0f);
+    public WaitForSeconds DotFiveSecondWait = new WaitForSeconds(0.5f);
 
 
 
@@ -142,7 +134,6 @@ public class EnemyBase : MonoBehaviour
 
         agent.isStopped = false;
         StartCoroutine(ChasePlayerRefresh());
-        chaseLimitTime = Time.time;
         _state = value;
     }
     virtual protected void StateAtack(EnemyState value)
@@ -175,15 +166,37 @@ public class EnemyBase : MonoBehaviour
         heart--;
         if (heart != 0)
         {
+            Debug.Log("GetHit 프로퍼티 hp 감소");
             anim.SetTrigger("GetHit");
             getHitWaitTime = Time.time;
             _state = value;
 
         }
-        else
+        else if(isAlive==true)
         {
+            Debug.Log("GetHit 프로퍼티 DIE 실행");
             Die();
         }
+    }
+    protected virtual void Die()
+    {
+        Debug.LogError("D I E");
+        StopAllCoroutines();
+        agent.isStopped = true;
+        player = null;
+        playerDetect = false;
+        isAlive = false;
+        anim.SetTrigger("Die");
+        anim.SetBool("Scout",false);
+        anim.SetBool("ArrivePlayer", false);
+        anim.SetBool("ChasePlayer", false);
+
+
+
+        IAmDied?.Invoke();      //Spawner에게 일정시간 후 다시 부활시켜달라 요청
+        StartCoroutine(OneSecondAfterDisable());
+        
+
     }
 
     IEnumerator ChasePlayerRefresh()
@@ -202,47 +215,20 @@ public class EnemyBase : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("Weapon"))
+        if(other.CompareTag("Weapon") && isAlive== true && playerDetect==true)               ///자식의 Triggeㄱ발동으로 강제 실행됨.
         {
+            Debug.Log("아야!");
+            enemyCollider.enabled = false;          //추가적으로 맞지 않게끔 비활성화. EnemyModeGetHit에서 무적시간 적용.
             State = EnemyState.GETHIT;
-            StartCoroutine(OneSecondInvincibility());
         }
     }
 
-    // 1초무적!
-    IEnumerator OneSecondInvincibility()
-    {
-        enemyCollider.enabled = false;
-        yield return chaseRefreshTime;      //0.5초
-        yield return chaseRefreshTime;      //0.5초
-        enemyCollider.enabled = true;
-
-    }
-
-
-    protected virtual void Die()
-    {
-        Debug.LogError("D I E");
-        StopAllCoroutines();
-        agent.isStopped = true;
-        player = null;
-        anim.SetTrigger("Die");
-        anim.SetBool("Scout",false);
-        anim.SetBool("ArrivePlayer", false);
-        anim.SetBool("ChasePlayer", false);
-
-
-
-        IAmDied?.Invoke();      //Spawner에게 일정시간 후 다시 부활시켜달라 요청
-        StartCoroutine(OneSecondAfterDisable());
-        
-
-    }
     IEnumerator OneSecondAfterDisable()
     {
         yield return new WaitForSeconds(3f);
         gameObject.SetActive(false);
     }
+
     private void Start()
     {
         State = EnemyState.IDLE;
@@ -265,10 +251,15 @@ public class EnemyBase : MonoBehaviour
         scoutIndex = 0;
         transform.position = spownPoint.position;
         enemyCollider.enabled = true;
+        isAlive = true;
+        playerDetect = false;
     }
 
     void DetectPlayer(GameObject obj)
     {
+        Debug.Log("플레이어 발견 델리게이트 수신 완료. 콜라이더 활성화");
+        enemyCollider.enabled = true;
+        playerDetect = true;
         player = obj;
         State = EnemyState.CHASE;
     }
@@ -361,8 +352,12 @@ public class EnemyBase : MonoBehaviour
     }
     protected virtual void EnemyModeGetHit()
     {
+        //Debug.Log($"{Time.time - getHitWaitTime}");
         if (Time.time - getHitWaitTime > getHitWaitTimeMax)
         {
+            enemyCollider.enabled = true;
+            Debug.Log("무적시간 끝!");
+
             if (agent.remainingDistance < 2f)
             {
                 anim.SetBool("ChasePlayer", false);

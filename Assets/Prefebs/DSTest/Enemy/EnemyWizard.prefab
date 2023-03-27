@@ -1028,23 +1028,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   heart: 0
-  maxHeart: 3
-  enemySpeed: 5
-  normalSpeed: 2
-  chaseSpeed: 3
-  detectRange: 6
-  atackRange: 8
-  arriveDistance: 2
+  maxHeart: 0
+  enemySpeed: 0
+  normalSpeed: 0
+  chaseSpeed: 0
+  detectRange: 0
+  atackRange: 0
+  arriveDistance: 0
   scoutIndex: 0
   drawGizmo: 0
   checkPath: 0
+  isAlive: 1
+  playerDetect: 0
   idleWaitTimeMax: 3
-  chaseLimitTimeMax: 3
   atackWaitTimeMax: 2
   atackWaitTime: 0
-  atackStayTImeMax: 0
+  atackStayTImeMax: 1
   atackStayTime: 0
-  getHitWaitTimeMax: 1
+  getHitWaitTimeMax: 1.5
   getHitWaitTime: 0
   firePosition: {fileID: 2052285933219515123}
   bullet: {fileID: 634116773486186004, guid: bac2027c18303c248971f30fd76073d4, type: 3}

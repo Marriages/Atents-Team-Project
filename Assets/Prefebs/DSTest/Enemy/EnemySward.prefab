@@ -2145,31 +2145,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   heart: 0
-  maxHeart: 3
-  enemySpeed: 5
-  normalSpeed: 5
-  chaseSpeed: 8
-  detectRange: 5
-  atackRange: 8
+  maxHeart: 0
+  enemySpeed: 0
+  normalSpeed: 0
+  chaseSpeed: 0
+  detectRange: 0
+  atackRange: 0
+  arriveDistance: 0
   scoutIndex: 0
-  isdetectPlayer: 0
-  isAtacking: 0
-  isWaitScout: 0
-  isAtackWaiting: 0
-  playerDetect: 0
-  idleFlag: 0
-  scoutFlag: 0
-  chaseFlag: 0
-  atackFlag: 0
   drawGizmo: 0
   checkPath: 0
+  isAlive: 1
   idleWaitTimeMax: 3
-  chaseLimitTimeMax: 3
   atackWaitTimeMax: 2
   atackWaitTime: 0
   atackStayTImeMax: 1
   atackStayTime: 0
-  getHitWaitTimeMax: 0.6
+  getHitWaitTimeMax: 1.5
   getHitWaitTime: 0
 --- !u!195 &1111680375149091678
 NavMeshAgent:
@@ -2225,7 +2217,11 @@ Animator:
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
-  m_WarningMessage: 
+  m_WarningMessage: "\nBinding warning: Some generic clip(s) animate transforms that
+    are already bound by a Humanoid avatar. These transforms can only be changed
+    by Humanoid clips.\n\tTransform 'Spine01'\n\tTransform 'Body'\n\tTransform 'Spine01'\n\tTransform
+    'Body'\n\tTransform 'Spine01'\n\tTransform 'Body'\n\tFrom animation clip 'SelfDestruct'\n\tFrom
+    animation clip 'Taunting'"
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0

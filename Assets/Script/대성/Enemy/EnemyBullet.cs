@@ -9,6 +9,7 @@ public class EnemyBullet : MonoBehaviour
     Vector3 dir;
     Transform target;
     Rigidbody rigid;
+    public GameObject bombEffect;
 
     public Transform Target
     {
@@ -27,5 +28,13 @@ public class EnemyBullet : MonoBehaviour
     private void FixedUpdate()
     {
         rigid.MovePosition(transform.position + Time.fixedDeltaTime * speed * dir );
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        Debug.Log("총알 충돌! 폭발!");
+        GameObject obj = Instantiate(bombEffect);
+        obj.transform.position = transform.position;
+        Destroy(obj.gameObject, 1f);
+        Destroy(this.gameObject);
     }
 }
