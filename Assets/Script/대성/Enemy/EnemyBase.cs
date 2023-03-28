@@ -1,10 +1,7 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UnityEngine.AI;
-using UnityEngine.InputSystem;
-using Newtonsoft.Json.Linq;
 
 public class EnemyBase : MonoBehaviour
 {
@@ -18,6 +15,7 @@ public class EnemyBase : MonoBehaviour
     Transform spownPoint;                       // 초기 
     Collider enemyCollider;                      // 무적시간 설정을 위하여 선언.
     public Action IAmDied;                       // Spawner에게 죽었다는 것을 알리고, 새로 Enable시키기 위함.
+    public Collider enemyWeapon;
 
     [Header("Enemy Information")]          // 해당 객체가 Enable되었을 때 셋팅할 SettingInformation()에 들어가게 될 변수들.
     public int heart;                                  // 현재 생명력
@@ -29,7 +27,8 @@ public class EnemyBase : MonoBehaviour
     public float atackRange;                    // 공격 범위
     public float arriveDistance;                // 추적시 거리가 얼마나 남았을 떄 멈출 것인지 결정
 
-    [Header("Scout Information")]
+
+    [Header("Scout Position Information")]
     Vector3[] scoutPoint;                      // 정찰 포인트. 최초 Awake시 SetPath 함수를 통해서 초기화됨.
     public int scoutIndex = 0;               // 정찰 포인트를 제어할 인덱스
 
@@ -38,45 +37,45 @@ public class EnemyBase : MonoBehaviour
     [Header("Flag")]
     public bool drawGizmo = false;      // 기즈모를 그릴지 말지 결정할 변수. 이게없으면 에러가 나서 사용하게 되었다.
     public bool checkPath = false;      //  Enemy Agent가 목표까지의 길이 존재하는지 판단하기 위하여 사용됨. checkPath는 agent.SetDestination의 리턴값임.
-    public bool isAlive = true;
-    public bool playerDetect = false;
+    public bool isAlive = true;                 //살아있는지 확인하기 위한 변수. 처음 Enable -> RespawnSetting 단계시 true로 설정되며, Die 상태시 false로 되서 각종 기능들이 막히게 된다.
+    public bool playerDetect = false;       // 플레이어를 감지하는 자식오브젝트 Detector가 플레이어 감지시 델리게이트 방송, DetectPlayer 함수로 연결되어 true로 바꾼다. Die, RespawnSetting시 false로 설정.
+
 
     // 시간 간격 변수명은 interval로 시작
     [Header("Timer")]
-    public float idleWaitTimeMax=3f;            //정찰가기 전 대기시간 3초
-    float idleWaitTime;
-    public float atackWaitTimeMax = 2f;
+    public float idleWaitTimeMax = 3f;            // Idle상태->정찰상태 로 가기전 대기시간
+    public float idleWaitTime;
+    public float atackWaitTimeMax = 2f;     // 공격을 하기 전까지의 대기시간
     public float atackWaitTime;
-    public float atackStayTImeMax=1f;
+    public float atackStayTImeMax=1f;       // 공격을 하는 시간
     public float atackStayTime;
-    public float getHitWaitTimeMax = 1.5f;
+    public float getHitWaitTimeMax = 1.5f;  // 피격 후 무적시간
     public float getHitWaitTime;
 
+    [Header("Wait Time")]
+    WaitForSeconds DotFiveSecondWait = new WaitForSeconds(0.5f);            // 5초 기다리기 용 Chase단계에 사용됨
+    WaitForSeconds ThreeSecondWait = new WaitForSeconds(3.0f);              // 3초 기다리기 용. 리스폰 단계에 사용됨
 
-    public WaitForSeconds chaseRefreshTime = new WaitForSeconds(0.5f);
-    public WaitForSeconds OneSecondWait = new WaitForSeconds(1.0f);
-    public WaitForSeconds DotFiveSecondWait = new WaitForSeconds(0.5f);
-
-
+    //--------Value----------------Value----------------Value----------------Value----------------Value----------------Value----------------Value----------------Value----------------Value----------------Value----------------Value--
+    //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    //--------상태 프로퍼티----------------상태 프로퍼티----------------상태 프로퍼티----------------상태 프로퍼티----------------상태 프로퍼티----------------상태 프로퍼티----------------상태 프로퍼티----------------
 
     public enum EnemyState
     {
-        IDLE,
-        SCOUT,
-        CHASE,
-        ATACKWAIT,
-        ATACK,
-        GETHIT,
-        NULL
+        IDLE,                    // 아무것도 하지 않는 상태
+        SCOUT,                // 정해진 정찰 포인트를 향해 걸어가고 있는 상태
+        CHASE,                // 자식 Detector로부터 Player를 감지했다는 델리게이트를 전달받은 후 플레이어를 추격하는 상태
+        ATACKWAIT,         // 플레이어에게 도착 또는 공격 이후 잠시 대기하는 상태
+        ATACK,                 // 대기상태가 종료 후 공격 애니메이션을 실행하고 있는 상태
+        GETHIT,               // 어떠한 상태에서든 플레이어에 의해 피격당한 상태
+        NULL                    // 아무것도 실행하지 않는 상태
     }
-    protected EnemyState _state = EnemyState.NULL;
-    public EnemyState State
+    protected EnemyState _state = EnemyState.NULL;          //초기 상태를 NULL로 함으로써 아무것도 실행되지 않게끔 설정
+    public EnemyState State             //상태가 변할시 단 한번씩만 실행되게 할 상태제어프로퍼티. 매우 중요한 역할을 함.
     {
-        get
-        {
-            return _state;
-        }
-        set
+        get => _state;                  // 현재 상태가 무엇인지 알려주는 Get
+
+        set                                     //  상태가 바뀔 경우, Value 값에 해당 상태가 들어오는데, 각 value마다 실행될 함수들을 만들어서 실행 -> 필요시 override 할수 있게 protected virtual로 작성함.
         {
             if (value == EnemyState.IDLE)
                 StateIdle(value);
@@ -92,9 +91,11 @@ public class EnemyBase : MonoBehaviour
                 StateGetHit(value);
         }
     }
-    virtual protected void StateIdle(EnemyState value)
+    virtual protected void StateIdle(EnemyState value)                  //  ---------- Idle 상태 Set ---------- Idle 상태 Set ---------- Idle 상태 Set ---------- Idle 상태 Set ---------- Idle 상태 Set ----------
     {
-        Debug.LogWarning("Idle상태 설정완료. 대기 시작");
+       // Debug.LogWarning("Idle상태 설정완료. 대기 시작");
+
+        enemyWeapon.enabled = false;
 
         anim.SetBool("Scout", false);
         agent.isStopped = true;
@@ -102,11 +103,13 @@ public class EnemyBase : MonoBehaviour
         idleWaitTime = Time.time;
         _state = value;
     }
-    virtual protected void StateScout(EnemyState value)
+    virtual protected void StateScout(EnemyState value)                  //  ---------- Scout 상태 Set ---------- Scout 상태 Set ---------- Scout 상태 Set ---------- Scout 상태 Set ---------- Scout 상태 Set ----------
     {
-        Debug.LogWarning("Scout상태 진입.");
+        //Debug.LogWarning("Scout상태 진입.");
 
         anim.SetBool("Scout", true);
+
+        enemyWeapon.enabled = false;
 
         //Debug.Log($"agent Dest : {scoutPoint[scoutIndex]}");
 
@@ -125,9 +128,11 @@ public class EnemyBase : MonoBehaviour
 
         _state = value;
     }
-    virtual protected void StateChase(EnemyState value)
+    virtual protected void StateChase(EnemyState value)                  //  ---------- Chase 상태 Set ---------- Chase 상태 Set ---------- Chase 상태 Set ---------- Chase 상태 Set ---------- Chase 상태 Set ----------
     {
-        Debug.LogWarning("Chase상태 진입.");
+        //Debug.LogWarning("Chase상태 진입.");
+
+        enemyWeapon.enabled = false;
 
         anim.SetBool("ChasePlayer", true);
         anim.SetBool("ArrivePlayer", false);
@@ -136,9 +141,23 @@ public class EnemyBase : MonoBehaviour
         StartCoroutine(ChasePlayerRefresh());
         _state = value;
     }
-    virtual protected void StateAtack(EnemyState value)
+    IEnumerator ChasePlayerRefresh()
+    {
+        while (true)
+        {
+            //Debug.LogWarning("플레이어 추적 갱신");
+            checkPath = agent.SetDestination(player.transform.position);        //주기적 목표 갱신
+            if (checkPath == false)
+                Debug.LogError("경로를 찾을 수 없습니다.");
+
+            yield return DotFiveSecondWait;
+        }
+    }
+    virtual protected void StateAtack(EnemyState value)                  //  ---------- Atack 상태 Set ---------- Atack 상태 Set ---------- Atack 상태 Set ---------- Atack 상태 Set ---------- Atack 상태 Set ----------
     {
         Debug.LogWarning("Atack!!!!!! and Wait..");
+
+        enemyWeapon.enabled = true;
 
         if (UnityEngine.Random.Range(0f, 1f) > 0.5f)
             anim.SetTrigger("Atack1");
@@ -147,9 +166,12 @@ public class EnemyBase : MonoBehaviour
         atackStayTime = Time.time;
         _state = value;
     }
-    virtual protected void StateAtackWait(EnemyState value)
+    virtual protected void StateAtackWait(EnemyState value)                  //  ---------- AtackWait 상태 Set ---------- AtackWait 상태 Set ---------- AtackWait 상태 Set ---------- AtackWait 상태 Set ---------- 
     {
-        Debug.LogWarning("AtackWait.....");
+        
+        //Debug.LogWarning("AtackWait.....");
+
+        enemyWeapon.enabled = false;
 
         agent.isStopped = true;
 
@@ -158,15 +180,18 @@ public class EnemyBase : MonoBehaviour
         atackWaitTime = Time.time;
         _state = value;
     }
-    virtual protected void StateGetHit(EnemyState value)
+    virtual protected void StateGetHit(EnemyState value)                  //  ---------- GetHit 상태 Set ---------- GetHit 상태 Set ---------- GetHit 상태 Set ---------- GetHit 상태 Set ---------- GetHit 상태 Set ---------- 
     {
-        Debug.LogWarning("Get Hit");
+        //Debug.LogWarning("Get Hit");
+
+
+        enemyWeapon.enabled = false;
 
         agent.isStopped = true;
         heart--;
         if (heart != 0)
         {
-            Debug.Log("GetHit 프로퍼티 hp 감소");
+           // Debug.Log("Enemy GetHit 프로퍼티 hp 감소");
             anim.SetTrigger("GetHit");
             getHitWaitTime = Time.time;
             _state = value;
@@ -174,104 +199,44 @@ public class EnemyBase : MonoBehaviour
         }
         else if(isAlive==true)
         {
-            Debug.Log("GetHit 프로퍼티 DIE 실행");
+            //Debug.Log("GetHit 프로퍼티 DIE 실행");
             Die();
         }
     }
-    protected virtual void Die()
+
+    protected virtual void Die()                  //  ---------- Die 상태 Set ---------- Die 상태 Set ---------- Die 상태 Set ---------- Die 상태 Set ---------- Die 상태 Set ---------- Die 상태 Set ---------- Die 상태 Set ---------- 
     {
-        Debug.LogError("D I E");
+        //Debug.LogError("D I E");
         StopAllCoroutines();
         agent.isStopped = true;
         player = null;
         playerDetect = false;
+        enemyCollider.enabled = false;
         isAlive = false;
         anim.SetTrigger("Die");
         anim.SetBool("Scout",false);
         anim.SetBool("ArrivePlayer", false);
         anim.SetBool("ChasePlayer", false);
-
-
-
         IAmDied?.Invoke();      //Spawner에게 일정시간 후 다시 부활시켜달라 요청
         StartCoroutine(OneSecondAfterDisable());
-        
-
     }
-
-    IEnumerator ChasePlayerRefresh()
-    {
-        while(true)
-        {
-            //Debug.LogWarning("플레이어 추적 갱신");
-            checkPath = agent.SetDestination(player.transform.position);        //주기적 목표 갱신
-            if (checkPath == false)
-                Debug.LogError("경로를 찾을 수 없습니다.");
-
-            yield return chaseRefreshTime;
-        }
-        
-
-    }
-    private void OnTriggerEnter(Collider other)
-    {
-        if(other.CompareTag("Weapon") && isAlive== true && playerDetect==true)               ///자식의 Triggeㄱ발동으로 강제 실행됨.
-        {
-            Debug.Log("아야!");
-            enemyCollider.enabled = false;          //추가적으로 맞지 않게끔 비활성화. EnemyModeGetHit에서 무적시간 적용.
-            State = EnemyState.GETHIT;
-        }
-    }
-
     IEnumerator OneSecondAfterDisable()
     {
-        yield return new WaitForSeconds(3f);
+        yield return ThreeSecondWait;
         gameObject.SetActive(false);
     }
 
-    private void Start()
-    {
-        State = EnemyState.IDLE;
-        detector.detectPlayer += DetectPlayer;      //문제있을시 OnEnable로옮기기
-    }
+    //--------상태 프로퍼티----------------상태 프로퍼티----------------상태 프로퍼티----------------상태 프로퍼티----------------상태 프로퍼티----------------상태 프로퍼티----------------상태 프로퍼티----------------
+    //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    //--------생명주기----------------생명주기----------------생명주기----------------생명주기----------------생명주기----------------생명주기----------------생명주기----------------생명주기----------------생명주기--------
 
-    private void OnEnable()
-    {
-        RespownSetting();
-    }
-    private void OnDisable()
-    {
-        player = null;
-    }
-    protected virtual void RespownSetting()
-    {
-        //anim.SetTrigger("Restart");
-        State = EnemyState.IDLE;
-        heart = maxHeart;
-        scoutIndex = 0;
-        transform.position = spownPoint.position;
-        enemyCollider.enabled = true;
-        isAlive = true;
-        playerDetect = false;
-    }
-
-    void DetectPlayer(GameObject obj)
-    {
-        Debug.Log("플레이어 발견 델리게이트 수신 완료. 콜라이더 활성화");
-        enemyCollider.enabled = true;
-        playerDetect = true;
-        player = obj;
-        State = EnemyState.CHASE;
-    }
-
-
-    private void Awake()
+    private void Awake()                  //  ---------- Awake ---------- Awake ---------- Awake ---------- Awake ---------- Awake ---------- Awake ---------- Awake ---------- Awake ---------- Awake ---------- Awake-----
     {
         SettingInformation();
         FindComponent();
         SetupPath();
     }
-    protected virtual void SettingInformation(){}
+    protected virtual void SettingInformation() {  }
     void FindComponent()
     {
         detector = transform.GetComponentInChildren<EnemyDetector>();
@@ -285,12 +250,48 @@ public class EnemyBase : MonoBehaviour
         spownPoint = trans.GetChild(0).transform;
         scoutPoint = new Vector3[trans.childCount - 2];
         for (int i = 0; i < scoutPoint.Length; i++)
-        {
             scoutPoint[i] = trans.GetChild(i + 1).position;
-            //Debug.Log($"경로설정 <{i}> 완료. {scoutPoint[i]}");
-        }
     }
-    private void FixedUpdate()
+    private void OnEnable()                  //  ---------- OnEnable ---------- OnEnable ---------- OnEnable ---------- OnEnable ---------- OnEnable ---------- OnEnable ---------- OnEnable ---------- OnEnable ------
+    {
+        RespownSetting();
+    }
+    protected virtual void RespownSetting()
+    {
+        //anim.SetTrigger("Restart");
+        State = EnemyState.IDLE;
+        heart = maxHeart;
+        scoutIndex = 0;
+        transform.position = spownPoint.position;
+        enemyWeapon.enabled = false;
+        enemyCollider.enabled = false;
+        isAlive = true;
+        playerDetect = false;
+    }
+
+    private void Start()                  //  ---------- Start ---------- Start ---------- Start ---------- Start ---------- Start ---------- Start ---------- Start ---------- Start ---------- Start ---------- Start ---------- Start ---------- Start
+    {
+        detector.detectPlayer += DetectPlayer;      
+    }
+
+    //--------생명주기----------------생명주기----------------생명주기----------------생명주기----------------생명주기----------------생명주기----------------생명주기----------------생명주기----------------생명주기--------
+    //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    //--------델리게이트수신----------------델리게이트수신----------------델리게이트수신----------------델리게이트수신----------------델리게이트수신----------------델리게이트수신----------------델리게이트수신
+
+    void DetectPlayer(GameObject obj)
+    {
+        Debug.Log("플레이어 발견");
+        enemyCollider.enabled = true;
+        playerDetect = true;
+        player = obj;
+        State = EnemyState.CHASE;
+    }
+
+    //--------델리게이트수신----------------델리게이트수신----------------델리게이트수신----------------델리게이트수신----------------델리게이트수신----------------델리게이트수신----------------델리게이트수신
+    //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    //--------FixedUpdate & 몬스터 모드----------------FixedUpdate & 몬스터 모드----------------FixedUpdate & 몬스터 모드----------------FixedUpdate & 몬스터 모드----------------FixedUpdate & 몬스터 모드
+
+    private void FixedUpdate()                 //  ---------- FixedUpdate ---------- FixedUpdate ---------- FixedUpdate ---------- FixedUpdate ---------- FixedUpdate ---------- FixedUpdate ---------- FixedUpdate ----------
     {
         if (State == EnemyState.IDLE)
             EnemyModeIdle();
@@ -304,53 +305,41 @@ public class EnemyBase : MonoBehaviour
             EnemyModeAtackWait();
         else if (State == EnemyState.GETHIT)
             EnemyModeGetHit();
-
     }
 
-    protected virtual void EnemyModeIdle()
+    protected virtual void EnemyModeIdle()                  //  ---------- Idle ---------- Idle ---------- Idle ---------- Idle ---------- Idle ---------- Idle ---------- Idle ---------- Idle ---------- Idle ---------- Idle ---------- Idle ---------- Idle
     {
-        if(Time.time - idleWaitTime > idleWaitTimeMax )
+        if (Time.time - idleWaitTime > idleWaitTimeMax)
         {
-            Debug.Log("idle 대기 종료. Scout시작");
+            //Debug.Log("idle 대기 종료. Scout시작");
             State = EnemyState.SCOUT;
         }
 
     }
-    protected virtual void EnemyModeScout()
+    protected virtual void EnemyModeScout()                  //  ---------- Scout ---------- Scout ---------- Scout ---------- Scout ---------- Scout ---------- Scout ---------- Scout ---------- Scout ---------- Scout ---------- Scout
     {
-        if( agent.remainingDistance < 0.1f)
-        {
+        if (agent.remainingDistance < 0.1f)
             State = EnemyState.IDLE;
-        }
-
     }
-    protected virtual void EnemyModeChase()
+    protected virtual void EnemyModeChase()                  //  ---------- Chase ---------- Chase ---------- Chase ---------- Chase ---------- Chase ---------- Chase ---------- Chase ---------- Chase ---------- Chase ----------
     {
-        //Debug.Log($"남은 추적거리 : {agent.remainingDistance}");
-        //if(Time.time-chaseLimitTime > chaseLimitTimeMax ) 
-        //{
-        //    State = EnemyState.SCOUT;
-        //}     추후, 3초이상 추적했는데도 도달 못하면 초기상태로 돌아가는 코드 구현하기.
         if (agent.remainingDistance < arriveDistance)
         {
             //Debug.Log("플레이어에게 도착.");
             StopAllCoroutines();
             State = EnemyState.ATACKWAIT;
         }
-        
-    }
-    protected virtual void EnemyModeAtackWait()
-    {
 
     }
-    protected virtual void EnemyModeAtack()
+    protected virtual void EnemyModeAtackWait() { }                   //  ---------- AtackWait  ---------- AtackWait ---------- AtackWait ---------- AtackWait ---------- AtackWait ---------- AtackWait ---------- AtackWait ----------
+    // 각각의 Enemy Class에서 따로 구현할 예정. 할 필요가 없으니 합치는 작업 진행할 것.
+
+    protected virtual void EnemyModeAtack()                  //  ---------- Atack ---------- Atack ---------- Atack ---------- Atack ---------- Atack ---------- Atack ---------- Atack ---------- Atack ---------- Atack ---------- Atack ----------
     {
         if (Time.time - atackStayTime > atackStayTImeMax)
-        {
             State = EnemyState.ATACKWAIT;
-        }
     }
-    protected virtual void EnemyModeGetHit()
+    protected virtual void EnemyModeGetHit()                  //  ---------- GetHit ---------- GetHit ---------- GetHit ---------- GetHit ---------- GetHit ---------- GetHit ---------- GetHit ---------- GetHit ---------- GetHit ---------- GetHit
     {
         //Debug.Log($"{Time.time - getHitWaitTime}");
         if (Time.time - getHitWaitTime > getHitWaitTimeMax)
@@ -374,6 +363,23 @@ public class EnemyBase : MonoBehaviour
 
     }
 
+    //--------FixedUpdate & 몬스터 모드----------------FixedUpdate & 몬스터 모드----------------FixedUpdate & 몬스터 모드----------------FixedUpdate & 몬스터 모드----------------FixedUpdate & 몬스터 모드
+    //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    //--------충돌 이벤트----------------충돌 이벤트----------------충돌 이벤트----------------충돌 이벤트----------------충돌 이벤트----------------충돌 이벤트----------------충돌 이벤트----------------충돌 이벤트--------
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Weapon") && isAlive == true && playerDetect == true) 
+        {
+            //Debug.Log("플레이어에게 공격당함");
+            enemyCollider.enabled = false;          //추가적으로 맞지 않게끔 비활성화. EnemyModeGetHit에서 무적시간 적용.
+            State = EnemyState.GETHIT;
+        }
+    }
+
+    //--------충돌 이벤트----------------충돌 이벤트----------------충돌 이벤트----------------충돌 이벤트----------------충돌 이벤트----------------충돌 이벤트----------------충돌 이벤트----------------충돌 이벤트--------
+    //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    //--------Gizmos----------------Gizmos----------------Gizmos----------------Gizmos----------------Gizmos----------------Gizmos----------------Gizmos----------------Gizmos----------------Gizmos----------------Gizmos
 
     /*
     private void OnDrawGizmos()
@@ -385,5 +391,5 @@ public class EnemyBase : MonoBehaviour
         }
     }
     */
-    
+
 }

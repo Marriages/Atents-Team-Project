@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 634116773486186002}
   - component: {fileID: 634116773486186005}
   - component: {fileID: -890785463034515511}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Bullet
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -127,5 +127,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62731948af4e2f2498decd50240bae61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 6
+  speed: 7
   bombEffect: {fileID: 4021103657954561961, guid: 5c755f9bc5253ea418e919994537dcc7, type: 3}

@@ -2144,6 +2144,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4d550dde2669da49a96203934425f06, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyWeapon: {fileID: 7291103981313077631}
   heart: 0
   maxHeart: 0
   enemySpeed: 0
@@ -2200,7 +2201,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 1
   m_Interpolate: 0
-  m_Constraints: 80
+  m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!95 &-4984240073141080446
 Animator:

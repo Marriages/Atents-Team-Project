@@ -23,7 +23,9 @@ public class EnemyBullet : MonoBehaviour
     private void Start()
     {
         Destroy(gameObject,4f);
-        dir = (target.transform.position - transform.position).normalized;
+        dir = (target.transform.position - transform.position);
+        dir.y = 0;
+        dir = dir.normalized;
     }
     private void FixedUpdate()
     {
@@ -31,7 +33,7 @@ public class EnemyBullet : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("총알 충돌! 폭발!");
+        //Debug.Log("총알 충돌! 폭발!");
         GameObject obj = Instantiate(bombEffect);
         obj.transform.position = transform.position;
         Destroy(obj.gameObject, 1f);

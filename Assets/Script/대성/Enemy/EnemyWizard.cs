@@ -49,7 +49,8 @@ public class EnemyWizard  : EnemyBase
 
     override protected void StateAtack(EnemyState value)
     {
-        Debug.LogWarning("Atack!!!!!! and Wait..");
+        //Debug.LogWarning("Atack!!!!!! and Wait..");
+        enemyWeapon.enabled = true;
         anim.SetTrigger("Atack1");
         atackStayTime = Time.time;
         StartCoroutine(AtackDelayTime());
