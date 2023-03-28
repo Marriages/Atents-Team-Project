@@ -902,7 +902,7 @@ GameObject:
   - component: {fileID: 687538784720047677}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -970,8 +970,8 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.3508981
-  m_Height: 2.3449714
+  m_Radius: 0.3
+  m_Height: 2
   m_Direction: 1
   m_Center: {x: 0.013554752, y: 1.2011195, z: 0.040664136}
 --- !u!114 &687538784720047677
@@ -989,6 +989,9 @@ MonoBehaviour:
   moveSpeed: 5
   rotateSpeed: 20
   jumpPower: 6
+  weaponGet: 0
+  shieldGet: 0
+  potionGet: 0
 --- !u!1 &5806692593682951097
 GameObject:
   m_ObjectHideFlags: 0
@@ -1716,6 +1719,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: potion
       objectReference: {fileID: 0}
+    - target: {fileID: 5989965431277656286, guid: 7259304f5d747054ea8bec6bfc2db6da, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6371310885144412772, guid: 7259304f5d747054ea8bec6bfc2db6da, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -1782,13 +1789,17 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4756071006429451717}
     m_Modifications:
+    - target: {fileID: 1498933956998491763, guid: 8e1d7f33b0d97544aaddcb128b81be00, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.5
+      objectReference: {fileID: 0}
     - target: {fileID: 4682539792886210664, guid: 8e1d7f33b0d97544aaddcb128b81be00, type: 3}
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4682539792886210664, guid: 8e1d7f33b0d97544aaddcb128b81be00, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2.646
+      value: -2.656
       objectReference: {fileID: 0}
     - target: {fileID: 4682539792886210664, guid: 8e1d7f33b0d97544aaddcb128b81be00, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1796,7 +1807,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4682539792886210664, guid: 8e1d7f33b0d97544aaddcb128b81be00, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.251
+      value: -0.376
       objectReference: {fileID: 0}
     - target: {fileID: 4682539792886210664, guid: 8e1d7f33b0d97544aaddcb128b81be00, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1830,6 +1841,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: sword
       objectReference: {fileID: 0}
+    - target: {fileID: 8781547396834801686, guid: 8e1d7f33b0d97544aaddcb128b81be00, type: 3}
+      propertyPath: m_TagString
+      value: Weapon
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8e1d7f33b0d97544aaddcb128b81be00, type: 3}
 --- !u!4 &214849245772587875 stripped
@@ -1837,3 +1852,22 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4682539792886210664, guid: 8e1d7f33b0d97544aaddcb128b81be00, type: 3}
   m_PrefabInstance: {fileID: 4756071006803854091}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &4314069890669230877 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8781547396834801686, guid: 8e1d7f33b0d97544aaddcb128b81be00, type: 3}
+  m_PrefabInstance: {fileID: 4756071006803854091}
+  m_PrefabAsset: {fileID: 0}
+--- !u!136 &2002713561310061823
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4314069890669230877}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  m_Radius: 0.15
+  m_Height: 1.3
+  m_Direction: 1
+  m_Center: {x: 2.65135, y: 1.1, z: -1.16565}

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -200,11 +201,20 @@ public class Player : MonoBehaviour
         {
             OnGround();     // 착지 함수 실행
         }
-        else if (other.gameObject.CompareTag("Enemy"))
+        /*else if (other.gameObject.CompareTag("Enemy"))
         {
             anim.SetTrigger("IsHit");
             Heart--;
             StartCoroutine(HitAnimationState());
+        }*/
+    }
+    // 새로 추가한 부분
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.CompareTag("Enemy"))
+        {
+            anim.SetTrigger("IsHit");
+            Debug.Log("플레이어가 한대 맞았습니다!");
         }
     }
 

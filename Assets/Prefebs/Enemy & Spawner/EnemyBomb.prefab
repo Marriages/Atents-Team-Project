@@ -269,9 +269,9 @@ GameObject:
   - component: {fileID: 5675603114313112645}
   - component: {fileID: 7988883342877035176}
   - component: {fileID: 489571703002744271}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: EnemyBomb
-  m_TagString: Enemy
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -317,8 +317,9 @@ MonoBehaviour:
   scoutIndex: 0
   drawGizmo: 0
   checkPath: 0
+  isAlive: 1
+  playerDetect: 0
   idleWaitTimeMax: 3
-  chaseLimitTimeMax: 3
   atackWaitTimeMax: 2
   atackWaitTime: 0
   atackStayTImeMax: 0

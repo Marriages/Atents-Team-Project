@@ -989,7 +989,7 @@ GameObject:
   - component: {fileID: 2936925481661558859}
   - component: {fileID: 1555371344}
   - component: {fileID: -8142259816077211092}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: EnemyWizard
   m_TagString: Untagged
   m_Icon: {fileID: 0}

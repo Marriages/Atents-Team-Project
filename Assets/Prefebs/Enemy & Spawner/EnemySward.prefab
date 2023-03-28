@@ -1469,7 +1469,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3300400971195273368}
   - component: {fileID: 7291103981313077631}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Weapon
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -2105,7 +2105,7 @@ GameObject:
   - component: {fileID: -8500129303534823811}
   - component: {fileID: -4984240073141080446}
   - component: {fileID: 9154950254566014595}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: EnemySward
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2156,6 +2156,7 @@ MonoBehaviour:
   drawGizmo: 0
   checkPath: 0
   isAlive: 1
+  playerDetect: 0
   idleWaitTimeMax: 3
   atackWaitTimeMax: 2
   atackWaitTime: 0
@@ -2233,7 +2234,7 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3305193717099281616}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.5
   m_Height: 1.5
