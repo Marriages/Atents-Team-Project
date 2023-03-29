@@ -13,7 +13,7 @@ public class EnemyBase : MonoBehaviour
     protected NavMeshAgent agent;        // 길찾기 Navigation에 사용될 변수
     EnemyDetector detector;                    // 자식오브젝트 Detector로부터 델리게이트를 수신하기 위함
     Transform spownPoint;                       // 초기 
-    Collider enemyCollider;                      // 무적시간 설정을 위하여 선언.
+    public Collider enemyCollider;                      // 무적시간 설정을 위하여 선언.
     public Action IAmDied;                       // Spawner에게 죽었다는 것을 알리고, 새로 Enable시키기 위함.
     public Collider enemyWeapon;
 
@@ -186,6 +186,7 @@ public class EnemyBase : MonoBehaviour
 
 
         enemyWeapon.enabled = false;
+        enemyCollider.enabled = false;
 
         agent.isStopped = true;
         heart--;

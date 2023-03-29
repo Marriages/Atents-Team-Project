@@ -7,7 +7,7 @@ using UnityEngine;
 public class EnemyDetector : MonoBehaviour
 {
     public Action<GameObject> detectPlayer;
-    SphereCollider col;
+    public SphereCollider col;
 
 
     private void Awake()
