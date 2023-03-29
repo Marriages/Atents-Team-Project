@@ -18,7 +18,7 @@ public class EnemyBomb : EnemyBase
     {
         if (agent.remainingDistance < arriveDistance)
         {
-            Debug.Log("플레이어에게 도착.");
+            //Debug.Log("플레이어에게 도착.");
             StopAllCoroutines();
             State = EnemyState.ATACK;
         }
@@ -26,7 +26,7 @@ public class EnemyBomb : EnemyBase
     }
     override protected void StateAtack(EnemyState value)
     {
-        Debug.Log("Self Destruct Atack!!");
+        //Debug.Log("Self Destruct Atack!!");
         anim.SetTrigger("SelfDestruct");
         agent.isStopped = true;
         StartCoroutine(OneSecondLaterBomb());
@@ -35,9 +35,11 @@ public class EnemyBomb : EnemyBase
     IEnumerator OneSecondLaterBomb()
     {
         Debug.Log("2 second later...");
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1.9f);
         GameObject obj = Instantiate(explosionEffect);
-        obj.transform.position = transform.position;
+        obj.transform.position = transform.position+Vector3.up*2;
+        enemyWeapon.enabled = true;
+        yield return new WaitForSeconds(0.1f);
         State = EnemyState.GETHIT;
     }
     

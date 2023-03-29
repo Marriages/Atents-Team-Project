@@ -63,6 +63,7 @@
     <Compile Include="Assets\Script\대성\Enemy\EnemyBomb.cs" />
     <Compile Include="Assets\Script\성윤\Player.cs" />
     <Compile Include="Assets\Script\대성\Enemy\EnemyDetector.cs" />
+    <Compile Include="Assets\Script\대성\Test\TestCollisionTrigger.cs" />
     <Compile Include="Assets\Script\대성\Enemy\EnemyBase.cs" />
     <Compile Include="Assets\Script\대성\Enemy\Spawner.cs" />
     <Compile Include="Assets\Script\대성\Enemy\EnemyBullet.cs" />

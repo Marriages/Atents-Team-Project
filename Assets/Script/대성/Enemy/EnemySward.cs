@@ -13,6 +13,7 @@ public class EnemySward : EnemyBase
         chaseSpeed = 4f;
         detectRange = 5f;
         atackRange = 8f;
+        arriveDistance = 2f;
     }
 
     protected override void EnemyModeAtackWait()

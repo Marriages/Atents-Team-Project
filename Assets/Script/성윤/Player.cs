@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -45,6 +46,7 @@ public class Player : MonoBehaviour
     public bool weaponGet = false;
     public bool shieldGet = false;
     public bool potionGet = false;
+    public bool isAlive = true;     //수정함----------------------------------------------------------------------------------------------------------------------
 
     // 델리게이트
     public Action<int> HeartPlus;
@@ -56,6 +58,11 @@ public class Player : MonoBehaviour
     public Action WeaponGet;
     public Action ShieldGet;
     public Action PlayerDie;
+
+    // 포션,무기, 방패 관리용
+    public GameObject potion;    //수정함----------------------------------------------------------------------------------------------------------------------        포션 넣을 것
+    public Collider weaponCol;   //수정함----------------------------------------------------------------------------------------------------------------------        콜라이더가 있는 무기 넣을것
+    public Collider shieldCol;       //수정함----------------------------------------------------------------------------------------------------------------------        콜라이더가 있는 방패 넣을 것
 
     // 하트 프로퍼티
     public int Heart
@@ -77,17 +84,33 @@ public class Player : MonoBehaviour
             }
             else if (heart > value)       //피격
             {
-                Debug.Log("피격 시퀀스 가동");
+                //Debug.Log("피격 시퀀스 가동");
+
+                inputActions.Player.Move.canceled -= PlayerMove;//수정함---------------------------------------------------------------------------------------------------------------------- 입력시스템 제거
+                inputActions.Player.Move.performed -= PlayerMove;//수정함----------------------------------------------------------------------------------------------------------------------입력시스템 제거
 
                 if (value <= 0)
                 {
+                    Debug.Log("사망 시퀀스 가동");//수정함----------------------------------------------------------------------------------------------------------------------
+                    isAlive = false;//수정함----------------------------------------------------------------------------------------------------------------------
+                    moveSpeed = 0f;//수정함----------------------------------------------------------------------------------------------------------------------
+                    rotateSpeed = 0f;//수정함----------------------------------------------------------------------------------------------------------------------
+                    anim.SetBool("IsDie",true);//수정함----------------------------------------------------------------------------------------------------------------------
+                                               //  + animation Controller Any State -> Die에  Bool IsDie 및 IsHit 에 의해 작동하게 수정및 변경  /  AnyState -> Potion, Atack에 IsDie가 false여야만 작동할 수 있게 부울 조건 추가함.
                     PlayerDie?.Invoke();
                 }
                 else
                 {
+                    Debug.Log("생명력 감소");//수정함----------------------------------------------------------------------------------------------------------------------
+
+                    inputActions.Player.Move.performed += PlayerMove;//수정함----------------------------------------------------------------------------------------------------------------------입력시스템 복구
+                    inputActions.Player.Move.canceled += PlayerMove;//수정함----------------------------------------------------------------------------------------------------------------------입력시스템 복구
+
                     heart = value;
                     HeartMinus?.Invoke(1);
                 }
+
+
             }
         }
     }
@@ -116,6 +139,10 @@ public class Player : MonoBehaviour
     private void Awake()
     {
         Heart = 3;
+
+        weaponCol.enabled = false;  //수정함----------------------------------------------------------------------------------------------------------------------     초기시작시 검의 콜라이더 비활성화. 추후 공격떄 활성화할 예정
+        shieldCol.enabled = false;  //수정함----------------------------------------------------------------------------------------------------------------------    초기시작시 방패의 콜라이더 비활성화. 추후 방어할때 활성화할 예정
+
         rigid = GetComponent<Rigidbody>();
         anim = GetComponent<Animator>();
 
@@ -170,22 +197,19 @@ public class Player : MonoBehaviour
         }
         
     }
-
+    //수정함----------------------------------------------------------------------------------------------------------------------시작
+    // 로직이 복잡하거나 상속을 해줄 일이 없기에, 불필요한 함수 Jump()를 삭제 병합함.
     // 플레이어 점프 관련 이벤트 함수
     private void PlayerJump(InputAction.CallbackContext context)
     {
-        Jump();
-
-    }
-
-    void Jump()
-    {
-        if (!IsJumping)         // 점프 중이 아닐 때만
+        if (IsJumping==false && isAlive==true)         // 점프 중이 아닐 때만 그리고 살아있을때만
         {
             rigid.AddForce(Vector3.up * jumpPower, ForceMode.Impulse);  // 월드의 Up방향으로 힘을 즉시 가하기
             IsJumping = true;   // 점프중이라고 표시
         }
     }
+    //수정함----------------------------------------------------------------------------------------------------------------------끝
+   
 
     // 착지했을 때 처리 함수
     void OnGround()
@@ -193,20 +217,29 @@ public class Player : MonoBehaviour
         IsJumping = false;      // 점프가 끝났다고 표시
     }
 
+
+    //수정함----------------------------------------------------------------------------------------------------------------------시작
     // 플레이어 충돌 관련 이벤트 함수
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Ground"))   // Ground와 충돌했을 때만
+
+        if (other.gameObject.CompareTag("Enemy") && isAlive==true)      //Enemy이고 살아있을때만.
         {
-            OnGround();     // 착지 함수 실행
-        }
-        else if (other.gameObject.CompareTag("Enemy"))
-        {
-            anim.SetTrigger("IsHit");
+            Debug.Log($"플레이어가 {other.gameObject.name}에게 피격당함!");
+            anim.SetTrigger("IsHit");       //수정함----------------------------------------------------------------------------------------------------------------------  Animator Controller 중 Idle -> Hit로가는 IsHit Trigger 설정함(has exit Time 뺐음)
             Heart--;
             StartCoroutine(HitAnimationState());
         }
     }
+    // 새로 추가한 부분
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Ground") && isAlive==true)   // Ground와 충돌했을 때만, 살아있을때만
+        {
+            OnGround();     // 착지 함수 실행
+        }
+    }
+    //수정함----------------------------------------------------------------------------------------------------------------------끝
 
     // 히트애니메이션 코루틴
     IEnumerator HitAnimationState()
@@ -238,20 +271,21 @@ public class Player : MonoBehaviour
     // 공격애니메이션 코루틴
     IEnumerator AttackAnimationState()
     {
-        while (!anim.GetCurrentAnimatorStateInfo(0)
-        .IsName("Attack"))
+        while (!anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
         {
             // 전환 중일 때 실행되는 부분
             yield return null;
         }
-        while (anim.GetCurrentAnimatorStateInfo(0)
-        .normalizedTime < exitTime)
+        while (anim.GetCurrentAnimatorStateInfo(0).normalizedTime < exitTime)
         {
+           
+            weaponCol.enabled = true;   //수정함----------------------------------------------------------------------------------------------------------------------  공격중일 때 검의 콜라이더를 활성화시킴 ,  Animator 에서 Atack Speed 2로 조정함.
             // 애니메이션 재생 중 실행되는 부분
             inputActions.Player.Disable();  // 플레이어 입력 키 비활성화
             yield return null;
         }
         // 애니메이션 완료 후 실행되는 부분
+        weaponCol.enabled = false;  //수정함---------------------------------------------------------------------------------------------------------------------- 공격 완료 후 검의 콜라이더를 비활성화시킴
         inputActions.Player.Enable();       // 플레이어 입력 키 활성화
     }
 
@@ -291,9 +325,12 @@ public class Player : MonoBehaviour
         while (!anim.GetCurrentAnimatorStateInfo(0)
         .IsName("Potion"))
         {
+            
             // 전환 중일 때 실행되는 부분
             yield return null;
         }
+
+        potion.gameObject.SetActive(true); //수정함----------------------------------------------------------------------------------------------------------------------   포션 보이게끔 함
         while (anim.GetCurrentAnimatorStateInfo(0)
         .normalizedTime < exitTime)
         {
@@ -301,6 +338,8 @@ public class Player : MonoBehaviour
             inputActions.Player.Disable();      // 플레이어 입력 키 비활성화
             yield return null;
         }
+        potion.gameObject.SetActive(false); //수정함---------------------------------------------------------------------------------------------------------------------- 포션 보이지 않게끔 함
+
         // 애니메이션 완료 후 실행되는 부분
         inputActions.Player.Enable();           // 플레이어 입력 키 활성화
     }
