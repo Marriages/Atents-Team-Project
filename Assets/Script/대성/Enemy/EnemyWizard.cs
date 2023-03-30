@@ -48,6 +48,7 @@ public class EnemyWizard  : EnemyBase
     override protected void StateAtack(EnemyState value)
     {
         base.StateAtack(value);
+        anim.SetTrigger("Atack1");
         StartCoroutine(AtackDelayTime());           //총알 발사시간을 제어하기 위해 코루틴 실행
     }
     IEnumerator AtackDelayTime()

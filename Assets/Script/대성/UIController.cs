@@ -31,23 +31,47 @@ public class UIController : MonoBehaviour
 
 
     [Header("Component")]
-    DsTestPlayer player;
+    Player player;                  //-----------------------------------------------------------수정함. DsTestPlayer -> Player
 
 
 
 
     private void Awake()
     {
-        player = FindObjectOfType<DsTestPlayer>();          //Start의 델리게이트 연결을 위하여 객체를 찾아둠.
-        
+        player = FindObjectOfType<Player>();          //Start의 델리게이트 연결을 위하여 객체를 찾아둠.
+                                    //-----------------------------------------------------------수정함. DsTestPlayer -> Player
         //canvasChildCount = transform.childCount;
         heartText = transform.GetChild(0).GetComponent<TextMeshProUGUI>();      //heartText.TMP 찾기
         coinText = transform.GetChild(3).GetComponent<TextMeshProUGUI>();       //coinText.TMP 찾기
         weaponImage=transform.GetChild(4).GetComponent<Image>();
         shieldImage = transform.GetChild(5).GetComponent<Image>(); ;
         potionImage = transform.GetChild(6).GetComponent<Image>(); ;
+    }
 
-
+    private void OnEnable()//-----------------------------------------------------------수정함. Start-> Enabled
+    {
+        player.HeartPlus += HeartPlusUpdate;
+        player.HeartMinus += HeartMinusUpdate;
+        player.CoinPlus += CoinPlusUpdate;
+        player.CoinMinus += CoinMinusUpdate;
+        player.PotionGet += PotionGetUpdate;
+        player.PotionUse += PotionUseUpdate;
+        player.WeaponGet += WeaponGetUpdate;
+        player.ShieldGet += ShieldGetUpdate;
+        player.PlayerDie += PlayerDieUpdate;
+        //player.EnemyDetectPlayer += CoinMinusUpdate;
+    }
+    private void OnDisable()//-----------------------------------------------------------추가함함. Delegate Disabled
+    {
+        player.HeartPlus -= HeartPlusUpdate;
+        player.HeartMinus -= HeartMinusUpdate;
+        player.CoinPlus -= CoinPlusUpdate;
+        player.CoinMinus -= CoinMinusUpdate;
+        player.PotionGet -= PotionGetUpdate;
+        player.PotionUse -= PotionUseUpdate;
+        player.WeaponGet -= WeaponGetUpdate;
+        player.ShieldGet -= ShieldGetUpdate;
+        player.PlayerDie -= PlayerDieUpdate;
 
     }
     private void Start()
@@ -59,16 +83,7 @@ public class UIController : MonoBehaviour
         coinNum = 0;
         
 
-        player.HeartPlus += HeartPlusUpdate;
-        player.HeartMinus += HeartMinusUpdate;
-        player.CoinPlus += CoinPlusUpdate;
-        player.CoinMinus += CoinMinusUpdate;
-        player.PotionGet += PotionGetUpdate;
-        player.PotionUse += PotionUseUpdate;
-        player.WeaponGet += WeaponGetUpdate;
-        player.ShieldGet += ShieldGetUpdate;
-        player.PlayerDie += PlayerDieUpdate;
-        //player.EnemyDetectPlayer += CoinMinusUpdate;
+        
 
         //초기 셋팅. False로 설정되어있음.
         weaponImage.gameObject.SetActive(weaponGet);

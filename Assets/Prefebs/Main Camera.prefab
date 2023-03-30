@@ -97,8 +97,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8c74a3b4816425468efdb2a203b42fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Target: {fileID: 0}
-  offsetX: 0
-  offsetY: 5
-  offsetZ: -10
-  CameraSpeed: 10
+  target: {fileID: 0}

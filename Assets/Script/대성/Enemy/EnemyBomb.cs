@@ -35,6 +35,10 @@ public class EnemyBomb : EnemyBase
         atackStayTImeMax = _atackStayTImeMax;               // 공격을 하는 시간
         getHitWaitTimeMax = _getHitWaitTimeMax;          // 피격 후 무적시간
 }
+    protected override void StateAtackWait(EnemyState value)
+    {
+        _state = value;
+    }
     override protected void StateAtack(EnemyState value)
     {
         // EnemyBase의 내용을 상속받지 않고, 본인만의 공격 패턴을 가짐.
@@ -46,7 +50,7 @@ public class EnemyBomb : EnemyBase
         StartCoroutine(OneSecondLaterBomb());                   // 정해진 시간 이후 자폭할 수있게 코루틴 실행
         _state = value;
     }
-    IEnumerator OneSecondLaterBomb()
+    IEnumerator OneSecondLaterBomb( )
     {
         if (debugOnOff)
             Debug.Log("2 second later...");
@@ -56,7 +60,8 @@ public class EnemyBomb : EnemyBase
         obj.transform.position = transform.position+Vector3.up*2;           // 폭팔 프리팹 위치 조정
         enemyWeapon.enabled = true;                                         // 본인의 Bomb 콜리더를 활성화 시켜 해당 범위 안에서 Enter 발생시 공격효과
         yield return new WaitForSeconds(0.1f);                              // 확실히 공격이 들어갈 수 있게 잠깐의 대기시간
-        State = EnemyState.GETHIT;                                          // 해당 몬스터의 HP는 1이므로 피격 후 사망.
+        State = EnemyState.GETHIT;
+        // 해당 몬스터의 HP는 1이므로 피격 후 사망.
     }
     
     protected override void EnemyModeAtack()
