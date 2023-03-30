@@ -2107,7 +2107,7 @@ GameObject:
   - component: {fileID: 9154950254566014595}
   m_Layer: 8
   m_Name: EnemySward
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2144,14 +2144,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4d550dde2669da49a96203934425f06, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyCollider: {fileID: 9154950254566014595}
   enemyWeapon: {fileID: 7291103981313077631}
   heart: 0
   maxHeart: 0
-  enemySpeed: 0
   normalSpeed: 0
   chaseSpeed: 0
-  detectRange: 0
-  atackRange: 0
   arriveDistance: 0
   scoutIndex: 0
   drawGizmo: 0
@@ -2159,12 +2157,22 @@ MonoBehaviour:
   isAlive: 1
   playerDetect: 0
   idleWaitTimeMax: 3
+  idleWaitTime: 0
   atackWaitTimeMax: 2
   atackWaitTime: 0
   atackStayTImeMax: 1
   atackStayTime: 0
   getHitWaitTimeMax: 1.5
   getHitWaitTime: 0
+  _heart: 2
+  _maxHeart: 2
+  _normalSpeed: 2
+  _chaseSpeed: 4
+  _arriveDistance: 2
+  _idleWaitTimeMax: 3
+  _atackWaitTimeMax: 2
+  _atackStayTImeMax: 1
+  _getHitWaitTimeMax: 1.5
 --- !u!195 &1111680375149091678
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -2318,6 +2326,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3d64f7aa4dd18c4fb362e8cfcb8339e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  col: {fileID: 0}
 --- !u!135 &2478118918740422630
 SphereCollider:
   m_ObjectHideFlags: 0

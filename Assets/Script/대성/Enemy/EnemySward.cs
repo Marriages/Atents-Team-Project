@@ -4,35 +4,41 @@ using UnityEngine;
 
 public class EnemySward : EnemyBase
 {
+    // 몬스터마다 다르게 값을 부여하기 위하여 별도의 public 변수들을 SettingInformation에 대입할 용도로 선언함.
+    public int _heart=3;
+    public int _maxHeart = 3;
+    public float _normalSpeed = 2f;
+    public float _chaseSpeed = 4f;
+    public float _arriveDistance = 2f;
+
+
+    public float _idleWaitTimeMax = 3f;              // Idle상태->정찰상태 로 가기전 대기시간
+    public float _atackWaitTimeMax = 2f;             // 공격을 하기 전까지의 대기시간
+    public float _atackStayTImeMax = 1f;               // 공격을 하는 시간
+    public float _getHitWaitTimeMax = 1.5f;          // 피격 후 무적시간
+
+
     override protected void SettingInformation()
     {
-        heart=2;
-        maxHeart = 2;
-        enemySpeed = 1f;
-        normalSpeed = 2f;
-        chaseSpeed = 4f;
-        detectRange = 5f;
-        atackRange = 8f;
-        arriveDistance = 2f;
+        heart=_heart;
+        maxHeart = _maxHeart;
+        normalSpeed = _normalSpeed;
+        chaseSpeed = _chaseSpeed;
+        arriveDistance = _arriveDistance;
+
+        idleWaitTimeMax = _idleWaitTimeMax;              // Idle상태->정찰상태 로 가기전 대기시간
+        atackWaitTimeMax = _atackWaitTimeMax;             // 공격을 하기 전까지의 대기시간
+        atackStayTImeMax = _atackStayTImeMax;               // 공격을 하는 시간
+        getHitWaitTimeMax = _getHitWaitTimeMax;          // 피격 후 무적시간
     }
 
-    protected override void EnemyModeAtackWait()
+    protected override void StateAtack(EnemyState value)
     {
-        if(player!=null)
-        {
-            transform.LookAt(player.transform);
-            //너무 멀어졌으면 다시 추적
-            if ((player.transform.position - transform.position).sqrMagnitude > 4.0f)
-            {
-                //Debug.LogWarning("거리가 너무 멀어짐. 추적 다시 시작");
-                State = EnemyState.CHASE;
-            }
-            else if (Time.time - atackWaitTime > atackWaitTimeMax)
-            {
-                //Debug.LogWarning("대기시간 종료. AtackWait로 이동");
-                State = EnemyState.ATACK;
-            }
-        }
+        base.StateAtack(value);
         
+        if (Random.Range(0f, 1f) > 0.5f)                            // 0.5의 확률로 Atack1 또는 Atack2 실행.
+            anim.SetTrigger("Atack1");
+        else
+            anim.SetTrigger("Atack2");
     }
 }

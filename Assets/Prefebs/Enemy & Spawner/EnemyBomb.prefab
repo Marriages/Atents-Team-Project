@@ -369,15 +369,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10acd8875ccdc0d4da3c1146a101f9e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyCollider: {fileID: 0}
+  enemyCollider: {fileID: 7461982854883903322}
   enemyWeapon: {fileID: 2800866601096021061}
   heart: 2
   maxHeart: 3
-  enemySpeed: 5
   normalSpeed: 5
   chaseSpeed: 8
-  detectRange: 5
-  atackRange: 8
   arriveDistance: 2
   scoutIndex: 0
   drawGizmo: 0
@@ -393,6 +390,15 @@ MonoBehaviour:
   getHitWaitTimeMax: 0.6
   getHitWaitTime: 0
   explosionEffect: {fileID: 2433282508537954060, guid: 3ef3ae421f71c5c4e97fe12dc2fc6312, type: 3}
+  _heart: 1
+  _maxHeart: 1
+  _normalSpeed: 2
+  _chaseSpeed: 4
+  _arriveDistance: 2
+  _idleWaitTimeMax: 3
+  _atackWaitTimeMax: 2
+  _atackStayTImeMax: 1
+  _getHitWaitTimeMax: 1.5
 --- !u!195 &-2310424611093468889
 NavMeshAgent:
   m_ObjectHideFlags: 0
