@@ -41,6 +41,9 @@ public class Player : MonoBehaviour
     // 플레이어 생명
     private int heart = 3;
 
+    // 플레이어 무적시간 스프라이트
+    private SpriteRenderer sprite;
+
     // 플레이어 점수
     private int coin = 0;
     public bool weaponGet = false;
@@ -145,6 +148,7 @@ public class Player : MonoBehaviour
 
         rigid = GetComponent<Rigidbody>();
         anim = GetComponent<Animator>();
+        sprite = GetComponent<SpriteRenderer>();
 
         inputActions = new PlayerInputActions();
     }
@@ -194,6 +198,7 @@ public class Player : MonoBehaviour
         if(dir != Vector3.zero)
         {
             transform.forward = dir;
+            
         }
         
     }
@@ -206,6 +211,8 @@ public class Player : MonoBehaviour
         {
             rigid.AddForce(Vector3.up * jumpPower, ForceMode.Impulse);  // 월드의 Up방향으로 힘을 즉시 가하기
             IsJumping = true;   // 점프중이라고 표시
+            anim.SetTrigger("IsJump");
+            
         }
     }
     //수정함----------------------------------------------------------------------------------------------------------------------끝
@@ -229,8 +236,20 @@ public class Player : MonoBehaviour
             anim.SetTrigger("IsHit");       //수정함----------------------------------------------------------------------------------------------------------------------  Animator Controller 중 Idle -> Hit로가는 IsHit Trigger 설정함(has exit Time 뺐음)
             Heart--;
             StartCoroutine(HitAnimationState());
+
+            // 플레이어가 적과 충돌시 PlayerGod레이어로 변경(PlayerGod은 무적상태)
+            gameObject.layer = 10;
+            
+            Invoke("OffGod", 3);
         }
     }
+
+    // 무적시간 해제 함수
+    void OffGod()
+    {
+        gameObject.layer = 6;
+    }
+
     // 새로 추가한 부분
     private void OnCollisionEnter(Collision collision)
     {
