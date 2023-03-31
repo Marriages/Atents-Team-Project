@@ -74,6 +74,7 @@
     <Compile Include="Assets\InputSystem\InputSystemController.cs" />
     <Compile Include="Assets\Script\대성\Enemy\EnemyBaseTest.cs" />
     <Compile Include="Assets\Script\대성\Enemy\EnemyWizard.cs" />
+    <Compile Include="Assets\Script\대성\SceneManager.cs" />
     <Compile Include="Assets\Script\대성\Enemy\RePosition.cs" />
     <Compile Include="Assets\Script\대성\Trash\EnemyDetectAtack.cs" />
   </ItemGroup>
