@@ -991,7 +991,7 @@ GameObject:
   - component: {fileID: -8142259816077211092}
   m_Layer: 8
   m_Name: EnemyWizard
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1029,6 +1029,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyCollider: {fileID: -8142259816077211092}
   enemyWeapon: {fileID: 626115005}
+  hitEffect: {fileID: 4765294797218897687, guid: 58413d970a8981248b5b3c7a8deef91c, type: 3}
   heart: 0
   maxHeart: 0
   normalSpeed: 0
@@ -1039,6 +1040,7 @@ MonoBehaviour:
   checkPath: 0
   isAlive: 1
   playerDetect: 0
+  debugOnOff: 0
   idleWaitTimeMax: 3
   idleWaitTime: 0
   atackWaitTimeMax: 2
@@ -1124,7 +1126,7 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2049650432863922583}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.5
   m_Height: 2

@@ -2146,6 +2146,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyCollider: {fileID: 9154950254566014595}
   enemyWeapon: {fileID: 7291103981313077631}
+  hitEffect: {fileID: 4765294797218897687, guid: 58413d970a8981248b5b3c7a8deef91c, type: 3}
   heart: 0
   maxHeart: 0
   normalSpeed: 0
@@ -2156,6 +2157,7 @@ MonoBehaviour:
   checkPath: 0
   isAlive: 1
   playerDetect: 0
+  debugOnOff: 0
   idleWaitTimeMax: 3
   idleWaitTime: 0
   atackWaitTimeMax: 2

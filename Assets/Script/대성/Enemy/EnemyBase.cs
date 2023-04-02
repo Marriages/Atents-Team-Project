@@ -26,6 +26,7 @@ public class EnemyBase : MonoBehaviour
     public Collider enemyCollider;                              // 무적시간 설정을 위하여 선언.
     public Action IAmDied;                                      // Spawner에게 죽었다는 것을 알리고, 새로 Enable시키기 위함.
     public Collider enemyWeapon;
+    public GameObject hitEffect;
 
     [Header("Enemy Information")]                               // 해당 객체가 Enable되었을 때 셋팅할 SettingInformation()에 들어가게 될 변수들.
     public int heart;                                           // 현재 생명력
@@ -55,7 +56,7 @@ public class EnemyBase : MonoBehaviour
     public float idleWaitTime;
     public float atackWaitTimeMax = 2f;             // 공격을 하기 전까지의 대기시간
     public float atackWaitTime;
-    public float atackStayTImeMax=1f;               // 공격을 하는 시간
+    public float atackStayTImeMax = 1f;               // 공격을 하는 시간
     public float atackStayTime;
     public float getHitWaitTimeMax = 1.5f;          // 피격 후 무적시간
     public float getHitWaitTime;
@@ -101,7 +102,7 @@ public class EnemyBase : MonoBehaviour
     }
     virtual protected void StateIdle(EnemyState value)                  //  ---------- Idle 상태 Set ---------- Idle 상태 Set ---------- Idle 상태 Set ---------- Idle 상태 Set ---------- Idle 상태 Set ----------
     {
-        if(debugOnOff)
+        if (debugOnOff)
             Debug.LogWarning("Idle상태 설정완료. 대기 시작");
 
         enemyWeapon.enabled = false;            // 대기상태일때는 무기를 비활성화시켜서 원치않은 공격을 막음.
@@ -176,7 +177,7 @@ public class EnemyBase : MonoBehaviour
     {
         if (debugOnOff)
             Debug.LogWarning("Atack!!!!!! and Wait..");
-        enemyWeapon.enabled = true;  
+        enemyWeapon.enabled = true;
         atackStayTime = Time.time;                                              // 공격시 다른 행동을 할 수 없게끔 타이머 설정.
         _state = value;                                                         // 상태적용 -> FixedUpdate에서 EnemyModeAtack 실행
     }
@@ -220,7 +221,7 @@ public class EnemyBase : MonoBehaviour
             _state = value;
 
         }
-        else if(isAlive==true)                                                  // hp가 0이고 살아있는 상태로 체크되어있으면 Die함수를 실행.
+        else if (isAlive == true)                                                  // hp가 0이고 살아있는 상태로 체크되어있으면 Die함수를 실행.
         {
             if (debugOnOff)
                 Debug.Log("GetHit 프로퍼티 DIE 실행");
@@ -239,15 +240,29 @@ public class EnemyBase : MonoBehaviour
         enemyCollider.enabled = false;                                          // 죽었는데 피격이 다시 일어나면 안되기에 콜라이더 해제
         isAlive = false;                                                        // die함수를 다시한번 실행하지 않도록 isAlive false로 설정
         anim.SetTrigger("Die");
-        anim.SetBool("Scout",false);  
+        anim.SetBool("Scout", false);
         anim.SetBool("ArrivePlayer", false);
         anim.SetBool("ChasePlayer", false);
+
+
+        // 몬스터 사망함. SetActive False를 마지막에 하고, 
+        // 잠시 몬스터의 RigidBody를 비활성화 후, Translate를 통해 월드의 Down방향으로 이동시킨 후
+        // 일정한 시간 후에 
+        // 비활성화된 상태에서도, RIgidbody를 활성화 시킬 수 있나..?
+
+        // 이를 적용하기 위해서는 State를  DIe를 생성할 필요가 있으며
+        // 프로퍼티에서  Rigidbody 제거, 애니메이션 실행 등 위에 있는 코드들을 실행할 수 있도록 해야 코드가 깖끔
+
+        // !! DIE 상태를 만들자!
+
+
+
         IAmDied?.Invoke();                                                      //Spawner에게 3초 후 Action을 보내, Spawner 내부 코드를 통해 일정시간 후 다시 부활시켜달라 요청
-        StartCoroutine(OneSecondAfterDisable());
+        StartCoroutine(EnemyDisappearDownside());
     }
     // ★★★★★★★★★★수정 및 개편사항★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
     // 사라지는 모션을 적용하기 위해, 몬스터의 사망 및 부활 모션 적절하게 조절할 것
-    IEnumerator OneSecondAfterDisable()
+    IEnumerator EnemyDisappearDownside()
     {
         yield return ThreeSecondWait;
         gameObject.SetActive(false);
@@ -271,7 +286,7 @@ public class EnemyBase : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();                               // 길찾기 알고리즘을 위한 네브매시에이전트
         enemyCollider = transform.GetComponent<Collider>();                 // 본인의 히트판정을 결정할 콜라이더를 키고 끄기 위함. ( CapsuleCollider 기준. 다른 콜라이더는 잘 작동 안함. )
     }
-    void SetupPath()                                    
+    void SetupPath()
     {
         Transform transParent = transform.parent;                           // 부모 Transform 찾음. 자식인 spownPoint,scoutPoint를 얻기 위함                                           
         spownPoint = transParent.GetChild(0).transform;                     // spownPoint 구함
@@ -369,7 +384,7 @@ public class EnemyBase : MonoBehaviour
         {
             transform.LookAt(player.transform);
             //너무 멀어졌으면 다시 추적
-            if ((player.transform.position - transform.position).sqrMagnitude > arriveDistance * arriveDistance )
+            if ((player.transform.position - transform.position).sqrMagnitude > arriveDistance * arriveDistance)
             {
                 if (debugOnOff)
                     Debug.LogWarning("거리가 너무 멀어짐. 추적 다시 시작");
@@ -382,7 +397,7 @@ public class EnemyBase : MonoBehaviour
                 State = EnemyState.ATACK;
             }
         }
-    }                   
+    }
 
     protected virtual void EnemyModeAtack()                  //  ---------- Atack ---------- Atack ---------- Atack ---------- Atack ---------- Atack ---------- Atack ---------- Atack ---------- Atack ---------- Atack ---------- Atack ----------
     {
@@ -419,16 +434,39 @@ public class EnemyBase : MonoBehaviour
     //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     //--------충돌 이벤트----------------충돌 이벤트----------------충돌 이벤트----------------충돌 이벤트----------------충돌 이벤트----------------충돌 이벤트----------------충돌 이벤트----------------충돌 이벤트--------
 
+
+    private void OnCollisionEnter(Collision collision)
+    {/* 히트 이펙트를 넣고 싶었는데, 뭔가 이상함.
+        Debug.Log("Collision Enter");
+        if (collision.gameObject.CompareTag("Weapon") && isAlive == true && playerDetect == true)      //피격당하기 위해서는, weapon이며, 살아있고, 플레이어를 감지한 상태여야만 함.
+        {
+            if (debugOnOff)
+                Debug.Log("플레이어에게 공격당함");
+            GameObject obj = Instantiate(hitEffect);
+            obj.transform.position = collision.contacts[0].point;
+            Destroy(obj.gameObject, 1f);
+            enemyCollider.enabled = false;                      // 추가적으로 맞지 않게끔 적 콜라이더 비활성화. 
+            State = EnemyState.GETHIT;                          // 이후 무적시간 적용을 위해 GetHit 상태로 변경
+        }*/
+    }
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log("Trigger Enter");
+        Debug.Log("Collision Enter");
         if (other.CompareTag("Weapon") && isAlive == true && playerDetect == true)      //피격당하기 위해서는, weapon이며, 살아있고, 플레이어를 감지한 상태여야만 함.
         {
             if (debugOnOff)
                 Debug.Log("플레이어에게 공격당함");
+            GameObject obj = Instantiate(hitEffect);
+            obj.transform.position = transform.position + Vector3.forward;
+            //obj.transform.position = other.contacts[0].point;
+            Destroy(obj.gameObject, 1f);
             enemyCollider.enabled = false;                      // 추가적으로 맞지 않게끔 적 콜라이더 비활성화. 
-            State = EnemyState.GETHIT;                          // 이후 무적시간 적용을 위해 GetHit 상태로 변경
+            State = EnemyState.GETHIT;
+
         }
     }
+}
 
     //--------충돌 이벤트----------------충돌 이벤트----------------충돌 이벤트----------------충돌 이벤트----------------충돌 이벤트----------------충돌 이벤트----------------충돌 이벤트----------------충돌 이벤트--------
     //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -445,4 +483,4 @@ public class EnemyBase : MonoBehaviour
     }
     */
 
-}
+

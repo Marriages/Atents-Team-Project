@@ -988,7 +988,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 5
   rotateSpeed: 20
-  jumpPower: 6
+  jumpPower: 4
   weaponGet: 0
   shieldGet: 0
   potionGet: 0

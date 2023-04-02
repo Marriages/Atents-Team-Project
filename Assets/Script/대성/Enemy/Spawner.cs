@@ -7,45 +7,77 @@ using UnityEngine;
 
 public class Spawner : MonoBehaviour
 {
+    public GameObject respawnEffect;
     public GameObject enemyPrefab;              // 스폰시킬 몬스터의 프리팹
+    public float spawnRadius=10f;
+    bool playerInPlace=false;
+    Vector3 spawnPoint;                         // 몬스터 시작 위치 제어를 위함. 굳이 있어야 하나 싶기도 함.
     GameObject enemy;                           // 스폰시킨 후 몬스터를 제어하기 위한 변수
     EnemyBase enemyBase;                        // 델리게이트 연결을 위한 클래스 변수
-    Vector3 spawnPoint;                         // 몬스터 시작 위치 제어를 위함. 굳이 있어야 하나 싶기도 함.
+    SphereCollider spawnerCollider;
+    WaitForSeconds retryRespawnWaitTime = new WaitForSeconds(2f);
     
 
 
     private void Awake()
     {
         spawnPoint = transform.GetChild(0).position;            // 본인의 스폰 위치 얻기
+        spawnerCollider = GetComponent<SphereCollider>();
+    }
+    private void OnEnable()
+    {
         enemy = Instantiate(enemyPrefab, transform);            // 몬스터 생성 후 제어하기위해 enemy 변수에 대입
         enemyBase = enemy.GetComponent<EnemyBase>();            // 스포너 담당 몬스터의 델리게이트를 듣기위해 컴포넌트 얻어내기
-        enemyBase.IAmDied += RespawnEnemy;                      // 컴포넌트 연결. 최초 1회만 진행
-
+        enemyBase.IAmDied += Respawn;                           // Enemy 사망 후, 리스폰을 부탁하는 델리게이트 연결.
+    }
+    private void OnDisable()
+    {
+        enemyBase.IAmDied -= Respawn;
     }
 
     private void Start()
     {
         enemy.transform.position = spawnPoint;                  // 스폰시킨 몬스터의 초기 위치 지정
-        
+        spawnerCollider.radius = spawnRadius;                   // 콜라이더 반지름 길이를 설정
     }
 
-    private void RespawnEnemy()
+    private void OnTriggerEnter(Collider other)
     {
-        StartCoroutine(WaitAndRespawn());                       // 스폰시킨 몬스터로부터 Die 함수에서 발생하는 델리게이트 수신 시, 해당 코루틴이 실행됨.
-
+        if(other.CompareTag("Player"))
+            playerInPlace = true;
     }
-    IEnumerator WaitAndRespawn()
+    private void OnTriggerExit(Collider other)
     {
-        yield return new WaitForSeconds(5f);                    // 5초 뒤, 몬스터의 위치를 스폰포인트로 이동시키고, 활성화시킴.
-        enemy.transform.position = spawnPoint;
-        enemy.SetActive(true);
+        if(other.CompareTag("Player"))
+            playerInPlace = false;
+    }
+    void Respawn()
+    {
+        if(playerInPlace == false)              // 만약 플레이어가 범위 밖으로 나간 상황일 경우
+        {
+            GameObject obj = Instantiate(respawnEffect);
+            obj.transform.position = transform.position;
+            Destroy(obj, 3f);
+            enemy.transform.position = spawnPoint;          // Enemy의 위치를 본인 위치로 변경 후
+            enemy.SetActive(true);                          // Enemy를 활성화시킴.
+        }
+        else                                    // 만약 플레이어가 범위 안에 있는 상황일 경우
+        {
+            StartCoroutine(RetryRespawn());     // 일정시간 후 다시 본인을 호출하는 재귀함수.
+        }
+    }
+
+    IEnumerator RetryRespawn()                  // Respawn에 실패했을 경우, 일정 시간 뒤 다시 함수를 호출.
+    {
+        yield return retryRespawnWaitTime;
+        Respawn();
     }
 
     
     private void OnDrawGizmosSelected()                         
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, 20f);
+        Gizmos.DrawWireSphere(transform.position, spawnRadius);
     }
    
 }
