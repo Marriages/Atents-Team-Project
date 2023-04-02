@@ -24,7 +24,7 @@ public class Player : MonoBehaviour
     private bool state;
 
     // 입력처리용 인풋액션
-    PlayerInputActions inputActions;
+    protected PlayerInputActions inputActions;
 
     // 플레이어 입력 방향
     Vector3 inputDir = Vector3.zero;
@@ -33,16 +33,12 @@ public class Player : MonoBehaviour
     private Rigidbody rigid;
 
     // 애니메이터 컨트롤러
-    Animator anim;
-
-    // 플레이어 애니메이션 끝나는 시간
-    float exitTime = 0.9f;
+     Animator anim;
 
     // 플레이어 생명
     private int heart = 3;
 
-    // 플레이어 무적시간 스프라이트
-    private SpriteRenderer sprite;
+    
 
     // 플레이어 점수
     private int coin = 0;
@@ -148,7 +144,7 @@ public class Player : MonoBehaviour
 
         rigid = GetComponent<Rigidbody>();
         anim = GetComponent<Animator>();
-        sprite = GetComponent<SpriteRenderer>();
+        
 
         inputActions = new PlayerInputActions();
     }
@@ -198,7 +194,6 @@ public class Player : MonoBehaviour
         if(dir != Vector3.zero)
         {
             transform.forward = dir;
-            
         }
         
     }
@@ -212,7 +207,9 @@ public class Player : MonoBehaviour
             rigid.AddForce(Vector3.up * jumpPower, ForceMode.Impulse);  // 월드의 Up방향으로 힘을 즉시 가하기
             IsJumping = true;   // 점프중이라고 표시
             anim.SetTrigger("IsJump");
-            
+            inputActions.Player.Potion.Disable();
+            inputActions.Player.Shield.Disable();
+            inputActions.Player.Attack.Disable();
         }
     }
     //수정함----------------------------------------------------------------------------------------------------------------------끝
@@ -222,6 +219,9 @@ public class Player : MonoBehaviour
     void OnGround()
     {
         IsJumping = false;      // 점프가 끝났다고 표시
+        inputActions.Player.Potion.Enable();
+        inputActions.Player.Shield.Enable();
+        inputActions.Player.Attack.Enable();
     }
 
 
@@ -235,8 +235,7 @@ public class Player : MonoBehaviour
             Debug.Log($"플레이어가 {other.gameObject.name}에게 피격당함!");
             anim.SetTrigger("IsHit");       //수정함----------------------------------------------------------------------------------------------------------------------  Animator Controller 중 Idle -> Hit로가는 IsHit Trigger 설정함(has exit Time 뺐음)
             Heart--;
-            StartCoroutine(HitAnimationState());
-
+            
             // 플레이어가 적과 충돌시 PlayerGod레이어로 변경(PlayerGod은 무적상태)
             gameObject.layer = 10;
             
@@ -258,54 +257,12 @@ public class Player : MonoBehaviour
             OnGround();     // 착지 함수 실행
         }
     }
-    //수정함----------------------------------------------------------------------------------------------------------------------끝
-
-    // 히트애니메이션 코루틴
-    IEnumerator HitAnimationState()
-    {
-        while (!anim.GetCurrentAnimatorStateInfo(0)
-        .IsName("Hit"))
-        {
-            // 전환 중일 때 실행되는 부분
-            yield return null;
-        }
-        while (anim.GetCurrentAnimatorStateInfo(0)
-        .normalizedTime < exitTime)
-        {
-            // 애니메이션 재생 중 실행되는 부분
-            inputActions.Player.Disable();  // 플레이어 입력 키 비활성화
-            yield return null;
-        }
-        // 애니메이션 완료 후 실행되는 부분
-        inputActions.Player.Enable();       // 플레이어 입력 키 활성화
-    }
-
+    
     // 플레이어 공격 관련 이벤트 함수
     private void PlayerAttack(InputAction.CallbackContext context)
     {
         anim.SetTrigger("IsAttack"); //playerAnimator의 isAttack 트리거를 작동한다
-        StartCoroutine(AttackAnimationState());
-    }
-
-    // 공격애니메이션 코루틴
-    IEnumerator AttackAnimationState()
-    {
-        while (!anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
-        {
-            // 전환 중일 때 실행되는 부분
-            yield return null;
-        }
-        while (anim.GetCurrentAnimatorStateInfo(0).normalizedTime < exitTime)
-        {
-           
-            weaponCol.enabled = true;   //수정함----------------------------------------------------------------------------------------------------------------------  공격중일 때 검의 콜라이더를 활성화시킴 ,  Animator 에서 Atack Speed 2로 조정함.
-            // 애니메이션 재생 중 실행되는 부분
-            inputActions.Player.Disable();  // 플레이어 입력 키 비활성화
-            yield return null;
-        }
-        // 애니메이션 완료 후 실행되는 부분
-        weaponCol.enabled = false;  //수정함---------------------------------------------------------------------------------------------------------------------- 공격 완료 후 검의 콜라이더를 비활성화시킴
-        inputActions.Player.Enable();       // 플레이어 입력 키 활성화
+        
     }
 
     // 플레이어 실드 관련 이벤트 함수
@@ -321,13 +278,13 @@ public class Player : MonoBehaviour
         {
             anim.SetBool("IsSheild", true);
             state = true;
-            inputActions.Player.Move.Disable();
+            moveSpeed = 0;
         }
         else
         {
             anim.SetBool("IsSheild", false);
             state = false;
-            inputActions.Player.Move.Enable();
+            moveSpeed = 5.0f;
         }
     }
 
@@ -335,31 +292,38 @@ public class Player : MonoBehaviour
     private void PlayerPotion(InputAction.CallbackContext context)
     {
         anim.SetTrigger("IsPotion");
-        StartCoroutine(PotionAnimationState());
     }
 
-    // 포션애니메이션 코루틴
-    IEnumerator PotionAnimationState()
+    // 트리거 애니메이션들 클립에 시작과 끝에 적용할 함수들
+    void PotionStart()
     {
-        while (!anim.GetCurrentAnimatorStateInfo(0)
-        .IsName("Potion"))
-        {
-            
-            // 전환 중일 때 실행되는 부분
-            yield return null;
-        }
-
-        potion.gameObject.SetActive(true); //수정함----------------------------------------------------------------------------------------------------------------------   포션 보이게끔 함
-        while (anim.GetCurrentAnimatorStateInfo(0)
-        .normalizedTime < exitTime)
-        {
-            // 애니메이션 재생 중 실행되는 부분
-            inputActions.Player.Disable();      // 플레이어 입력 키 비활성화
-            yield return null;
-        }
-        potion.gameObject.SetActive(false); //수정함---------------------------------------------------------------------------------------------------------------------- 포션 보이지 않게끔 함
-
-        // 애니메이션 완료 후 실행되는 부분
-        inputActions.Player.Enable();           // 플레이어 입력 키 활성화
+        inputActions.Player.Disable();
+        potion.SetActive(true);
     }
+    void PotionEnd()
+    {
+        inputActions.Player.Enable();
+        potion.SetActive(false);
+    }
+    void AttackStart()
+    {
+        inputActions.Player.Disable();
+        weaponCol.enabled = true;
+    }
+    void AttackEnd()
+    {
+        inputActions.Player.Enable();
+        weaponCol.enabled = false;
+    }
+    void HitStart()
+    {
+        inputActions.Player.Disable();
+
+    }
+    void HitEnd()
+    {
+        inputActions.Player.Enable();
+
+    }
+
 }
