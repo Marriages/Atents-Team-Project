@@ -38,7 +38,11 @@ public class Player : MonoBehaviour
     // 플레이어 생명
     private int heart = 3;
 
-    
+
+    private SpriteRenderer spriteRenderer;
+
+
+
 
     // 플레이어 점수
     private int coin = 0;
@@ -144,9 +148,15 @@ public class Player : MonoBehaviour
 
         rigid = GetComponent<Rigidbody>();
         anim = GetComponent<Animator>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
         
 
         inputActions = new PlayerInputActions();
+    }
+
+    private void Update()
+    {
+        
     }
 
     private void FixedUpdate()
@@ -238,6 +248,8 @@ public class Player : MonoBehaviour
             
             // 플레이어가 적과 충돌시 PlayerGod레이어로 변경(PlayerGod은 무적상태)
             gameObject.layer = 10;
+
+            
             
             Invoke("OffGod", 3);
         }
@@ -247,6 +259,7 @@ public class Player : MonoBehaviour
     void OffGod()
     {
         gameObject.layer = 6;
+        
     }
 
     // 새로 추가한 부분
