@@ -58,7 +58,7 @@ public class EnemyBomb : EnemyBase
         yield return new WaitForSeconds(1.9f);
         GameObject obj = Instantiate(explosionEffect);                      // 폭팔 프리팹 생성 ( 충돌 없음 )
         obj.transform.position = transform.position+Vector3.up*2;           // 폭팔 프리팹 위치 조정
-        enemyWeapon.enabled = true;                                         // 본인의 Bomb 콜리더를 활성화 시켜 해당 범위 안에서 Enter 발생시 공격효과
+        enemyWeaponCollider.enabled = true;                                         // 본인의 Bomb 콜리더를 활성화 시켜 해당 범위 안에서 Enter 발생시 공격효과
         yield return new WaitForSeconds(0.1f);                              // 확실히 공격이 들어갈 수 있게 잠깐의 대기시간
         State = EnemyState.GETHIT;
         // 해당 몬스터의 HP는 1이므로 피격 후 사망.

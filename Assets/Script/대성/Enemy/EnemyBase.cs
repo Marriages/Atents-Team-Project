@@ -21,14 +21,22 @@ public class EnemyBase : MonoBehaviour
 
     [Header("Component")]                                       //각종 컴포넌트정보를 담은 헤더.
     protected Animator anim;                                    // 애니메이션 컨트롤러
-    protected GameObject player;                                // 목표(플레이어)를 추적하기 위하여 사요오딤
+
     protected NavMeshAgent agent;                               // 길찾기 Navigation에 사용될 변수
-    EnemyDetector detector;                                     // 자식오브젝트 Detector로부터 델리게이트를 수신하기 위함
-    public Collider enemyCollider;                              // 무적시간 설정을 위하여 선언.
-    public Action IAmDied;                                      // Spawner에게 죽었다는 것을 알리고, 새로 Enable시키기 위함.
-    public Collider enemyWeapon;
+
+    protected GameObject player;                                // 목표(플레이어)를 추적하기 위하여 사요오딤
     public GameObject hitEffect;
-    Spawner spawner;
+
+    private EnemyDetector detector;                                     // 자식오브젝트 Detector로부터 델리게이트를 수신하기 위함
+
+    public Collider enemyCollider;                              // 무적시간 설정을 위하여 선언.
+    public Collider enemyWeaponCollider;
+    public Collider enemyDetectorCollider;
+
+    private Spawner spawner;
+
+    public Action IAmDied;                                      // Spawner에게 죽었다는 것을 알리고, 새로 Enable시키기 위함.
+    public Action detectorEnable;                               // 플레이어가 스포너틀 나갔을 때, 위치 초기화 후 디텍터를 활성화할 목적의 델리게이트
 
     [Header("Enemy Information")]                               // 해당 객체가 Enable되었을 때 셋팅할 SettingInformation()에 들어가게 될 변수들.
     public int heart;                                           // 현재 생명력
@@ -117,7 +125,7 @@ public class EnemyBase : MonoBehaviour
         if (debugOnOff)
             Debug.LogWarning("Idle상태 설정완료. 대기 시작");
 
-        enemyWeapon.enabled = false;            // 대기상태일때는 무기를 비활성화시켜서 원치않은 공격을 막음.
+        enemyWeaponCollider.enabled = false;            // 대기상태일때는 무기를 비활성화시켜서 원치않은 공격을 막음.
 
         anim.SetBool("Return", false);
         anim.SetBool("Scout", false);           // 가만히 서있는 애니메이션 재생
@@ -136,7 +144,7 @@ public class EnemyBase : MonoBehaviour
 
         agent.speed = normalSpeed;                                      // agent 속도 조절.
 
-        enemyWeapon.enabled = false;                                    // 혹여나 무기가 활성화 될 수 있으니, 비활성화시킴
+        enemyWeaponCollider.enabled = false;                                    // 혹여나 무기가 활성화 될 수 있으니, 비활성화시킴
 
         //Debug.Log($"agent Dest : {scoutPoint[scoutIndex]}");          // 목적지 확인용 디버그로그
 
@@ -160,7 +168,7 @@ public class EnemyBase : MonoBehaviour
         if (debugOnOff)
             Debug.LogWarning("Chase상태 진입.");
 
-        enemyWeapon.enabled = false;                                    // 혹여나 무기가 활성화 될 수 있으니, 비활성화시킴
+        enemyWeaponCollider.enabled = false;                                    // 혹여나 무기가 활성화 될 수 있으니, 비활성화시킴
 
         agent.speed = chaseSpeed;                                       // agent 속도 조절
 
@@ -191,7 +199,7 @@ public class EnemyBase : MonoBehaviour
     {
         if (debugOnOff)
             Debug.LogWarning("Atack!!!!!! and Wait..");
-        enemyWeapon.enabled = true;
+        enemyWeaponCollider.enabled = true;
         atackStayTime = Time.time;                                              // 공격시 다른 행동을 할 수 없게끔 타이머 설정.
         _state = value;                                                         // 상태적용 -> FixedUpdate에서 EnemyModeAtack 실행
     }
@@ -203,7 +211,7 @@ public class EnemyBase : MonoBehaviour
         if (debugOnOff)
             Debug.LogWarning("AtackWait.....");
 
-        enemyWeapon.enabled = false;                                            // 공격이 끝난 상황이므로 다음 공격 시작전까지 무기 콜라이더 해제
+        enemyWeaponCollider.enabled = false;                                            // 공격이 끝난 상황이므로 다음 공격 시작전까지 무기 콜라이더 해제
 
         agent.isStopped = true;                                                 // 적이 움직이지 않도록 설정.
 
@@ -221,7 +229,7 @@ public class EnemyBase : MonoBehaviour
 
         if (debugOnOff)
             Debug.LogWarning("Get Hit");
-        enemyWeapon.enabled = false;                                            // 맞고 있는 중 플레이어에게 공격이 가해지면 안되기에, 무기 콜라이더 해제
+        enemyWeaponCollider.enabled = false;                                            // 맞고 있는 중 플레이어에게 공격이 가해지면 안되기에, 무기 콜라이더 해제
         enemyCollider.enabled = false;                                          // 맞고 있는 중 또 맞지 않게 하기 위하여 적 콜라이더 해제. FixedUpdate의 EnemyModeGetHit에서 피격무적 적용
 
         agent.isStopped = true;                                                 // 맞고있을 떄 움직이면 안되므로(경직상태) 이동을 멈춤
@@ -245,13 +253,17 @@ public class EnemyBase : MonoBehaviour
 
     protected virtual void StateReturn(EnemyState value)
     {
+        Debug.LogWarning("Return Property 실행");
         StopAllCoroutines();
-        agent.SetDestination(spownPoint.position);
+        bool k = agent.SetDestination(spownPoint.position);
+        if (k == false)
+            Debug.LogError("StateReturn 경로 에러");
         enemyCollider.enabled = false;
+        heart = maxHeart;
         player = null;
         playerDetect = false;
         agent.isStopped = false;
-        enemyWeapon.enabled = false;                                    // 혹여나 무기가 활성화 될 수 있으니, 비활성화시킴
+        enemyWeaponCollider.enabled = false;                                    // 혹여나 무기가 활성화 될 수 있으니, 비활성화시킴
         agent.speed = chaseSpeed;                                       // agent 속도 조절
         anim.SetTrigger("Return");
         anim.SetBool("ChasePlayer", false);                              // 플레이어 추적하는 애니메이션 실행을 위해 ChasePlayer 활성화
@@ -263,13 +275,17 @@ public class EnemyBase : MonoBehaviour
     protected virtual void StateDie(EnemyState value)                   //  ---------- Die 상태 Set ---------- Die 상태 Set ---------- Die 상태 Set ---------- Die 상태 Set ---------- Die 상태 Set ---------- 
     {
         if (debugOnOff)
-            Debug.LogError("Enemy Die 프로퍼티 실행");
+            Debug.Log("Enemy Die 프로퍼티 실행");
 
         StopAllCoroutines();                                                    // 모든 코루틴 해제( ChasePlayerRefresh )
         agent.isStopped = true;                                                 // 죽으면 움직이면 안되기에 정지시킴
         player = null;                                                          // 더이상 플레이어를 추적할 수 없도록 타겟이되는 player를 비워줌
         playerDetect = false;                                                   // 공격을 하기위해서는 playerDetect 상태가 true여하므로, 공격이 실행되지 않도록 false로 설정
+
+        // 바닥으로 꺼지게끔 하기 위하여 콜라이더 전부 비활성화.
         enemyCollider.enabled = false;                                          // 죽었는데 피격이 다시 일어나면 안되기에 콜라이더 해제
+        enemyDetectorCollider.enabled = false;
+        enemyWeaponCollider.enabled = false;
         
         isAlive = false;                                                        // die함수를 다시한번 실행하지 않도록 isAlive false로 설정
         anim.SetTrigger("Die");
@@ -289,7 +305,7 @@ public class EnemyBase : MonoBehaviour
 
         // !! DIE 상태를 만들자!
         if (debugOnOff)
-            Debug.LogError("Enemy disappearTime 설정 완료.");
+            Debug.Log("Enemy disappearTime 설정 완료.");
 
         disappearTime = Time.time;
         _state = value;
@@ -314,8 +330,10 @@ public class EnemyBase : MonoBehaviour
         anim = GetComponent<Animator>();                                    // 애니메이터 컨트롤러 연걸
         agent = GetComponent<NavMeshAgent>();                               // 길찾기 알고리즘을 위한 네브매시에이전트
         enemyCollider = transform.GetComponent<Collider>();                 // 본인의 히트판정을 결정할 콜라이더를 키고 끄기 위함. ( CapsuleCollider 기준. 다른 콜라이더는 잘 작동 안함. )
+        enemyDetectorCollider = detector.GetComponent<Collider>();
         spawner = transform.parent.GetComponent<Spawner>();
-        
+
+
     }
     void SetupPath()
     {
@@ -332,13 +350,12 @@ public class EnemyBase : MonoBehaviour
     }
     protected virtual void RespownSetting()
     {
-        if (debugOnOff)
-            anim.SetTrigger("Restart");
+        anim.SetTrigger("Restart");
         State = EnemyState.IDLE;                                        // 대기상태로 전환
         heart = maxHeart;                                               // HP 초기화
         scoutIndex = 0;                                                 // 정찰포인트 초기화
         transform.position = spownPoint.position;                       // 리스폰 위치 초기화
-        enemyWeapon.enabled = false;                                    // 무기 콜리더 끄기
+        enemyWeaponCollider.enabled = false;                                    // 무기 콜리더 끄기
         enemyCollider.enabled = false;                                  // 적 콜리더 끄기 ( 플레이어 감지한 후 활성화 )
         isAlive = true;                                                 // 살아있다고 표시
         playerDetect = false;    
@@ -371,7 +388,8 @@ public class EnemyBase : MonoBehaviour
     }
     void PlayerOut()
     {
-        State = EnemyState.RETURN;
+        if(isAlive==true)
+            State = EnemyState.RETURN;
     }
 
     //--------델리게이트수신----------------델리게이트수신----------------델리게이트수신----------------델리게이트수신----------------델리게이트수신----------------델리게이트수신----------------델리게이트수신
@@ -479,16 +497,26 @@ public class EnemyBase : MonoBehaviour
     protected virtual void EnemyModeReturn()
     {
         if (agent.remainingDistance < 0.1f)                             // agent가 남은 거리가 0.1보다 작을 경우, idle 상태로 변경
+        {
+            detectorEnable?.Invoke();
             State = EnemyState.IDLE;
+        }
     }
 
     protected virtual void EnemyModeDie()                   //  ---------- Die ---------- Die ---------- Die ---------- Die ---------- Die ---------- Die ---------- Die ---------- Die ---------- Die ---------- Die ---------- Die ---------- Die
     {
-        if (Time.time - disappearTime > disappearTimeMax)
+        if (Time.time - disappearTime > 1f)
         {
-            transform.gameObject.SetActive(false);
-            IAmDied?.Invoke();
-        }   
+            if (Time.time - disappearTime < disappearTimeMax)
+            {
+                transform.Translate(Vector3.down * 0.1f * Time.fixedDeltaTime);
+            }
+            else
+            {
+                transform.gameObject.SetActive(false);
+                IAmDied?.Invoke();
+            }
+        }
     }
 
     //--------FixedUpdate & 몬스터 모드----------------FixedUpdate & 몬스터 모드----------------FixedUpdate & 몬스터 모드----------------FixedUpdate & 몬스터 모드----------------FixedUpdate & 몬스터 모드

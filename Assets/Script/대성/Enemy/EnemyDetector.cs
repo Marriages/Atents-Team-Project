@@ -9,16 +9,18 @@ public class EnemyDetector : MonoBehaviour
     public Action<GameObject> detectPlayer;                     // EnemyBase에 델리게이트를 송신하기 위한 목적의 액션
     public SphereCollider col;                                  // 콜라이더를 끄고켜기 위한 목적의 변수
     Spawner spawner;
+    EnemyBase eb;
 
 
     private void Awake()
     {
         col = transform.GetComponent<SphereCollider>();         // enable을 켜고 끄기위해 컴포넌트 받아옴.
         spawner = transform.parent.parent.GetComponent<Spawner>();
+        eb = transform.parent.GetComponent<EnemyBase>();
     }
     private void OnEnable()
     {
-        spawner.playerOut += ReEnableCollier;
+        eb.detectorEnable += ReEnableCollier;
     }
     private void Start()
     {

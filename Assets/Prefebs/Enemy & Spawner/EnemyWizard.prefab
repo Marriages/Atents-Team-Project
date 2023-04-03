@@ -1027,9 +1027,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a677651bb19190a42969657019d10e04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyCollider: {fileID: -8142259816077211092}
-  enemyWeapon: {fileID: 626115005}
   hitEffect: {fileID: 4765294797218897687, guid: 58413d970a8981248b5b3c7a8deef91c, type: 3}
+  enemyCollider: {fileID: -8142259816077211092}
+  enemyWeaponCollider: {fileID: 626115005}
+  enemyDetectorCollider: {fileID: 466556938818104656}
   heart: 0
   maxHeart: 0
   normalSpeed: 0
