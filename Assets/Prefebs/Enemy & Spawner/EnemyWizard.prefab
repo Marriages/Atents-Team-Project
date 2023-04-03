@@ -1049,6 +1049,8 @@ MonoBehaviour:
   atackStayTime: 0
   getHitWaitTimeMax: 1.5
   getHitWaitTime: 0
+  disappearTimeMax: 4
+  disappearTime: 0
   firePosition: {fileID: 8623196372729822869}
   bullet: {fileID: 634116773486186004, guid: bac2027c18303c248971f30fd76073d4, type: 3}
   _heart: 1

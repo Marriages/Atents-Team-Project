@@ -2157,7 +2157,7 @@ MonoBehaviour:
   checkPath: 0
   isAlive: 1
   playerDetect: 0
-  debugOnOff: 0
+  debugOnOff: 1
   idleWaitTimeMax: 3
   idleWaitTime: 0
   atackWaitTimeMax: 2
@@ -2166,6 +2166,8 @@ MonoBehaviour:
   atackStayTime: 0
   getHitWaitTimeMax: 1.5
   getHitWaitTime: 0
+  disappearTimeMax: 4
+  disappearTime: 0
   _heart: 2
   _maxHeart: 2
   _normalSpeed: 2

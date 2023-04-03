@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -16,6 +17,7 @@ public class Spawner : MonoBehaviour
     EnemyBase enemyBase;                        // 델리게이트 연결을 위한 클래스 변수
     SphereCollider spawnerCollider;
     WaitForSeconds retryRespawnWaitTime = new WaitForSeconds(2f);
+    public Action playerOut;
     
 
 
@@ -23,11 +25,11 @@ public class Spawner : MonoBehaviour
     {
         spawnPoint = transform.GetChild(0).position;            // 본인의 스폰 위치 얻기
         spawnerCollider = GetComponent<SphereCollider>();
-    }
-    private void OnEnable()
-    {
         enemy = Instantiate(enemyPrefab, transform);            // 몬스터 생성 후 제어하기위해 enemy 변수에 대입
         enemyBase = enemy.GetComponent<EnemyBase>();            // 스포너 담당 몬스터의 델리게이트를 듣기위해 컴포넌트 얻어내기
+    }
+    private void OnEnable()
+    {   
         enemyBase.IAmDied += Respawn;                           // Enemy 사망 후, 리스폰을 부탁하는 델리게이트 연결.
     }
     private void OnDisable()
@@ -49,7 +51,12 @@ public class Spawner : MonoBehaviour
     private void OnTriggerExit(Collider other)
     {
         if(other.CompareTag("Player"))
+        {
+            Debug.Log("Spawner : 플레이어 나감");
             playerInPlace = false;
+            playerOut?.Invoke();
+        }
+
     }
     void Respawn()
     {

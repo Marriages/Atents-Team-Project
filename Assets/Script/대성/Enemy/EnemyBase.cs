@@ -2,6 +2,8 @@ using System.Collections;
 using UnityEngine;
 using System;
 using UnityEngine.AI;
+using UnityEditor.SceneManagement;
+using Unity.VisualScripting;
 
 // ★★★★★★★★★★수정 및 개편사항★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 /* 해당 위치에 기재된 내용의 경우, 시간이 남을 경우 추가 기능으로써 구현할 것.
@@ -22,11 +24,11 @@ public class EnemyBase : MonoBehaviour
     protected GameObject player;                                // 목표(플레이어)를 추적하기 위하여 사요오딤
     protected NavMeshAgent agent;                               // 길찾기 Navigation에 사용될 변수
     EnemyDetector detector;                                     // 자식오브젝트 Detector로부터 델리게이트를 수신하기 위함
-    Transform spownPoint;                                       // 초기 
     public Collider enemyCollider;                              // 무적시간 설정을 위하여 선언.
     public Action IAmDied;                                      // Spawner에게 죽었다는 것을 알리고, 새로 Enable시키기 위함.
     public Collider enemyWeapon;
     public GameObject hitEffect;
+    Spawner spawner;
 
     [Header("Enemy Information")]                               // 해당 객체가 Enable되었을 때 셋팅할 SettingInformation()에 들어가게 될 변수들.
     public int heart;                                           // 현재 생명력
@@ -39,6 +41,7 @@ public class EnemyBase : MonoBehaviour
     [Header("Scout Position Information")]
     Vector3[] scoutPoint;                                       // 정찰 포인트. 최초 Awake시 SetPath 함수를 통해서 초기화됨.
     public int scoutIndex = 0;                                  // 정찰 포인트를 제어할 인덱스
+    Transform spownPoint;                                       // 초기 
 
 
 
@@ -60,6 +63,8 @@ public class EnemyBase : MonoBehaviour
     public float atackStayTime;
     public float getHitWaitTimeMax = 1.5f;          // 피격 후 무적시간
     public float getHitWaitTime;
+    public float disappearTimeMax = 4f;             // 사망 후 몬스터가 사라지는 시간.
+    public float disappearTime;
 
     [Header("Wait Time")]
     readonly WaitForSeconds DotFiveSecondWait = new WaitForSeconds(0.5f);            // 5초 기다리기 용 Chase단계에 사용됨
@@ -77,6 +82,8 @@ public class EnemyBase : MonoBehaviour
         ATACKWAIT,                      // 플레이어에게 도착 또는 공격 이후 잠시 대기하는 상태
         ATACK,                          // 대기상태가 종료 후 공격 애니메이션을 실행하고 있는 상태
         GETHIT,                         // 어떠한 상태에서든 플레이어에 의해 피격당한 상태
+        DIE,
+        RETURN,
         NULL                            // 아무것도 실행하지 않는 상태
     }
     protected EnemyState _state = EnemyState.NULL;          //초기 상태를 NULL로 함으로써 아무것도 실행되지 않게끔 설정
@@ -98,6 +105,11 @@ public class EnemyBase : MonoBehaviour
                 StateAtack(value);
             else if (value == EnemyState.GETHIT)
                 StateGetHit(value);
+            else if (value == EnemyState.RETURN)
+                StateReturn(value);
+            else if (value == EnemyState.DIE)
+                StateDie(value);
+            
         }
     }
     virtual protected void StateIdle(EnemyState value)                  //  ---------- Idle 상태 Set ---------- Idle 상태 Set ---------- Idle 상태 Set ---------- Idle 상태 Set ---------- Idle 상태 Set ----------
@@ -107,7 +119,9 @@ public class EnemyBase : MonoBehaviour
 
         enemyWeapon.enabled = false;            // 대기상태일때는 무기를 비활성화시켜서 원치않은 공격을 막음.
 
+        anim.SetBool("Return", false);
         anim.SetBool("Scout", false);           // 가만히 서있는 애니메이션 재생
+        anim.SetBool("ChasePlayer", false);           // 가만히 서있는 애니메이션 재생
         agent.isStopped = true;                 // agent를 움직이지 못하도록 정지시킴
 
         idleWaitTime = Time.time;                                       // 대기시간 초기화 -> 일정한 시간만큼 대기하게 됨
@@ -224,26 +238,46 @@ public class EnemyBase : MonoBehaviour
         else if (isAlive == true)                                                  // hp가 0이고 살아있는 상태로 체크되어있으면 Die함수를 실행.
         {
             if (debugOnOff)
-                Debug.Log("GetHit 프로퍼티 DIE 실행");
-            Die();
+                Debug.Log("Enemy GetHit 프로퍼티 DIE 실행");
+            State = EnemyState.DIE;     //DIE프로퍼티 실행을 위하여 다르게 갑을 넣어줌.
         }
     }
 
-    protected virtual void Die()                  //  ---------- Die 상태 Set ---------- Die 상태 Set ---------- Die 상태 Set ---------- Die 상태 Set ---------- Die 상태 Set ---------- Die 상태 Set ---------- Die 상태 Set ---------- 
+    protected virtual void StateReturn(EnemyState value)
+    {
+        StopAllCoroutines();
+        agent.SetDestination(spownPoint.position);
+        enemyCollider.enabled = false;
+        player = null;
+        playerDetect = false;
+        agent.isStopped = false;
+        enemyWeapon.enabled = false;                                    // 혹여나 무기가 활성화 될 수 있으니, 비활성화시킴
+        agent.speed = chaseSpeed;                                       // agent 속도 조절
+        anim.SetTrigger("Return");
+        anim.SetBool("ChasePlayer", false);                              // 플레이어 추적하는 애니메이션 실행을 위해 ChasePlayer 활성화
+        anim.SetBool("ArrivePlayer", false);                            // 플레이어에게 일정거리만큼 접근하게 되면 ArrivePlayer를 true로 변환예정.
+        _state = value;
+
+    }
+
+    protected virtual void StateDie(EnemyState value)                   //  ---------- Die 상태 Set ---------- Die 상태 Set ---------- Die 상태 Set ---------- Die 상태 Set ---------- Die 상태 Set ---------- 
     {
         if (debugOnOff)
-            Debug.LogError("D I E");
-        StopAllCoroutines();                                                    // 모든 코루틴 해제( ChasePlayerRefresh , OneSecondAfterDisable )
+            Debug.LogError("Enemy Die 프로퍼티 실행");
+
+        StopAllCoroutines();                                                    // 모든 코루틴 해제( ChasePlayerRefresh )
         agent.isStopped = true;                                                 // 죽으면 움직이면 안되기에 정지시킴
         player = null;                                                          // 더이상 플레이어를 추적할 수 없도록 타겟이되는 player를 비워줌
         playerDetect = false;                                                   // 공격을 하기위해서는 playerDetect 상태가 true여하므로, 공격이 실행되지 않도록 false로 설정
         enemyCollider.enabled = false;                                          // 죽었는데 피격이 다시 일어나면 안되기에 콜라이더 해제
+        
         isAlive = false;                                                        // die함수를 다시한번 실행하지 않도록 isAlive false로 설정
         anim.SetTrigger("Die");
         anim.SetBool("Scout", false);
         anim.SetBool("ArrivePlayer", false);
         anim.SetBool("ChasePlayer", false);
 
+        
 
         // 몬스터 사망함. SetActive False를 마지막에 하고, 
         // 잠시 몬스터의 RigidBody를 비활성화 후, Translate를 통해 월드의 Down방향으로 이동시킨 후
@@ -254,19 +288,14 @@ public class EnemyBase : MonoBehaviour
         // 프로퍼티에서  Rigidbody 제거, 애니메이션 실행 등 위에 있는 코드들을 실행할 수 있도록 해야 코드가 깖끔
 
         // !! DIE 상태를 만들자!
+        if (debugOnOff)
+            Debug.LogError("Enemy disappearTime 설정 완료.");
 
-
-
-        IAmDied?.Invoke();                                                      //Spawner에게 3초 후 Action을 보내, Spawner 내부 코드를 통해 일정시간 후 다시 부활시켜달라 요청
-        StartCoroutine(EnemyDisappearDownside());
+        disappearTime = Time.time;
+        _state = value;
     }
     // ★★★★★★★★★★수정 및 개편사항★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
     // 사라지는 모션을 적용하기 위해, 몬스터의 사망 및 부활 모션 적절하게 조절할 것
-    IEnumerator EnemyDisappearDownside()
-    {
-        yield return ThreeSecondWait;
-        gameObject.SetActive(false);
-    }
 
     //--------상태 프로퍼티----------------상태 프로퍼티----------------상태 프로퍼티----------------상태 프로퍼티----------------상태 프로퍼티----------------상태 프로퍼티----------------상태 프로퍼티----------------
     //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -285,6 +314,8 @@ public class EnemyBase : MonoBehaviour
         anim = GetComponent<Animator>();                                    // 애니메이터 컨트롤러 연걸
         agent = GetComponent<NavMeshAgent>();                               // 길찾기 알고리즘을 위한 네브매시에이전트
         enemyCollider = transform.GetComponent<Collider>();                 // 본인의 히트판정을 결정할 콜라이더를 키고 끄기 위함. ( CapsuleCollider 기준. 다른 콜라이더는 잘 작동 안함. )
+        spawner = transform.parent.GetComponent<Spawner>();
+        
     }
     void SetupPath()
     {
@@ -310,12 +341,19 @@ public class EnemyBase : MonoBehaviour
         enemyWeapon.enabled = false;                                    // 무기 콜리더 끄기
         enemyCollider.enabled = false;                                  // 적 콜리더 끄기 ( 플레이어 감지한 후 활성화 )
         isAlive = true;                                                 // 살아있다고 표시
-        playerDetect = false;                                           // 플레이어 감지상태 끄기
+        playerDetect = false;    
+        
+        if(transform.GetComponent<Rigidbody>() == null)
+        {
+            gameObject.AddComponent<Rigidbody>();
+        }
     }
 
     private void Start()                  //  ---------- Start ---------- Start ---------- Start ---------- Start ---------- Start ---------- Start ---------- Start ---------- Start ---------- Start ---------- Start ---------- Start ---------- Start
     {
         detector.detectPlayer += DetectPlayer;                          // 자식개체 Detector로부터 수신하게 될 델리게이트 연결.        
+        spawner.playerOut += PlayerOut;
+        
     }
 
     //--------생명주기----------------생명주기----------------생명주기----------------생명주기----------------생명주기----------------생명주기----------------생명주기----------------생명주기----------------생명주기--------
@@ -330,6 +368,10 @@ public class EnemyBase : MonoBehaviour
         playerDetect = true;                                            // 플레이어 감지상태로 전환 -> 공격을 맞을떄 playerDetect상태도 true야 하므로 상태 전환.
         player = obj;                                                   // 플레이어정보를 자식개체 Detector 델리게이트로부터 수신. 위치 추적에 사용됨.
         State = EnemyState.CHASE;                                       // Chase 상태로 전환
+    }
+    void PlayerOut()
+    {
+        State = EnemyState.RETURN;
     }
 
     //--------델리게이트수신----------------델리게이트수신----------------델리게이트수신----------------델리게이트수신----------------델리게이트수신----------------델리게이트수신----------------델리게이트수신
@@ -350,6 +392,10 @@ public class EnemyBase : MonoBehaviour
             EnemyModeAtackWait();
         else if (State == EnemyState.GETHIT)
             EnemyModeGetHit();
+        else if(State==EnemyState.RETURN)
+            EnemyModeReturn();
+        else if (State == EnemyState.DIE)
+            EnemyModeDie();
     }
 
     protected virtual void EnemyModeIdle()                  //  ---------- Idle ---------- Idle ---------- Idle ---------- Idle ---------- Idle ---------- Idle ---------- Idle ---------- Idle ---------- Idle ---------- Idle ---------- Idle ---------- Idle
@@ -430,6 +476,21 @@ public class EnemyBase : MonoBehaviour
 
     }
 
+    protected virtual void EnemyModeReturn()
+    {
+        if (agent.remainingDistance < 0.1f)                             // agent가 남은 거리가 0.1보다 작을 경우, idle 상태로 변경
+            State = EnemyState.IDLE;
+    }
+
+    protected virtual void EnemyModeDie()                   //  ---------- Die ---------- Die ---------- Die ---------- Die ---------- Die ---------- Die ---------- Die ---------- Die ---------- Die ---------- Die ---------- Die ---------- Die
+    {
+        if (Time.time - disappearTime > disappearTimeMax)
+        {
+            transform.gameObject.SetActive(false);
+            IAmDied?.Invoke();
+        }   
+    }
+
     //--------FixedUpdate & 몬스터 모드----------------FixedUpdate & 몬스터 모드----------------FixedUpdate & 몬스터 모드----------------FixedUpdate & 몬스터 모드----------------FixedUpdate & 몬스터 모드
     //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     //--------충돌 이벤트----------------충돌 이벤트----------------충돌 이벤트----------------충돌 이벤트----------------충돌 이벤트----------------충돌 이벤트----------------충돌 이벤트----------------충돌 이벤트--------
@@ -451,8 +512,6 @@ public class EnemyBase : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Trigger Enter");
-        Debug.Log("Collision Enter");
         if (other.CompareTag("Weapon") && isAlive == true && playerDetect == true)      //피격당하기 위해서는, weapon이며, 살아있고, 플레이어를 감지한 상태여야만 함.
         {
             if (debugOnOff)

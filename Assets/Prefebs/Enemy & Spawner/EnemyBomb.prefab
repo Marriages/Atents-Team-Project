@@ -391,6 +391,8 @@ MonoBehaviour:
   atackStayTime: 0
   getHitWaitTimeMax: 0.6
   getHitWaitTime: 0
+  disappearTimeMax: 4
+  disappearTime: 0
   explosionEffect: {fileID: 2433282508537954060, guid: 3ef3ae421f71c5c4e97fe12dc2fc6312, type: 3}
   _heart: 1
   _maxHeart: 1
