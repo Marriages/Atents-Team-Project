@@ -36,6 +36,7 @@ public class Spawner : MonoBehaviour
     {
         enemyBase.IAmDied -= Respawn;
     }
+    
 
     private void Start()
     {

@@ -34,6 +34,7 @@ public class EnemyBase : MonoBehaviour
     public Collider enemyDetectorCollider;
 
     private Spawner spawner;
+    private Rigidbody rigid;
 
     public Action IAmDied;                                      // Spawner에게 죽었다는 것을 알리고, 새로 Enable시키기 위함.
     public Action detectorEnable;                               // 플레이어가 스포너틀 나갔을 때, 위치 초기화 후 디텍터를 활성화할 목적의 델리게이트
@@ -276,7 +277,6 @@ public class EnemyBase : MonoBehaviour
     {
         if (debugOnOff)
             Debug.Log("Enemy Die 프로퍼티 실행");
-
         StopAllCoroutines();                                                    // 모든 코루틴 해제( ChasePlayerRefresh )
         agent.isStopped = true;                                                 // 죽으면 움직이면 안되기에 정지시킴
         player = null;                                                          // 더이상 플레이어를 추적할 수 없도록 타겟이되는 player를 비워줌
@@ -332,6 +332,7 @@ public class EnemyBase : MonoBehaviour
         enemyCollider = transform.GetComponent<Collider>();                 // 본인의 히트판정을 결정할 콜라이더를 키고 끄기 위함. ( CapsuleCollider 기준. 다른 콜라이더는 잘 작동 안함. )
         enemyDetectorCollider = detector.GetComponent<Collider>();
         spawner = transform.parent.GetComponent<Spawner>();
+        rigid = GetComponent<Rigidbody>();
 
 
     }
@@ -505,11 +506,16 @@ public class EnemyBase : MonoBehaviour
 
     protected virtual void EnemyModeDie()                   //  ---------- Die ---------- Die ---------- Die ---------- Die ---------- Die ---------- Die ---------- Die ---------- Die ---------- Die ---------- Die ---------- Die ---------- Die
     {
+        //아니쒸발 왜 안내려가!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //진짜 알수가없어!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->>>> 내일 꼬옥 물어보기
+        //agent 설정때문에 내려갈 수 없는건가????
         if (Time.time - disappearTime > 1f)
         {
             if (Time.time - disappearTime < disappearTimeMax)
             {
-                transform.Translate(Vector3.down * 0.1f * Time.fixedDeltaTime);
+                //transform.Translate(Vector3.down * 2f * Time.fixedDeltaTime);
+                transform.position = transform.position + Vector3.down * Time.fixedDeltaTime * 10f;
+                Debug.Log($"{transform.position} / {transform.position + Vector3.down * Time.fixedDeltaTime * 10f}");
             }
             else
             {
