@@ -205,6 +205,7 @@ public class Player : MonoBehaviour
         {
             transform.forward = dir;
         }
+        // 회전 따로 추가하기
         
     }
     //수정함----------------------------------------------------------------------------------------------------------------------시작
@@ -336,7 +337,6 @@ public class Player : MonoBehaviour
     void HitEnd()
     {
         inputActions.Player.Enable();
-
     }
 
 }
