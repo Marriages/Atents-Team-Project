@@ -279,6 +279,7 @@ public class EnemyBase : MonoBehaviour
             Debug.Log("Enemy Die 프로퍼티 실행");
         StopAllCoroutines();                                                    // 모든 코루틴 해제( ChasePlayerRefresh )
         agent.isStopped = true;                                                 // 죽으면 움직이면 안되기에 정지시킴
+        agent.enabled = false;
         player = null;                                                          // 더이상 플레이어를 추적할 수 없도록 타겟이되는 player를 비워줌
         playerDetect = false;                                                   // 공격을 하기위해서는 playerDetect 상태가 true여하므로, 공격이 실행되지 않도록 false로 설정
 
@@ -334,7 +335,6 @@ public class EnemyBase : MonoBehaviour
         spawner = transform.parent.GetComponent<Spawner>();
         rigid = GetComponent<Rigidbody>();
 
-
     }
     void SetupPath()
     {
@@ -352,6 +352,7 @@ public class EnemyBase : MonoBehaviour
     protected virtual void RespownSetting()
     {
         anim.SetTrigger("Restart");
+        agent.enabled = true;
         State = EnemyState.IDLE;                                        // 대기상태로 전환
         heart = maxHeart;                                               // HP 초기화
         scoutIndex = 0;                                                 // 정찰포인트 초기화
@@ -359,7 +360,8 @@ public class EnemyBase : MonoBehaviour
         enemyWeaponCollider.enabled = false;                                    // 무기 콜리더 끄기
         enemyCollider.enabled = false;                                  // 적 콜리더 끄기 ( 플레이어 감지한 후 활성화 )
         isAlive = true;                                                 // 살아있다고 표시
-        playerDetect = false;    
+        playerDetect = false;
+        
         
         if(transform.GetComponent<Rigidbody>() == null)
         {
@@ -506,16 +508,13 @@ public class EnemyBase : MonoBehaviour
 
     protected virtual void EnemyModeDie()                   //  ---------- Die ---------- Die ---------- Die ---------- Die ---------- Die ---------- Die ---------- Die ---------- Die ---------- Die ---------- Die ---------- Die ---------- Die
     {
-        //아니쒸발 왜 안내려가!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        //진짜 알수가없어!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->>>> 내일 꼬옥 물어보기
-        //agent 설정때문에 내려갈 수 없는건가????
-        if (Time.time - disappearTime > 1f)
+        if (Time.time - disappearTime > 2f)
         {
             if (Time.time - disappearTime < disappearTimeMax)
             {
                 //transform.Translate(Vector3.down * 2f * Time.fixedDeltaTime);
-                transform.position = transform.position + Vector3.down * Time.fixedDeltaTime * 10f;
-                Debug.Log($"{transform.position} / {transform.position + Vector3.down * Time.fixedDeltaTime * 10f}");
+                transform.position = transform.position + Vector3.down * Time.fixedDeltaTime;
+                //Debug.Log($"{transform.position} / {transform.position + Vector3.down * Time.fixedDeltaTime}");
             }
             else
             {
