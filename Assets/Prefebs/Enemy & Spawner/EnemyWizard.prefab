@@ -1031,6 +1031,8 @@ MonoBehaviour:
   enemyCollider: {fileID: -8142259816077211092}
   enemyWeaponCollider: {fileID: 626115005}
   enemyDetectorCollider: {fileID: 466556938818104656}
+  enemyDropHeart: {fileID: 6413524075618905324, guid: d1741b418a55fc14b83f372b1ae1fec4, type: 3}
+  enemyDropCoin: {fileID: 8015432215044261129, guid: a147ea3d5d4561c4093e5f4b5c28a51b, type: 3}
   heart: 0
   maxHeart: 0
   normalSpeed: 0

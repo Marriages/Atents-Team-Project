@@ -632,7 +632,8 @@ public class EnemyBaseTest : MonoBehaviour
 
     [Header("Enemy Information")]
     public float moveSpeed=5;             // 적 이동속도
-    public float coinDropRate;          // 적 사망시 코인 드랍 확률
+    public float 
+    DropRate;          // 적 사망시 코인 드랍 확률
     public float heartDropRate;         // 적 사망시 코인 드랍 확률
     public int heart;                           // 적 생명력
     public float detectRange=5;           // 플레이어 감지 거리

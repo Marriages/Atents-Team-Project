@@ -39,12 +39,13 @@ public class EnemyBase : MonoBehaviour
     public Action IAmDied;                                      // Spawner에게 죽었다는 것을 알리고, 새로 Enable시키기 위함.
     public Action detectorEnable;                               // 플레이어가 스포너틀 나갔을 때, 위치 초기화 후 디텍터를 활성화할 목적의 델리게이트
 
-    [Header("Enemy Information")]                               // 해당 객체가 Enable되었을 때 셋팅할 SettingInformation()에 들어가게 될 변수들.
-    public int heart;                                           // 현재 생명력
-    public int maxHeart;                                        // 최대 생명력. Enable 되었을 때 heart를 초기화할 목적으로 선언됨.
-    public float normalSpeed;                                   // 정찰 속도
-    public float chaseSpeed;                                    // 추적 속도
-    public float arriveDistance;                                // 추적시 거리가 얼마나 남았을 떄 멈출 것인지 결정
+
+    //[Header("Enemy Information")]                               // 해당 객체가 Enable되었을 때 셋팅할 SettingInformation()에 들어가게 될 변수들.
+    protected int heart;                                           // 현재 생명력
+    protected int maxHeart;                                        // 최대 생명력. Enable 되었을 때 heart를 초기화할 목적으로 선언됨.
+    protected float normalSpeed;                                   // 정찰 속도
+    protected float chaseSpeed;                                    // 추적 속도
+    protected float arriveDistance;                                // 추적시 거리가 얼마나 남았을 떄 멈출 것인지 결정
 
 
     [Header("Scout Position Information")]
@@ -78,6 +79,15 @@ public class EnemyBase : MonoBehaviour
     [Header("Wait Time")]
     readonly WaitForSeconds DotFiveSecondWait = new WaitForSeconds(0.5f);            // 5초 기다리기 용 Chase단계에 사용됨
     readonly WaitForSeconds ThreeSecondWait = new WaitForSeconds(3.0f);              // 3초 기다리기 용. 리스폰 단계에 사용됨
+
+
+    [Header("Drop Item")]
+    public GameObject enemyDropHeart;
+    public float enemyDropHeartRate=0.5f;
+    public GameObject enemyDropCoin;
+    public float enemyDropCoinRate = 0.5f;
+
+    
 
     //--------Value----------------Value----------------Value----------------Value----------------Value----------------Value----------------Value----------------Value----------------Value----------------Value-
     //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -295,20 +305,30 @@ public class EnemyBase : MonoBehaviour
         anim.SetBool("ChasePlayer", false);
 
         
-
-        // 몬스터 사망함. SetActive False를 마지막에 하고, 
-        // 잠시 몬스터의 RigidBody를 비활성화 후, Translate를 통해 월드의 Down방향으로 이동시킨 후
-        // 일정한 시간 후에 
-        // 비활성화된 상태에서도, RIgidbody를 활성화 시킬 수 있나..?
-
-        // 이를 적용하기 위해서는 State를  DIe를 생성할 필요가 있으며
-        // 프로퍼티에서  Rigidbody 제거, 애니메이션 실행 등 위에 있는 코드들을 실행할 수 있도록 해야 코드가 깖끔
-
-        // !! DIE 상태를 만들자!
         if (debugOnOff)
             Debug.Log("Enemy disappearTime 설정 완료.");
 
         disappearTime = Time.time;
+
+        if (UnityEngine.Random.Range(0f, 1f) > enemyDropCoinRate)
+        {
+            if(debugOnOff)
+                Debug.Log($"{gameObject.name}가 Coin을 드랍했다.");
+            GameObject obj = Instantiate(enemyDropCoin);
+            obj.transform.position = transform.position;
+            Destroy(obj, 10f);
+        }
+        else if (UnityEngine.Random.Range(0f, 1f) > enemyDropHeartRate)
+        {
+            if (debugOnOff)
+                Debug.Log($"{gameObject.name}가 Heart을 드랍했다.");
+            GameObject obj = Instantiate(enemyDropHeart);
+            obj.transform.position = transform.position;
+            Destroy(obj, 10f);
+        }
+
+
+
         _state = value;
     }
     // ★★★★★★★★★★수정 및 개편사항★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
@@ -359,6 +379,7 @@ public class EnemyBase : MonoBehaviour
         transform.position = spownPoint.position;                       // 리스폰 위치 초기화
         enemyWeaponCollider.enabled = false;                                    // 무기 콜리더 끄기
         enemyCollider.enabled = false;                                  // 적 콜리더 끄기 ( 플레이어 감지한 후 활성화 )
+        enemyDetectorCollider.enabled = true;
         isAlive = true;                                                 // 살아있다고 표시
         playerDetect = false;
         
