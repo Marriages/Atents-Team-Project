@@ -69,6 +69,7 @@
     <Compile Include="Assets\Script\대성\Enemy\EnemyBase.cs" />
     <Compile Include="Assets\Script\대성\Enemy\Spawner.cs" />
     <Compile Include="Assets\Script\대성\Enemy\EnemyBullet.cs" />
+    <Compile Include="Assets\Script\대성\Enemy\coin.cs" />
     <Compile Include="Assets\InputSystem\PlayerInputActions.cs" />
     <Compile Include="Assets\Script\대성\TestPlayer\DsTestPlayer.cs" />
     <Compile Include="Assets\Script\대성\UIController.cs" />
@@ -76,13 +77,12 @@
     <Compile Include="Assets\Script\대성\Trap\RodkSpawner.cs" />
     <Compile Include="Assets\InputSystem\InputSystemController.cs" />
     <Compile Include="Assets\Script\대성\AutoDoor.cs" />
+    <Compile Include="Assets\Script\대성\Enemy\heart.cs" />
     <Compile Include="Assets\Script\대성\Enemy\EnemyBaseTest.cs" />
     <Compile Include="Assets\Script\대성\Enemy\EnemyWizard.cs" />
     <Compile Include="Assets\Script\대성\SceneController.cs" />
     <Compile Include="Assets\Script\대성\Enemy\RePosition.cs" />
     <Compile Include="Assets\Script\대성\Trash\EnemyDetectAtack.cs" />
-    <Compile Include="Assets\Script\대성\Enemy\coin.cs" />
-    <Compile Include="Assets\Script\대성\Enemy\heart.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
