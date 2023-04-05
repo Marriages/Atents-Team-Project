@@ -12,6 +12,8 @@ TagManager:
   - Shield
   - Potion
   - Ground
+  - FxTemporaire
+  - Wall
   layers:
   - Default
   - TransparentFX

@@ -295,11 +295,11 @@ GameObject:
   - component: {fileID: 869078392}
   m_Layer: 0
   m_Name: Cube
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!65 &869078392
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -507,6 +507,22 @@ PrefabInstance:
     - target: {fileID: 341581220809037590, guid: 80c18718e041c3e47b6d96e2ee25808c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 57.07895
+      objectReference: {fileID: 0}
+    - target: {fileID: 687538784720047676, guid: 80c18718e041c3e47b6d96e2ee25808c, type: 3}
+      propertyPath: m_Drag
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 687538784720047676, guid: 80c18718e041c3e47b6d96e2ee25808c, type: 3}
+      propertyPath: m_UseGravity
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 687538784720047676, guid: 80c18718e041c3e47b6d96e2ee25808c, type: 3}
+      propertyPath: m_AngularDrag
+      value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 687538784720047676, guid: 80c18718e041c3e47b6d96e2ee25808c, type: 3}
+      propertyPath: m_Constraints
+      value: 112
       objectReference: {fileID: 0}
     - target: {fileID: 709913770756758315, guid: 80c18718e041c3e47b6d96e2ee25808c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

@@ -222,18 +222,11 @@ public class Player : MonoBehaviour
             inputActions.Player.Shield.Disable();
             inputActions.Player.Attack.Disable();
         }
+        
     }
     //수정함----------------------------------------------------------------------------------------------------------------------끝
    
 
-    // 착지했을 때 처리 함수
-    void OnGround()
-    {
-        IsJumping = false;      // 점프가 끝났다고 표시
-        inputActions.Player.Potion.Enable();
-        inputActions.Player.Shield.Enable();
-        inputActions.Player.Attack.Enable();
-    }
 
 
     //수정함----------------------------------------------------------------------------------------------------------------------시작
@@ -243,7 +236,7 @@ public class Player : MonoBehaviour
 
         if (other.gameObject.CompareTag("Enemy") && isAlive==true)      //Enemy이고 살아있을때만.
         {
-            Debug.Log($"플레이어가 {other.gameObject.name}에게 피격당함!");
+            //Debug.Log($"플레이어가 {other.gameObject.name}에게 피격당함!");
             anim.SetTrigger("IsHit");       //수정함----------------------------------------------------------------------------------------------------------------------  Animator Controller 중 Idle -> Hit로가는 IsHit Trigger 설정함(has exit Time 뺐음)
             Heart--;
             
@@ -270,8 +263,18 @@ public class Player : MonoBehaviour
         {
             OnGround();     // 착지 함수 실행
         }
+        
     }
-    
+
+    // 착지했을 때 처리 함수
+    void OnGround()
+    {
+        IsJumping = false;      // 점프가 끝났다고 표시
+        inputActions.Player.Potion.Enable();
+        inputActions.Player.Shield.Enable();
+        inputActions.Player.Attack.Enable();
+    }
+
     // 플레이어 공격 관련 이벤트 함수
     private void PlayerAttack(InputAction.CallbackContext context)
     {
@@ -293,12 +296,18 @@ public class Player : MonoBehaviour
             anim.SetBool("IsSheild", true);
             state = true;
             moveSpeed = 0;
+            inputActions.Player.Attack.Disable();
+            inputActions.Player.Potion.Disable();
+            inputActions.Player.Jump.Disable();
         }
         else
         {
             anim.SetBool("IsSheild", false);
             state = false;
             moveSpeed = 5.0f;
+            inputActions.Player.Attack.Enable();
+            inputActions.Player.Potion.Enable();
+            inputActions.Player.Jump.Enable();
         }
     }
 
@@ -308,7 +317,6 @@ public class Player : MonoBehaviour
         anim.SetTrigger("IsPotion");
     }
 
-    // 트리거 애니메이션들 클립에 시작과 끝에 적용할 함수들
     void PotionStart()
     {
         inputActions.Player.Disable();
