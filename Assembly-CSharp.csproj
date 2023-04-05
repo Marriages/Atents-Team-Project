@@ -71,6 +71,7 @@
     <Compile Include="Assets\InputSystem\PlayerInputActions.cs" />
     <Compile Include="Assets\Script\대성\TestPlayer\DsTestPlayer.cs" />
     <Compile Include="Assets\Script\대성\UIController.cs" />
+    <Compile Include="Assets\Script\성윤\AnimationEvent.cs" />
     <Compile Include="Assets\InputSystem\InputSystemController.cs" />
     <Compile Include="Assets\Script\대성\AutoDoor.cs" />
     <Compile Include="Assets\Script\대성\Enemy\EnemyBaseTest.cs" />
@@ -365,12 +366,6 @@
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>Library\PackageCache\com.unity.nuget.newtonsoft-json@3.0.2\Runtime\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Android.Types">
-      <HintPath>C:\Program Files\Unity\Hub\Editor\2021.3.10f1\Editor\Data\PlaybackEngines\AndroidPlayer\Unity.Android.Types.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Android.Gradle">
-      <HintPath>C:\Program Files\Unity\Hub\Editor\2021.3.10f1\Editor\Data\PlaybackEngines\AndroidPlayer\Unity.Android.Gradle.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2021.3.10f1\Editor\Data\NetStandard\ref\2.1.0\netstandard.dll</HintPath>
