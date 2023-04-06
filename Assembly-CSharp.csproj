@@ -83,6 +83,8 @@
     <Compile Include="Assets\Script\대성\SceneController.cs" />
     <Compile Include="Assets\Script\대성\Enemy\RePosition.cs" />
     <Compile Include="Assets\Script\대성\Trash\EnemyDetectAtack.cs" />
+    <Compile Include="Assets\Script\대성\Trap\HiddenDoorOpenButton.cs" />
+    <Compile Include="Assets\Script\대성\Trap\HiddenDoor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
