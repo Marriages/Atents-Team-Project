@@ -14,7 +14,7 @@ public class Player : MonoBehaviour
     public float moveSpeed = 5.0f;
 
     // 플레이어 회전 속도
-    public float rotateSpeed = 20.0f;
+    public float rotateSpeed = 180.0f;
 
     // 플레이어 점프 속도
     public float jumpPower = 6.0f;
@@ -200,13 +200,11 @@ public class Player : MonoBehaviour
     {
         Vector3 dir = new Vector3(inputDir.x, 0, inputDir.y);
 
+
         rigid.MovePosition(transform.position + Time.fixedDeltaTime * moveSpeed * dir);
-        if(dir != Vector3.zero)
-        {
-            transform.forward = dir;
-        }
-        // 회전 따로 추가하기
         
+
+
     }
     //수정함----------------------------------------------------------------------------------------------------------------------시작
     // 로직이 복잡하거나 상속을 해줄 일이 없기에, 불필요한 함수 Jump()를 삭제 병합함.
