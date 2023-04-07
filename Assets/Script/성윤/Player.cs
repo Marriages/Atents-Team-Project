@@ -20,7 +20,9 @@ public class Player : MonoBehaviour
     public float jumpPower = 6.0f;
     bool IsJumping = false;
 
-    // 플레이어 방패 활성화/비활성화 변수
+    
+
+    // 플레이어 방패들기 활성화/비활성화 변수
     private bool state;
 
     // 입력처리용 인풋액션
@@ -61,11 +63,13 @@ public class Player : MonoBehaviour
     public Action WeaponGet;
     public Action ShieldGet;
     public Action PlayerDie;
+    
 
     // 포션,무기, 방패 관리용
     public GameObject potion;    //수정함----------------------------------------------------------------------------------------------------------------------        포션 넣을 것
     public Collider weaponCol;   //수정함----------------------------------------------------------------------------------------------------------------------        콜라이더가 있는 무기 넣을것
     public Collider shieldCol;       //수정함----------------------------------------------------------------------------------------------------------------------        콜라이더가 있는 방패 넣을 것
+    Shield shield;
 
     // 하트 프로퍼티
     public int Heart
@@ -145,10 +149,14 @@ public class Player : MonoBehaviour
 
         weaponCol.enabled = false;  //수정함----------------------------------------------------------------------------------------------------------------------     초기시작시 검의 콜라이더 비활성화. 추후 공격떄 활성화할 예정
         shieldCol.enabled = false;  //수정함----------------------------------------------------------------------------------------------------------------------    초기시작시 방패의 콜라이더 비활성화. 추후 방어할때 활성화할 예정
+        shield = FindObjectOfType<Shield>();
+        Debug.Log(shield.gameObject.name);
+
 
         rigid = GetComponent<Rigidbody>();
         anim = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        
         
 
         inputActions = new PlayerInputActions();
@@ -173,10 +181,12 @@ public class Player : MonoBehaviour
         inputActions.Player.Shield.performed += PlayerShield;
         inputActions.Player.Potion.performed += PlayerPotion;
         inputActions.Player.Jump.performed += PlayerJump;
+        inputActions.Player.Use.performed += PlayerUse;
 
     }
     private void OnDisable()
     {
+        inputActions.Player.Use.performed -= PlayerUse;
         inputActions.Player.Jump.performed -= PlayerJump;
         inputActions.Player.Potion.performed -= PlayerPotion;
         inputActions.Player.Shield.performed -= PlayerShield;
@@ -231,7 +241,6 @@ public class Player : MonoBehaviour
     // 플레이어 충돌 관련 이벤트 함수
     private void OnTriggerEnter(Collider other)
     {
-
         if (other.gameObject.CompareTag("Enemy") && isAlive==true)      //Enemy이고 살아있을때만.
         {
             //Debug.Log($"플레이어가 {other.gameObject.name}에게 피격당함!");
@@ -241,7 +250,6 @@ public class Player : MonoBehaviour
             // 플레이어가 적과 충돌시 PlayerGod레이어로 변경(PlayerGod은 무적상태)
             gameObject.layer = 10;
 
-            
             
             Invoke("OffGod", 3);
         }
@@ -260,14 +268,27 @@ public class Player : MonoBehaviour
         if (collision.gameObject.CompareTag("Ground") && isAlive==true)   // Ground와 충돌했을 때만, 살아있을때만
         {
             OnGround();     // 착지 함수 실행
+            
         }
-        
+        else if (collision.gameObject.CompareTag("Wall"))
+        {
+            moveSpeed = 0;
+            if (IsJumping == false)
+            {
+                moveSpeed = 5.0f;
+            }
+
+        }
+
     }
+
+    
 
     // 착지했을 때 처리 함수
     void OnGround()
     {
         IsJumping = false;      // 점프가 끝났다고 표시
+        moveSpeed = 5.0f;
         inputActions.Player.Potion.Enable();
         inputActions.Player.Shield.Enable();
         inputActions.Player.Attack.Enable();
@@ -297,6 +318,7 @@ public class Player : MonoBehaviour
             inputActions.Player.Attack.Disable();
             inputActions.Player.Potion.Disable();
             inputActions.Player.Jump.Disable();
+            shieldCol.enabled = true;
         }
         else
         {
@@ -306,6 +328,7 @@ public class Player : MonoBehaviour
             inputActions.Player.Attack.Enable();
             inputActions.Player.Potion.Enable();
             inputActions.Player.Jump.Enable();
+            shieldCol.enabled = false;
         }
     }
 
@@ -313,6 +336,12 @@ public class Player : MonoBehaviour
     private void PlayerPotion(InputAction.CallbackContext context)
     {
         anim.SetTrigger("IsPotion");
+    }
+
+    // 플레이어 상호작용 관련 이벤트 함수
+    private void PlayerUse(InputAction.CallbackContext obj)
+    {
+        
     }
 
     void PotionStart()
@@ -328,11 +357,17 @@ public class Player : MonoBehaviour
     void AttackStart()
     {
         inputActions.Player.Disable();
-        weaponCol.enabled = true;
     }
     void AttackEnd()
     {
         inputActions.Player.Enable();
+    }
+    void AttackDamegeOn()
+    {
+        weaponCol.enabled = true;
+    }
+    void AttackDamegeOff()
+    {
         weaponCol.enabled = false;
     }
     void HitStart()
