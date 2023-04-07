@@ -61,13 +61,16 @@
     <Compile Include="Assets\Script\대성\Trap\TreasureController.cs" />
     <Compile Include="Assets\Script\성윤\MainCamera_Action.cs" />
     <Compile Include="Assets\Script\대성\Test\CreateGroundTest.cs" />
+    <Compile Include="Assets\Script\대성\Trap\HiddenDoorOpenButton.cs" />
     <Compile Include="Assets\Script\대성\Trash\RepositionChildren.cs" />
     <Compile Include="Assets\Script\대성\Enemy\EnemyBomb.cs" />
     <Compile Include="Assets\Script\성윤\Player.cs" />
     <Compile Include="Assets\Script\대성\Enemy\EnemyDetector.cs" />
     <Compile Include="Assets\Script\대성\Test\TestCollisionTrigger.cs" />
     <Compile Include="Assets\Script\대성\Enemy\EnemyBase.cs" />
+    <Compile Include="Assets\Script\대성\Trap\FireTrapDetector.cs" />
     <Compile Include="Assets\Script\대성\Enemy\Spawner.cs" />
+    <Compile Include="Assets\Script\대성\Trap\FireTrap.cs" />
     <Compile Include="Assets\Script\대성\Enemy\EnemyBullet.cs" />
     <Compile Include="Assets\Script\대성\Enemy\coin.cs" />
     <Compile Include="Assets\InputSystem\PlayerInputActions.cs" />
@@ -83,8 +86,9 @@
     <Compile Include="Assets\Script\대성\SceneController.cs" />
     <Compile Include="Assets\Script\대성\Enemy\RePosition.cs" />
     <Compile Include="Assets\Script\대성\Trash\EnemyDetectAtack.cs" />
-    <Compile Include="Assets\Script\대성\Trap\HiddenDoorOpenButton.cs" />
     <Compile Include="Assets\Script\대성\Trap\HiddenDoor.cs" />
+    <Compile Include="Assets\Script\대성\Trap\FireTrapLight.cs" />
+    <Compile Include="Assets\Script\대성\Trap\TrapHallwayLight.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
