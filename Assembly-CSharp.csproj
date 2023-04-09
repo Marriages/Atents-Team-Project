@@ -75,6 +75,8 @@
     <Compile Include="Assets\Script\대성\Enemy\coin.cs" />
     <Compile Include="Assets\InputSystem\PlayerInputActions.cs" />
     <Compile Include="Assets\Script\대성\TestPlayer\DsTestPlayer.cs" />
+    <Compile Include="Assets\Script\대성\Trap\TrapHallwayLight.cs" />
+    <Compile Include="Assets\Script\대성\Trap\FireTrapLight.cs" />
     <Compile Include="Assets\Script\대성\UIController.cs" />
     <Compile Include="Assets\Script\대성\Trap\RockTrap.cs" />
     <Compile Include="Assets\Script\대성\Trap\RodkSpawner.cs" />
@@ -87,8 +89,9 @@
     <Compile Include="Assets\Script\대성\Enemy\RePosition.cs" />
     <Compile Include="Assets\Script\대성\Trash\EnemyDetectAtack.cs" />
     <Compile Include="Assets\Script\대성\Trap\HiddenDoor.cs" />
-    <Compile Include="Assets\Script\대성\Trap\FireTrapLight.cs" />
-    <Compile Include="Assets\Script\대성\Trap\TrapHallwayLight.cs" />
+    <Compile Include="Assets\Script\대성\Trap\HiddenDoorDetector.cs" />
+    <Compile Include="Assets\Script\대성\Trap\TreasureBoxDetector.cs" />
+    <Compile Include="Assets\Script\대성\Trap\TreasurePotion.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

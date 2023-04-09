@@ -4,43 +4,70 @@ using UnityEngine;
 
 public class TrapHallwayLight : MonoBehaviour
 {
-    FireTrapDetector detector;
+    FireTrapDetector fireTrapDetector;
     GameObject[] lightObject;
-    Light[] light;
+    new Light[] light;
     public float intensityMax = 2f;
     public float lightOnSpeed = 2f;
-
+    HiddenDoorDetector hiddenDoorDetector;
     private void Awake()
     {
-        detector = FindObjectOfType<FireTrapDetector>();
+        hiddenDoorDetector = FindObjectOfType<HiddenDoorDetector>();
+        fireTrapDetector = FindObjectOfType<FireTrapDetector>();
         lightObject = new GameObject[transform.childCount];
         light = new Light[lightObject.Length];
-        Debug.Log($"자식개수 : {lightObject.Length}");
+        //Debug.Log($"자식개수 : {lightObject.Length}");
 
         for(int i=0;i<lightObject.Length;i++)
         {
-            lightObject[i] = transform.GetChild(i).gameObject;
-            light[i]=transform.GetChild(i).GetChild(0).GetComponent<Light>();
+            lightObject[i] = transform.GetChild(i).GetChild(0).gameObject;
+            light[i] = lightObject[i].transform.GetChild(0).GetComponent<Light>();
 
             lightObject[i].SetActive(false);
+            light[i].intensity = 0;
         }
     }
     private void OnEnable()
     {
-        detector.playerDetect += OnLight;
+        fireTrapDetector.playerDetect += OnFirePassZoneLight;
+        hiddenDoorDetector.hiddenDoorPass += OnRockPassZoneLight;
         // 34번에 대한 델리게이트 없음.
     }
 
     //1,2번 불 켜야함.
-    void OnLight(bool lightOn = true)
+    void OnFirePassZoneLight(bool lightOn = true)
     {
-        StartCoroutine(OnLighting(lightObject[0]));
-        StartCoroutine(OnLighting(lightObject[1]));
+        lightObject[0].SetActive(true);
+        StartCoroutine(OnFireZoneLighting(0));
+        lightObject[1].SetActive(true);
+        StartCoroutine(OnFireZoneLighting(1));
     }
-    IEnumerator OnLighting(GameObject obj)
+    IEnumerator OnFireZoneLighting(int x)
     {
-        yield return null;
+        while (light[x].intensity < intensityMax)
+        { 
+            light[x].intensity += lightOnSpeed * Time.deltaTime;
+
+            yield return null;
+        }
     }
+    void OnRockPassZoneLight()
+    {
+        lightObject[2].SetActive(true);
+        StartCoroutine(OnRockZoneLighting(2));
+        lightObject[3].SetActive(true);
+        StartCoroutine(OnRockZoneLighting(3));
+    }
+    IEnumerator OnRockZoneLighting(int x)
+    {
+        while (light[x].intensity < intensityMax)
+        {
+            light[x].intensity += lightOnSpeed * Time.deltaTime;
+
+            yield return null;
+        }
+    }
+
     /*
     FireTrapDetector detector;
     new Light light;

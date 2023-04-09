@@ -30,7 +30,7 @@ public class RockTrap : MonoBehaviour
         }
         else if (other.gameObject.CompareTag("Player"))
         {
-            Debug.Log("Player Destroy");
+            //Debug.Log("Player Destroy");
             Player player = other.gameObject.GetComponent<Player>();
             // 플레이어가 죽을 수 있도록 조치를 취할 것
             Rigidbody rigid = other.transform.GetComponent<Rigidbody>();

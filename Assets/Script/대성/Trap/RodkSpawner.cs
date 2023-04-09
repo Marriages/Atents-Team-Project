@@ -1,15 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class RodkSpawner : MonoBehaviour
 {
     public float rockRespawnTimeMax = 3f;
     //private float rockRespawnTime;
     public GameObject rock;
-    
+    HiddenDoorDetector detector;
 
-    private void Start()
+    private void Awake()
+    {
+        detector = FindObjectOfType<HiddenDoorDetector>();
+    }
+    private void OnEnable()
+    {
+        detector.hiddenDoorPass += RockTrapStart;
+    }
+
+
+    private void RockTrapStart()
     {
         StartCoroutine(GenerateRock());
     }
