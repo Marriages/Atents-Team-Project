@@ -13,14 +13,9 @@ public class Player : MonoBehaviour
     // 플레이어 이동 속도
     public float moveSpeed = 5.0f;
 
-    // 플레이어 회전 속도
-    public float rotateSpeed = 180.0f;
-
     // 플레이어 점프 속도
     public float jumpPower = 6.0f;
     bool IsJumping = false;
-
-    
 
     // 플레이어 방패들기 활성화/비활성화 변수
     private bool state;
@@ -29,7 +24,11 @@ public class Player : MonoBehaviour
     protected PlayerInputActions inputActions;
 
     // 플레이어 입력 방향
-    Vector3 inputDir = Vector3.zero;
+    Vector2 moveDir = Vector2.zero;
+    Vector2 cameraDir = Vector2.zero;
+
+    public Transform playerBody;
+    public Transform cameraArm;
 
     // 플레이어 리지드바디
     private Rigidbody rigid;
@@ -101,7 +100,6 @@ public class Player : MonoBehaviour
                     Debug.Log("사망 시퀀스 가동");//수정함----------------------------------------------------------------------------------------------------------------------
                     isAlive = false;//수정함----------------------------------------------------------------------------------------------------------------------
                     moveSpeed = 0f;//수정함----------------------------------------------------------------------------------------------------------------------
-                    rotateSpeed = 0f;//수정함----------------------------------------------------------------------------------------------------------------------
                     anim.SetBool("IsDie",true);//수정함----------------------------------------------------------------------------------------------------------------------
                                                //  + animation Controller Any State -> Die에  Bool IsDie 및 IsHit 에 의해 작동하게 수정및 변경  /  AnyState -> Potion, Atack에 IsDie가 false여야만 작동할 수 있게 부울 조건 추가함.
                     PlayerDie?.Invoke();
@@ -170,12 +168,15 @@ public class Player : MonoBehaviour
     private void FixedUpdate()
     {
         Move();
+        Mouse();
     }
 
     private void OnEnable()
     {
         inputActions.Player.Enable();
+        inputActions.Player.Mouse.performed += PlayerMouse;
         inputActions.Player.Move.performed += PlayerMove;
+        inputActions.Player.Mouse.canceled += PlayerMouse;
         inputActions.Player.Move.canceled += PlayerMove;
         inputActions.Player.Attack.performed += PlayerAttack;
         inputActions.Player.Shield.performed += PlayerShield;
@@ -192,15 +193,41 @@ public class Player : MonoBehaviour
         inputActions.Player.Shield.performed -= PlayerShield;
         inputActions.Player.Attack.performed -= PlayerAttack;
         inputActions.Player.Move.canceled -= PlayerMove;
+        inputActions.Player.Mouse.canceled -= PlayerMouse;
         inputActions.Player.Move.performed -= PlayerMove;
+        inputActions.Player.Mouse.performed -= PlayerMouse;
         inputActions.Player.Disable();
+    }
+
+    private void PlayerMouse(InputAction.CallbackContext context)
+    {
+        Vector2 dir = context.ReadValue<Vector2>();
+        cameraDir = dir;
+    }
+
+    void Mouse()
+    {
+        Vector3 camAngle = cameraArm.rotation.eulerAngles;
+        float x = camAngle.x - cameraDir.y;
+
+        if (x < 180f)
+        {
+            x = Mathf.Clamp(x, -1.0f, 30.0f);
+        }
+        else
+        {
+            x = Mathf.Clamp(x, 330.0f, 361.0f);
+        }
+
+        cameraArm.rotation = Quaternion.Euler(x, camAngle.y + cameraDir.x, camAngle.z);
+        
     }
 
     // 플레이어 이동 관련 이벤트 함수
     private void PlayerMove(InputAction.CallbackContext context)
     {
         Vector2 dir = context.ReadValue<Vector2>();
-        inputDir = dir;
+        moveDir = dir;
 
         anim.SetBool("IsMove", !context.canceled);
 
@@ -208,14 +235,23 @@ public class Player : MonoBehaviour
 
     void Move()
     {
-        Vector3 dir = new Vector3(inputDir.x, 0, inputDir.y);
+        bool isMove = moveDir.magnitude != 0;
+        if (isMove)
+        {
+            Vector3 lookForward = new Vector3(cameraArm.forward.x, 0.0f, cameraArm.forward.z).normalized;
+            Vector3 lookRight = new Vector3(cameraArm.right.x, 0.0f, cameraArm.right.z).normalized;
+            Vector3 moves = lookForward * moveDir.y + lookRight * moveDir.x;
 
-
-        rigid.MovePosition(transform.position + Time.fixedDeltaTime * moveSpeed * dir);
-        
-
-
+            rigid.MovePosition(transform.position + Time.fixedDeltaTime * moves * moveSpeed);
+        }
     }
+
+
+
+
+
+
+
     //수정함----------------------------------------------------------------------------------------------------------------------시작
     // 로직이 복잡하거나 상속을 해줄 일이 없기에, 불필요한 함수 Jump()를 삭제 병합함.
     // 플레이어 점프 관련 이벤트 함수
