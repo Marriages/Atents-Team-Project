@@ -64,6 +64,7 @@
     <Compile Include="Assets\Script\대성\Trap\HiddenDoorOpenButton.cs" />
     <Compile Include="Assets\Script\대성\Trash\RepositionChildren.cs" />
     <Compile Include="Assets\Script\대성\Enemy\EnemyBomb.cs" />
+    <Compile Include="Assets\Script\성윤\Shield.cs" />
     <Compile Include="Assets\Script\성윤\Player.cs" />
     <Compile Include="Assets\Script\대성\Enemy\EnemyDetector.cs" />
     <Compile Include="Assets\Script\대성\Test\TestCollisionTrigger.cs" />

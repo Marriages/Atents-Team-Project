@@ -987,8 +987,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 5
-  rotateSpeed: 20
   jumpPower: 4
+  playerBody: {fileID: 0}
+  cameraArm: {fileID: 0}
   weaponGet: 0
   shieldGet: 0
   potionGet: 0
