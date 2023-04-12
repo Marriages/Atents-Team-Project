@@ -12,6 +12,7 @@ public class Player : MonoBehaviour
 {
     // 플레이어 이동 속도
     public float moveSpeed = 5.0f;
+    public float rotateSpeed = 90.0f;
 
     // 플레이어 점프 속도
     public float jumpPower = 6.0f;
@@ -20,15 +21,16 @@ public class Player : MonoBehaviour
     // 플레이어 방패들기 활성화/비활성화 변수
     private bool state;
 
-    // 입력처리용 인풋액션
-    protected PlayerInputActions inputActions;
-
     // 플레이어 입력 방향
     Vector2 moveDir = Vector2.zero;
-    Vector2 cameraDir = Vector2.zero;
 
-    public Transform playerBody;
-    public Transform cameraArm;
+    // 카메라 관련 변수
+    GameObject cameraMain;
+    public float smoothness = 10.0f;
+    public bool toggleCameraRotation;
+
+    // 입력처리용 인풋액션
+    protected PlayerInputActions inputActions;
 
     // 플레이어 리지드바디
     private Rigidbody rigid;
@@ -148,7 +150,8 @@ public class Player : MonoBehaviour
         weaponCol.enabled = false;  //수정함----------------------------------------------------------------------------------------------------------------------     초기시작시 검의 콜라이더 비활성화. 추후 공격떄 활성화할 예정
         shieldCol.enabled = false;  //수정함----------------------------------------------------------------------------------------------------------------------    초기시작시 방패의 콜라이더 비활성화. 추후 방어할때 활성화할 예정
         shield = FindObjectOfType<Shield>();
-        Debug.Log(shield.gameObject.name);
+
+        cameraMain = GameObject.FindWithTag("MainCamera");
 
 
         rigid = GetComponent<Rigidbody>();
@@ -165,18 +168,26 @@ public class Player : MonoBehaviour
         
     }
 
+    private void LateUpdate()
+    {
+        if (toggleCameraRotation != true)
+        {
+            Vector3 playerRotate = Vector3.Scale(cameraMain.transform.forward, new(1, 0, 1));
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(playerRotate),
+                Time.deltaTime * smoothness);
+        }
+    }
+
     private void FixedUpdate()
     {
         Move();
-        Mouse();
+        
     }
 
     private void OnEnable()
     {
         inputActions.Player.Enable();
-        inputActions.Player.Mouse.performed += PlayerMouse;
         inputActions.Player.Move.performed += PlayerMove;
-        inputActions.Player.Mouse.canceled += PlayerMouse;
         inputActions.Player.Move.canceled += PlayerMove;
         inputActions.Player.Attack.performed += PlayerAttack;
         inputActions.Player.Shield.performed += PlayerShield;
@@ -193,34 +204,8 @@ public class Player : MonoBehaviour
         inputActions.Player.Shield.performed -= PlayerShield;
         inputActions.Player.Attack.performed -= PlayerAttack;
         inputActions.Player.Move.canceled -= PlayerMove;
-        inputActions.Player.Mouse.canceled -= PlayerMouse;
         inputActions.Player.Move.performed -= PlayerMove;
-        inputActions.Player.Mouse.performed -= PlayerMouse;
         inputActions.Player.Disable();
-    }
-
-    private void PlayerMouse(InputAction.CallbackContext context)
-    {
-        Vector2 dir = context.ReadValue<Vector2>();
-        cameraDir = dir;
-    }
-
-    void Mouse()
-    {
-        Vector3 camAngle = cameraArm.rotation.eulerAngles;
-        float x = camAngle.x - cameraDir.y;
-
-        if (x < 180f)
-        {
-            x = Mathf.Clamp(x, -1.0f, 30.0f);
-        }
-        else
-        {
-            x = Mathf.Clamp(x, 330.0f, 361.0f);
-        }
-
-        cameraArm.rotation = Quaternion.Euler(x, camAngle.y + cameraDir.x, camAngle.z);
-        
     }
 
     // 플레이어 이동 관련 이벤트 함수
@@ -235,14 +220,16 @@ public class Player : MonoBehaviour
 
     void Move()
     {
+        Vector2 moveInput = new Vector2(moveDir.x, moveDir.y);
         bool isMove = moveDir.magnitude != 0;
         if (isMove)
         {
-            Vector3 lookForward = new Vector3(cameraArm.forward.x, 0.0f, cameraArm.forward.z).normalized;
-            Vector3 lookRight = new Vector3(cameraArm.right.x, 0.0f, cameraArm.right.z).normalized;
-            Vector3 moves = lookForward * moveDir.y + lookRight * moveDir.x;
+            Vector3 forward = transform.TransformDirection(Vector3.forward);
+            Vector3 right = transform.TransformDirection(Vector3.right);
+            Vector3 moveDirection = forward * moveInput.y + right * moveInput.x;
 
-            rigid.MovePosition(transform.position + Time.fixedDeltaTime * moves * moveSpeed);
+
+            rigid.MovePosition(rigid.position + moveSpeed * Time.fixedDeltaTime * moveDirection);
         }
     }
 

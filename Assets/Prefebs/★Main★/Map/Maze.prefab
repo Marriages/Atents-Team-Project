@@ -12968,7 +12968,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   camera: {fileID: 0}
-  hingeOpenSpeed: 10
+  hingeOpenSpeed: 30
   cameraMoveSpeed: 0.05
 --- !u!1 &8047789463695385439
 GameObject:
@@ -23369,6 +23369,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: potion
       objectReference: {fileID: 0}
+    - target: {fileID: 5989965431277656286, guid: 7259304f5d747054ea8bec6bfc2db6da, type: 3}
+      propertyPath: m_TagString
+      value: Potion
+      objectReference: {fileID: 0}
     - target: {fileID: 6371310885144412772, guid: 7259304f5d747054ea8bec6bfc2db6da, type: 3}
       propertyPath: m_RootOrder
       value: 3
@@ -23420,3 +23424,22 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6371310885144412772, guid: 7259304f5d747054ea8bec6bfc2db6da, type: 3}
   m_PrefabInstance: {fileID: 8047789463860397665}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &4363948671397224127 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5989965431277656286, guid: 7259304f5d747054ea8bec6bfc2db6da, type: 3}
+  m_PrefabInstance: {fileID: 8047789463860397665}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1119288035
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4363948671397224127}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a425d18f20da4234ba2cca66051c7742, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 0}
+  moveSpeed: 2
