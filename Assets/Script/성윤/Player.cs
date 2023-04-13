@@ -20,6 +20,7 @@ public class Player : MonoBehaviour
 
     // 플레이어 방패들기 활성화/비활성화 변수
     private bool state;
+    
 
     // 플레이어 입력 방향
     Vector2 moveDir = Vector2.zero;
@@ -70,7 +71,7 @@ public class Player : MonoBehaviour
     public GameObject potion;    //수정함----------------------------------------------------------------------------------------------------------------------        포션 넣을 것
     public Collider weaponCol;   //수정함----------------------------------------------------------------------------------------------------------------------        콜라이더가 있는 무기 넣을것
     public Collider shieldCol;       //수정함----------------------------------------------------------------------------------------------------------------------        콜라이더가 있는 방패 넣을 것
-    Shield shield;
+    
 
     // 하트 프로퍼티
     public int Heart
@@ -149,10 +150,10 @@ public class Player : MonoBehaviour
 
         weaponCol.enabled = false;  //수정함----------------------------------------------------------------------------------------------------------------------     초기시작시 검의 콜라이더 비활성화. 추후 공격떄 활성화할 예정
         shieldCol.enabled = false;  //수정함----------------------------------------------------------------------------------------------------------------------    초기시작시 방패의 콜라이더 비활성화. 추후 방어할때 활성화할 예정
-        shield = FindObjectOfType<Shield>();
+        
 
         cameraMain = GameObject.FindWithTag("MainCamera");
-
+        
 
         rigid = GetComponent<Rigidbody>();
         anim = GetComponent<Animator>();
@@ -276,7 +277,9 @@ public class Player : MonoBehaviour
             
             Invoke("OffGod", 3);
         }
+        
     }
+    
 
     // 무적시간 해제 함수
     void OffGod()
@@ -337,7 +340,7 @@ public class Player : MonoBehaviour
         {
             anim.SetBool("IsSheild", true);
             state = true;
-            moveSpeed = 0;
+            inputActions.Player.Move.Disable();
             inputActions.Player.Attack.Disable();
             inputActions.Player.Potion.Disable();
             inputActions.Player.Jump.Disable();
@@ -347,7 +350,7 @@ public class Player : MonoBehaviour
         {
             anim.SetBool("IsSheild", false);
             state = false;
-            moveSpeed = 5.0f;
+            inputActions.Player.Move.Enable();
             inputActions.Player.Attack.Enable();
             inputActions.Player.Potion.Enable();
             inputActions.Player.Jump.Enable();
