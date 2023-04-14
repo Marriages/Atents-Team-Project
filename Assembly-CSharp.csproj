@@ -72,10 +72,13 @@
     <Compile Include="Assets\Script\대성\Enemy\EnemyBase.cs" />
     <Compile Include="Assets\Script\대성\Trap\HiddenDoorDetector.cs" />
     <Compile Include="Assets\Script\대성\Trap\FireTrapDetector.cs" />
+    <Compile Include="Assets\MobileWaterShader_EKV\Scripts\MobileWaterShader_EKV.cs" />
+    <Compile Include="Assets\MobileWaterShader_EKV\Scripts\WaterControl_EKV.cs" />
     <Compile Include="Assets\Script\대성\Enemy\Spawner.cs" />
     <Compile Include="Assets\Script\대성\Trap\FireTrap.cs" />
     <Compile Include="Assets\Script\대성\Enemy\EnemyBullet.cs" />
     <Compile Include="Assets\Script\대성\Enemy\coin.cs" />
+    <Compile Include="Assets\MobileWaterShader_EKV\Scripts\SimpleRotation.cs" />
     <Compile Include="Assets\InputSystem\PlayerInputActions.cs" />
     <Compile Include="Assets\Script\대성\TestPlayer\DsTestPlayer.cs" />
     <Compile Include="Assets\Script\대성\Trap\TrapHallwayLight.cs" />
@@ -84,6 +87,7 @@
     <Compile Include="Assets\Script\대성\UIController.cs" />
     <Compile Include="Assets\Script\대성\Trap\RockTrap.cs" />
     <Compile Include="Assets\Script\대성\Trap\RodkSpawner.cs" />
+    <Compile Include="Assets\MobileWaterShader_EKV\Scripts\SetValueOnStart.cs" />
     <Compile Include="Assets\InputSystem\InputSystemController.cs" />
     <Compile Include="Assets\Script\대성\AutoDoor.cs" />
     <Compile Include="Assets\Script\대성\Enemy\heart.cs" />
@@ -91,6 +95,7 @@
     <Compile Include="Assets\Script\대성\Enemy\EnemyWizard.cs" />
     <Compile Include="Assets\Script\대성\SceneController.cs" />
     <Compile Include="Assets\Script\대성\Enemy\RePosition.cs" />
+    <Compile Include="Assets\MobileWaterShader_EKV\Scripts\DisplayControl.cs" />
     <Compile Include="Assets\Script\대성\Trash\EnemyDetectAtack.cs" />
     <Compile Include="Assets\Script\대성\Trap\HiddenDoor.cs" />
   </ItemGroup>
@@ -104,9 +109,11 @@
     <None Include="Assets\JMO Assets\Cartoon FX Remaster\CFXR Assets\Shaders\CFXR.cginc" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Mobile.cginc" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF SSD.shader" />
+    <None Include="Assets\MobileWaterShader_EKV\Shaders\MobileWaterShader_EKV.shader" />
     <None Include="Assets\source\RPG Monster Wave Polyart\SRP\HowToTestSRPs.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface-Mobile.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface.shader" />
+    <None Include="Assets\MobileWaterShader_EKV\Documentation\Third-Party Notices.txt" />
     <None Include="Assets\TextMesh Pro\Sprites\EmojiOne Attribution.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Custom-Atlas.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF.shader" />
