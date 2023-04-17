@@ -98,6 +98,8 @@
     <Compile Include="Assets\MobileWaterShader_EKV\Scripts\DisplayControl.cs" />
     <Compile Include="Assets\Script\대성\Trash\EnemyDetectAtack.cs" />
     <Compile Include="Assets\Script\대성\Trap\HiddenDoor.cs" />
+    <Compile Include="Assets\Script\대성\Scene\MapManager.cs" />
+    <Compile Include="Assets\Script\대성\Scene\TitleScene.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

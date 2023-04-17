@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 public class MainCamera_Action : MonoBehaviour
 {
     // 카메라가 따라가야할 오브젝트의 정보
-    public Transform PlayerToFollow;
+    Transform PlayerToFollow;
     // 카메라가 따라가는 스피드
     public float followSpeed = 10.0f;
     // 마우스 감도
@@ -19,7 +19,7 @@ public class MainCamera_Action : MonoBehaviour
     private float rotX;
     private float rotY;
     // 카메라의 정보
-    public Transform realCamera;
+    Transform realCamera;
     // 카메라의 방향
     public Vector3 dirNormalized;
     // 카메라의 최종적으로 정해진 방향
@@ -39,6 +39,8 @@ public class MainCamera_Action : MonoBehaviour
 
     private void Awake()
     {
+        PlayerToFollow = FindObjectOfType<Player>().transform.GetChild(2).transform;
+        realCamera = transform.GetChild(0);
         inputActions = new PlayerInputActions();
     }
 
@@ -81,8 +83,7 @@ public class MainCamera_Action : MonoBehaviour
 
     private void LateUpdate()
     {
-        transform.position = Vector3.MoveTowards(transform.position,
-            PlayerToFollow.position, followSpeed * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position,PlayerToFollow.position, followSpeed * Time.deltaTime);
 
         finalDir = transform.TransformPoint(dirNormalized * maxDistance);
 
@@ -95,8 +96,7 @@ public class MainCamera_Action : MonoBehaviour
         {
             finalDistance = maxDistance;
         }
-        realCamera.localPosition = Vector3.Lerp(realCamera.localPosition, dirNormalized * finalDistance,
-            Time.deltaTime * smoothness);
+        realCamera.localPosition = Vector3.Lerp(realCamera.localPosition, dirNormalized * finalDistance, Time.deltaTime * smoothness);
     }
 
 

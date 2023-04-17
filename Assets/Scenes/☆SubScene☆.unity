@@ -577,10 +577,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 877273241, guid: 22cf00abdfc4f664a9841d1d49547971, type: 3}
+      propertyPath: m_TagString
+      value: Wall
+      objectReference: {fileID: 0}
+    - target: {fileID: 1868110390, guid: 22cf00abdfc4f664a9841d1d49547971, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -3.19
+      objectReference: {fileID: 0}
     - target: {fileID: 2020613399, guid: 22cf00abdfc4f664a9841d1d49547971, type: 3}
       propertyPath: camera
       value: 
       objectReference: {fileID: 1641263903}
+    - target: {fileID: 2022978264202849429, guid: 22cf00abdfc4f664a9841d1d49547971, type: 3}
+      propertyPath: m_TagString
+      value: Wall
+      objectReference: {fileID: 0}
     - target: {fileID: 3791657860224059887, guid: 22cf00abdfc4f664a9841d1d49547971, type: 3}
       propertyPath: m_RootOrder
       value: 3

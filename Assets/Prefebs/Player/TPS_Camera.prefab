@@ -45,16 +45,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8c74a3b4816425468efdb2a203b42fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerToFollow: {fileID: 0}
-  followSpeed: 10
-  sensitivity: 20
-  clamAngle: 70
-  realCamera: {fileID: 5570161019605234349}
+  followSpeed: 8
+  sensitivity: 5
+  clamAngle: 50
   dirNormalized: {x: 0, y: 0, z: 0}
   finalDir: {x: 0, y: 0, z: 0}
   minDistance: 3
   maxDistance: 4
-  finalDistance: 0
+  finalDistance: 4
   smoothness: 10
 --- !u!1001 &6575112219307218658
 PrefabInstance:
@@ -69,7 +67,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1617445743041127502, guid: a8c4d74292d917e439fd0395fb314ef7, type: 3}
       propertyPath: m_ClearFlags
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1617445743041127502, guid: a8c4d74292d917e439fd0395fb314ef7, type: 3}
       propertyPath: m_BackGroundColor.b

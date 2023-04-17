@@ -7,6 +7,14 @@ using UnityEngine.InputSystem;
 
 //강대성 UI 테스트용 Script 코드
 
+/*
+ * 성능 높이기 위해 노력 할 것 
+ * https://docs.unity3d.com/kr/530/Manual/LightProbes.html
+ * https://ko.wikipedia.org/wiki/%EA%B8%80%EB%A1%9C%EB%B2%8C_%EC%9D%BC%EB%A3%A8%EB%AF%B8%EB%84%A4%EC%9D%B4%EC%85%98
+ * 
+ * 
+ */
+
 
 public class Player : MonoBehaviour
 {
@@ -67,9 +75,9 @@ public class Player : MonoBehaviour
     
 
     // 포션,무기, 방패 관리용
-    public GameObject potion;    //수정함----------------------------------------------------------------------------------------------------------------------        포션 넣을 것
-    public Collider weaponCol;   //수정함----------------------------------------------------------------------------------------------------------------------        콜라이더가 있는 무기 넣을것
-    public Collider shieldCol;       //수정함----------------------------------------------------------------------------------------------------------------------        콜라이더가 있는 방패 넣을 것
+    public GameObject potion;
+    public Collider weaponCol;
+    public Collider shieldCol;
     Shield shield;
 
     // 하트 프로퍼티
@@ -78,40 +86,34 @@ public class Player : MonoBehaviour
         get => heart;
         set
         {
-            //Debug.Log($"heart:{Heart},value:{value}");
-            if (heart < value)            //회복
+            if (heart < value && value<3)            //회복
             {
-                Debug.Log("회복 시퀀스 가동");
-                if (value > 3)
-                    Debug.Log("이미 최대 체력입니다.");
-                else
-                {
-                    heart = value;
-                    HeartPlus?.Invoke(1);
-                }
+                //값이 현재 heart보다 크고, 3보다 작다면 1 회복
+                heart = value;
+                HeartPlus?.Invoke(1);
             }
             else if (heart > value)       //피격
             {
                 //Debug.Log("피격 시퀀스 가동");
 
-                inputActions.Player.Move.canceled -= PlayerMove;//수정함---------------------------------------------------------------------------------------------------------------------- 입력시스템 제거
-                inputActions.Player.Move.performed -= PlayerMove;//수정함----------------------------------------------------------------------------------------------------------------------입력시스템 제거
+                inputActions.Player.Move.canceled -= PlayerMove;
+                inputActions.Player.Move.performed -= PlayerMove;
 
                 if (value <= 0)
                 {
-                    Debug.Log("사망 시퀀스 가동");//수정함----------------------------------------------------------------------------------------------------------------------
-                    isAlive = false;//수정함----------------------------------------------------------------------------------------------------------------------
-                    moveSpeed = 0f;//수정함----------------------------------------------------------------------------------------------------------------------
-                    anim.SetBool("IsDie",true);//수정함----------------------------------------------------------------------------------------------------------------------
+                    Debug.Log("사망 시퀀스 가동");
+                    isAlive = false;
+                    moveSpeed = 0f;
+                    anim.SetBool("IsDie",true);
                                                //  + animation Controller Any State -> Die에  Bool IsDie 및 IsHit 에 의해 작동하게 수정및 변경  /  AnyState -> Potion, Atack에 IsDie가 false여야만 작동할 수 있게 부울 조건 추가함.
                     PlayerDie?.Invoke();
                 }
                 else
                 {
-                    Debug.Log("생명력 감소");//수정함----------------------------------------------------------------------------------------------------------------------
+                    Debug.Log("생명력 감소");
 
-                    inputActions.Player.Move.performed += PlayerMove;//수정함----------------------------------------------------------------------------------------------------------------------입력시스템 복구
-                    inputActions.Player.Move.canceled += PlayerMove;//수정함----------------------------------------------------------------------------------------------------------------------입력시스템 복구
+                    inputActions.Player.Move.performed += PlayerMove;
+                    inputActions.Player.Move.canceled += PlayerMove;
 
                     heart = value;
                     HeartMinus?.Invoke(1);
@@ -147,8 +149,8 @@ public class Player : MonoBehaviour
     {
         Heart = 3;
 
-        weaponCol.enabled = false;  //수정함----------------------------------------------------------------------------------------------------------------------     초기시작시 검의 콜라이더 비활성화. 추후 공격떄 활성화할 예정
-        shieldCol.enabled = false;  //수정함----------------------------------------------------------------------------------------------------------------------    초기시작시 방패의 콜라이더 비활성화. 추후 방어할때 활성화할 예정
+        weaponCol.enabled = false;
+        shieldCol.enabled = false;
         shield = FindObjectOfType<Shield>();
 
         cameraMain = GameObject.FindWithTag("MainCamera");
@@ -239,9 +241,6 @@ public class Player : MonoBehaviour
 
 
 
-    //수정함----------------------------------------------------------------------------------------------------------------------시작
-    // 로직이 복잡하거나 상속을 해줄 일이 없기에, 불필요한 함수 Jump()를 삭제 병합함.
-    // 플레이어 점프 관련 이벤트 함수
     private void PlayerJump(InputAction.CallbackContext context)
     {
         if (IsJumping==false && isAlive==true)         // 점프 중이 아닐 때만 그리고 살아있을때만
@@ -255,12 +254,9 @@ public class Player : MonoBehaviour
         }
         
     }
-    //수정함----------------------------------------------------------------------------------------------------------------------끝
    
 
 
-
-    //수정함----------------------------------------------------------------------------------------------------------------------시작
     // 플레이어 충돌 관련 이벤트 함수
     private void OnTriggerEnter(Collider other)
     {
@@ -275,6 +271,16 @@ public class Player : MonoBehaviour
 
             
             Invoke("OffGod", 3);
+        }
+        else if(other.gameObject.CompareTag("Coin") && isAlive==true)
+        {
+            ++Coin;
+            Destroy(other.gameObject);
+        }
+        else if (other.gameObject.CompareTag("Heart") && isAlive == true)
+        {
+            ++Heart;
+            Destroy(other.gameObject);
         }
     }
 

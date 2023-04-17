@@ -128,4 +128,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 8
-  bombEffect: {fileID: 4021103657954561961, guid: 5c755f9bc5253ea418e919994537dcc7, type: 3}
+  bombEffect: {fileID: 4085264335075372043, guid: 5f9b6d66dac918b4eabc2f64c0733ce6, type: 3}
