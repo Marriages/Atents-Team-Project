@@ -1,29 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Build.Content;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class MapManager : MonoBehaviour
 {
-    private static MapManager instance = null;
-
-    int currentIndex = 0;
-
+    //처음 로딩씬에서 생성될 예정.
+    Player player;
 
     private void Awake()
     {
-        if(instance == null)
-        {
-            instance = this;
-            DontDestroyOnLoad(instance.gameObject);
-        }
-        else
-        {
-            Destroy(this.gameObject);
-        }
+        DontDestroyOnLoad(this.gameObject);
+    }
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += SearchGateway;
     }
 
+    void SearchGateway(Scene scene,LoadSceneMode mode)
+    {
 
-
+    }
+    
 
 }

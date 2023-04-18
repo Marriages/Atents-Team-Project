@@ -45,15 +45,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8c74a3b4816425468efdb2a203b42fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  followSpeed: 8
-  sensitivity: 5
+  followSpeed: 10
+  sensitivity: 3
   clamAngle: 50
   dirNormalized: {x: 0, y: 0, z: 0}
   finalDir: {x: 0, y: 0, z: 0}
   minDistance: 3
   maxDistance: 4
   finalDistance: 4
-  smoothness: 10
+  smoothness: 0.01
 --- !u!1001 &6575112219307218658
 PrefabInstance:
   m_ObjectHideFlags: 0

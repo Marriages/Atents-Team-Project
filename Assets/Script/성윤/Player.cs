@@ -251,8 +251,7 @@ public class Player : MonoBehaviour
             inputActions.Player.Potion.Disable();
             inputActions.Player.Shield.Disable();
             inputActions.Player.Attack.Disable();
-        }
-        
+        } 
     }
    
 
@@ -264,7 +263,7 @@ public class Player : MonoBehaviour
         {
             //Debug.Log($"플레이어가 {other.gameObject.name}에게 피격당함!");
             anim.SetTrigger("IsHit");       //수정함----------------------------------------------------------------------------------------------------------------------  Animator Controller 중 Idle -> Hit로가는 IsHit Trigger 설정함(has exit Time 뺐음)
-            Heart--;
+            --Heart;
             
             // 플레이어가 적과 충돌시 PlayerGod레이어로 변경(PlayerGod은 무적상태)
             gameObject.layer = 10;
