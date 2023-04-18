@@ -28,7 +28,6 @@ public class TestPlayer : MonoBehaviour
     [Header("Input & Move")]
     Vector3 moveDir = Vector3.zero;
     Vector3 moveDirMouse = Vector3.zero;
-    Vector3 moveDirNotY = Vector3.zero;
     Vector3 playerRotate = Vector3.zero;        //카메라회전
     Vector3 forward = Vector3.zero;
     Vector3 right = Vector3.zero;
@@ -156,9 +155,6 @@ public class TestPlayer : MonoBehaviour
         inputActions.Player.Use.performed += PlayerUse;
         inputActions.Player.ViewChange.performed += PlayerViewChange;
     }
-
-    
-
     void InitializeUnConnecting()
     {
         inputActions.Player.ViewChange.performed -= PlayerViewChange;
@@ -178,21 +174,35 @@ public class TestPlayer : MonoBehaviour
     private void PlayerMove(InputAction.CallbackContext obj)
     {
         Vector3 dir = obj.ReadValue<Vector3>();
-        moveDir = dir.normalized;
-        Debug.Log($"moveDir : {moveDir}");
-
-        moveDirNotY = moveDir;
-        moveDirNotY.y = 0;
-        moveDirNotY = moveDirNotY.normalized;
-        Debug.Log($"moveDirNotY : {moveDirNotY}");
-
-
-        isMoving = !obj.canceled;
+        if(dir != Vector3.zero )
+        {
+            moveDir = dir.normalized;
+            isMoving = true;
+        }
+        else
+        {
+            moveDir = Vector3.zero;
+            isMoving = false;
+        }
         anim.SetBool("Move", isMoving);
     }
 
     private void PlayerAttack(InputAction.CallbackContext obj)
     {
+        isMoving = false;
+        anim.SetTrigger("Atack");
+    }
+    void AtackEnd()
+    {
+        isMoving = true;
+    }
+    void WeaponColliderOn()
+    {
+        weaponCollider.enabled = true;
+    }
+    void WeaponColliderOff()
+    {
+        weaponCollider.enabled = false;
     }
 
     private void PlayerShield(InputAction.CallbackContext obj)
