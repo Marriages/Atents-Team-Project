@@ -60,7 +60,7 @@ public class Player : MonoBehaviour
     public bool weaponGet = false;
     public bool shieldGet = false;
     public bool potionGet = false;
-    public bool isAlive = true;     //수정함----------------------------------------------------------------------------------------------------------------------
+    public bool isAlive = true;
 
     // 델리게이트
     public Action<int> HeartPlus;

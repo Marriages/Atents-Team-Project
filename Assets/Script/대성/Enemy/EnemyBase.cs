@@ -264,7 +264,7 @@ public class EnemyBase : MonoBehaviour
 
     protected virtual void StateReturn(EnemyState value)
     {
-        Debug.LogWarning("Return Property 실행");
+        //Debug.LogWarning("Return Property 실행");
         StopAllCoroutines();
         bool k = agent.SetDestination(spownPoint.position);
         if (k == false)

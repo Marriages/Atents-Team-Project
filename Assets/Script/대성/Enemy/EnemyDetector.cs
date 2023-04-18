@@ -29,7 +29,7 @@ public class EnemyDetector : MonoBehaviour
 
     void ReEnableCollier()
     {
-        Debug.Log("Detector 재설정.");
+        //Debug.Log("Detector 재설정.");
         col.enabled = true;
     }
     private void OnTriggerEnter(Collider other)

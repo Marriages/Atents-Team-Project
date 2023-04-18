@@ -53,7 +53,7 @@ public class Spawner : MonoBehaviour
     {
         if(other.CompareTag("Player"))
         {
-            Debug.Log("Spawner : 플레이어 나감");
+            //Debug.Log("Spawner : 플레이어 나감");
             playerInPlace = false;
             playerOut?.Invoke();
         }

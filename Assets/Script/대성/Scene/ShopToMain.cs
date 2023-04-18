@@ -5,13 +5,13 @@ using UnityEngine;
 
 public class ShopToMain : MonoBehaviour
 {
-    public Action shopTomain;
+    public Action shopToMain;
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            shopTomain?.Invoke();
+            shopToMain?.Invoke();
         }
     }
 }

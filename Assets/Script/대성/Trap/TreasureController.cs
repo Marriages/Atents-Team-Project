@@ -8,7 +8,7 @@ public class TreasureController : MonoBehaviour
     public Action potionMove;
 
     public new GameObject camera;
-    Transform cameraTreasurePosition;
+    //Transform cameraTreasurePosition;
     TreasureBoxDetector detector;
     GameObject treasureZoneCover;
     GameObject treasureBoxHinge;
@@ -26,7 +26,7 @@ public class TreasureController : MonoBehaviour
         treasureBoxHinge = transform.GetChild(0).gameObject;
         treasureBoxLight = transform.GetChild(2).gameObject;
         treasureZoneCover = transform.GetChild(6).gameObject;
-        cameraTreasurePosition = transform.GetChild(7).transform;
+        //cameraTreasurePosition = transform.GetChild(7).transform;
     }
 
     private void OnEnable()
@@ -42,7 +42,7 @@ public class TreasureController : MonoBehaviour
         treasureZoneCover.SetActive(true);
         treasureBoxLight.SetActive(true);
         StartCoroutine(OpenHinge());
-        StartCoroutine(CameraMove());
+        //StartCoroutine(CameraMove());
     }
     IEnumerator OpenHinge()
     {
@@ -57,7 +57,7 @@ public class TreasureController : MonoBehaviour
         potionMove?.Invoke();
 
     }
-
+    /*
     IEnumerator CameraMove()
     {
         camera.transform.rotation = cameraTreasurePosition.rotation;
@@ -66,5 +66,5 @@ public class TreasureController : MonoBehaviour
             camera.transform.position = Vector3.Lerp(camera.transform.position, cameraTreasurePosition.position, cameraMoveSpeed);
             yield return null;
         }
-    }
+    }*/
 }
