@@ -9,6 +9,7 @@ using UnityEngine.InputSystem;
 
 public class DsTestPlayer : MonoBehaviour
 {
+    /*
     //--------변수 선언--------변수 선언--------변수 선언--------변수 선언--------변수 선언--------변수 선언
 
 
@@ -277,4 +278,5 @@ public class DsTestPlayer : MonoBehaviour
 
     }
     //-------------------------------------------------- T E S T --------------------------------------------------
+    */
 }

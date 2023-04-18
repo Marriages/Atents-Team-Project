@@ -63,6 +63,7 @@
     <Compile Include="Assets\Script\대성\Trap\TreasurePotion.cs" />
     <Compile Include="Assets\Script\대성\Test\CreateGroundTest.cs" />
     <Compile Include="Assets\Script\대성\Trap\HiddenDoorOpenButton.cs" />
+    <Compile Include="Assets\Script\대성\Player\Weapon.cs" />
     <Compile Include="Assets\Script\대성\Scene\SubToMain.cs" />
     <Compile Include="Assets\Script\대성\Trash\RepositionChildren.cs" />
     <Compile Include="Assets\Script\대성\Enemy\EnemyBomb.cs" />
@@ -71,7 +72,9 @@
     <Compile Include="Assets\Script\대성\Enemy\EnemyDetector.cs" />
     <Compile Include="Assets\Script\대성\Test\TestCollisionTrigger.cs" />
     <Compile Include="Assets\Script\대성\Enemy\EnemyBase.cs" />
+    <Compile Include="Assets\Script\대성\ShopItemPotion.cs" />
     <Compile Include="Assets\Script\대성\Trap\HiddenDoorDetector.cs" />
+    <Compile Include="Assets\Script\대성\Player\Potion.cs" />
     <Compile Include="Assets\Script\대성\Trap\FireTrapDetector.cs" />
     <Compile Include="Assets\MobileWaterShader_EKV\Scripts\MobileWaterShader_EKV.cs" />
     <Compile Include="Assets\MobileWaterShader_EKV\Scripts\WaterControl_EKV.cs" />
@@ -79,6 +82,7 @@
     <Compile Include="Assets\Script\대성\Trap\FireTrap.cs" />
     <Compile Include="Assets\Script\대성\Scene\MapManager.cs" />
     <Compile Include="Assets\Script\대성\Enemy\EnemyBullet.cs" />
+    <Compile Include="Assets\Script\대성\ShopItemScrool.cs" />
     <Compile Include="Assets\Script\대성\Enemy\coin.cs" />
     <Compile Include="Assets\MobileWaterShader_EKV\Scripts\SimpleRotation.cs" />
     <Compile Include="Assets\InputSystem\PlayerInputActions.cs" />
@@ -86,6 +90,7 @@
     <Compile Include="Assets\Script\대성\Trap\TrapHallwayLight.cs" />
     <Compile Include="Assets\Script\대성\Trap\FireTrapLight.cs" />
     <Compile Include="Assets\Script\대성\Trap\TreasureBoxDetector.cs" />
+    <Compile Include="Assets\Script\대성\Player\TestPlayer.cs" />
     <Compile Include="Assets\Script\대성\UIController.cs" />
     <Compile Include="Assets\Script\대성\Scene\ShopToMain.cs" />
     <Compile Include="Assets\Script\대성\Scene\TitleToMain.cs" />
@@ -104,11 +109,6 @@
     <Compile Include="Assets\Script\대성\Trash\EnemyDetectAtack.cs" />
     <Compile Include="Assets\Script\대성\Trap\HiddenDoor.cs" />
     <Compile Include="Assets\Script\대성\Scene\MainToShop.cs" />
-    <Compile Include="Assets\Script\대성\ShopItemPotion.cs" />
-    <Compile Include="Assets\Script\대성\ShopItemScrool.cs" />
-    <Compile Include="Assets\Script\대성\Player\TestPlayer.cs" />
-    <Compile Include="Assets\Script\대성\Player\Potion.cs" />
-    <Compile Include="Assets\Script\대성\Player\Weapon.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

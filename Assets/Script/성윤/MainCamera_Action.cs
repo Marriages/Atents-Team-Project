@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 public class MainCamera_Action : MonoBehaviour
 {
     // 카메라가 따라가야할 오브젝트의 정보
-    Transform PlayerToFollow;
+    public Transform PlayerToFollow;
     // 카메라가 따라가는 스피드
     public float followSpeed = 10.0f;
     // 마우스 감도
@@ -39,7 +39,7 @@ public class MainCamera_Action : MonoBehaviour
 
     private void Awake()
     {
-        PlayerToFollow = FindObjectOfType<Player>().transform.GetChild(2).transform;
+        //PlayerToFollow = FindObjectOfType<Player>().transform.GetChild(2).transform;
         realCamera = transform.GetChild(0);
         inputActions = new PlayerInputActions();
     }
