@@ -66,7 +66,7 @@
     <Compile Include="Assets\Script\대성\Scene\SubToMain.cs" />
     <Compile Include="Assets\Script\대성\Trash\RepositionChildren.cs" />
     <Compile Include="Assets\Script\대성\Enemy\EnemyBomb.cs" />
-    <Compile Include="Assets\Script\성윤\Shield.cs" />
+    <Compile Include="Assets\Script\대성\Player\Shield.cs" />
     <Compile Include="Assets\Script\성윤\Player.cs" />
     <Compile Include="Assets\Script\대성\Enemy\EnemyDetector.cs" />
     <Compile Include="Assets\Script\대성\Test\TestCollisionTrigger.cs" />
@@ -106,6 +106,9 @@
     <Compile Include="Assets\Script\대성\Scene\MainToShop.cs" />
     <Compile Include="Assets\Script\대성\ShopItemPotion.cs" />
     <Compile Include="Assets\Script\대성\ShopItemScrool.cs" />
+    <Compile Include="Assets\Script\대성\Player\TestPlayer.cs" />
+    <Compile Include="Assets\Script\대성\Player\Potion.cs" />
+    <Compile Include="Assets\Script\대성\Player\Weapon.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

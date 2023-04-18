@@ -35,12 +35,12 @@ public class MapManager : MonoBehaviour
 
     void SearchGateway(Scene scene,LoadSceneMode mode)
     {
-        Debug.Log("Hi. I'm map Manager");
+        //Debug.Log("Hi. I'm map Manager");
 
         
         if(player==null)
         {
-            Debug.Log("Player를 찾았습니다.");
+            //Debug.Log("Player를 찾았습니다.");
             player=FindObjectOfType<Player>();
         }
 

@@ -20,7 +20,7 @@ public class Player : MonoBehaviour
 {
     // 플레이어 이동 속도
     public float moveSpeed = 5.0f;
-    public float rotateSpeed = 90.0f;
+    //public float rotateSpeed = 90.0f;
 
     // 플레이어 점프 속도
     public float jumpPower = 6.0f;
@@ -31,7 +31,7 @@ public class Player : MonoBehaviour
 
     // 플레이어 입력 방향
     Vector2 moveDir = Vector2.zero;
-
+    
     // 카메라 관련 변수
     GameObject cameraMain;
     public float smoothness = 10.0f;
