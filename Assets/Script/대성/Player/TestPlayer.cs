@@ -54,6 +54,7 @@ public class TestPlayer : MonoBehaviour
     public Action WeaponGet;
     public Action ShieldGet;
     public Action PlayerDie;
+    public Action PlayerUseTry;         //아이템 상호작용
 
 
     private void Awake()
@@ -65,21 +66,24 @@ public class TestPlayer : MonoBehaviour
         anim = GetComponent<Animator>();
         inputActions = new InputSystemController();
         rigid = GetComponent<Rigidbody>();
-        //weapon = transform.GetComponentInChildren<Weapon>().gameObject;
-        //shield = transform.GetComponentInChildren<Shield>().gameObject;
-        //potion = transform.GetComponentInChildren<Potion>().gameObject;
+        
+        weapon = transform.GetComponentInChildren<Weapon>().gameObject;
+        weaponCollider = weapon.GetComponent<Collider>();
+        shield = transform.GetComponentInChildren<Shield>().gameObject;
+        shieldCollider = shield.GetComponent<Collider>();
+        potion = transform.GetComponentInChildren<Potion>(true).gameObject;
 
         cameraMain = FindObjectOfType<MainCamera_Action>().transform.GetChild(0).gameObject;
     }
     private void FixedUpdate()
     {
         //키보드로 화면 회전하는 탑뷰모드
-        if(isMoving==true && lookModeThire==true && isAlive==true )
+        if(isMoving==true && lookModeThire==true && isShilding==false )
         {
             rigid.MovePosition(rigid.position + moveDir * moveSpeed * Time.fixedDeltaTime);
             transform.LookAt(transform.position + moveDir,Vector3.up);
         }
-        else if(isMoving == true && lookModeThire==false && isAlive==true)
+        else if(isMoving == true && lookModeThire==false && isShilding == false)
         {
             forward = transform.TransformDirection(Vector3.forward);
             right = transform.TransformDirection(Vector3.right);
@@ -89,7 +93,17 @@ public class TestPlayer : MonoBehaviour
 
             playerRotate = Vector3.Scale(cameraMain.transform.forward, new(1, 0, 1));
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(playerRotate),Time.deltaTime * smoothness);
+        }/*
+        else if( isJumping == true && lookModeThire==true )
+        {
+            rigid.AddForce(rigid.position + moveDir * moveSpeed * Time.fixedDeltaTime, ForceMode.Impulse);
         }
+        else if (isJumping == true && lookModeThire == false)
+        {
+            rigid.AddForce(rigid.position + moveDirMouse * moveSpeed * Time.fixedDeltaTime, ForceMode.Impulse);
+        }*/
+
+
     }
     private void OnEnable()
     {
@@ -128,12 +142,24 @@ public class TestPlayer : MonoBehaviour
         {
             anim.SetTrigger("isHit");
             --heart;
-            
         }
     }
     private void OnCollisionEnter(Collision collision)
     {
-        
+        if(collision.gameObject.CompareTag("Ground"))
+        {
+            isJumping = false;
+
+            rigid.velocity= Vector3.zero;
+
+            //inputActions.Player.Move.Enable();
+            inputActions.Player.PotionKeyboard.Enable();
+            inputActions.Player.PotionMouse.Enable();
+            inputActions.Player.ShieldKeyboard.Enable();
+            inputActions.Player.ShieldMouse.Enable();
+            inputActions.Player.AtackKeyboard.Enable();
+            inputActions.Player.AtackMouse.Enable();
+        }
     }
 
 
@@ -152,13 +178,13 @@ public class TestPlayer : MonoBehaviour
         inputActions.Player.PotionKeyboard.performed += PlayerPotion;
         inputActions.Player.PotionMouse.performed += PlayerPotion;
         inputActions.Player.Jump.performed += PlayerJump;
-        inputActions.Player.Use.performed += PlayerUse;
         inputActions.Player.ViewChange.performed += PlayerViewChange;
+        inputActions.Player.Use.performed += (_) => PlayerUseTry?.Invoke();
     }
     void InitializeUnConnecting()
     {
+        inputActions.Player.Use.performed -= (_) => PlayerUseTry?.Invoke();
         inputActions.Player.ViewChange.performed -= PlayerViewChange;
-        inputActions.Player.Use.performed -= PlayerUse;
         inputActions.Player.Jump.performed -= PlayerJump;
         inputActions.Player.PotionMouse.performed -= PlayerPotion;
         inputActions.Player.PotionKeyboard.performed -= PlayerPotion;
@@ -187,46 +213,59 @@ public class TestPlayer : MonoBehaviour
         anim.SetBool("Move", isMoving);
     }
 
-    private void PlayerAttack(InputAction.CallbackContext obj)
-    {
+    private void PlayerAttack(InputAction.CallbackContext obj)    {
         isMoving = false;
+        inputActions.Player.Disable();
         anim.SetTrigger("Atack");
     }
-    void AtackEnd()
-    {
+    void AtackEnd()    {
         isMoving = true;
+        inputActions.Player.Enable();
     }
-    void WeaponColliderOn()
-    {
+    void WeaponColliderOn()    {
         weaponCollider.enabled = true;
     }
-    void WeaponColliderOff()
-    {
+    void WeaponColliderOff()    {
         weaponCollider.enabled = false;
     }
 
     private void PlayerShield(InputAction.CallbackContext obj)
-    {/*
-        if (isShilding == false)
+    {
+        Debug.Log("Press Shield");
+        if(isShilding==false)
         {
-            anim.SetBool("IsSheild", true);
             isShilding = true;
-            moveSpeed = 0;
-            inputActions.Player.Attack.Disable();
-            inputActions.Player.Potion.Disable();
+            anim.SetBool("Shield", isShilding);
+            rigid.velocity = Vector3.zero;        //플레이어 멈추기
+
+            inputActions.Player.Move.Disable();
+            inputActions.Player.AtackKeyboard.Disable();
+            inputActions.Player.AtackMouse.Disable();
             inputActions.Player.Jump.Disable();
-            shieldCollider.enabled = true;
+            inputActions.Player.PotionKeyboard.Disable();
+            inputActions.Player.PotionMouse.Disable();
         }
-        else
+        else if (isShilding == true)
         {
-            anim.SetBool("IsSheild", false);
             isShilding = false;
-            moveSpeed = 5.0f;
-            inputActions.Player.Attack.Enable();
-            inputActions.Player.Potion.Enable();
-            inputActions.Player.Jump.Enable();
+            anim.SetBool("Shield", isShilding);
+
             shieldCollider.enabled = false;
-        }*/
+            inputActions.Player.Move.Enable();
+            inputActions.Player.AtackKeyboard.Enable();
+            inputActions.Player.AtackMouse.Enable();
+            inputActions.Player.Jump.Enable();
+            inputActions.Player.PotionKeyboard.Enable();
+            inputActions.Player.PotionMouse.Enable();
+        }
+    }
+    void ShieldStart()
+    {
+        shieldCollider.enabled = true;
+    }
+    void ShieldEnd()
+    {
+        
     }
 
     private void PlayerPotion(InputAction.CallbackContext obj)
@@ -234,25 +273,27 @@ public class TestPlayer : MonoBehaviour
     }
 
     private void PlayerJump(InputAction.CallbackContext obj)
-    {/*
-        if (isJumping == false && isAlive == true)
+    {
+        if(isJumping == false)
         {
-            rigid.AddForce(Vector3.up * jumpPower, ForceMode.Impulse);
             isJumping = true;
-            anim.SetTrigger("IsJump");
-            inputActions.Player.Potion.Disable();
-            inputActions.Player.Shield.Disable();
-            inputActions.Player.Attack.Disable();
+            rigid.AddForce(Vector3.up * jumpPower, ForceMode.Impulse);
+            anim.SetTrigger("Jump");
+
+            inputActions.Player.PotionKeyboard.Disable();
+            inputActions.Player.PotionMouse.Disable();
+            inputActions.Player.ShieldKeyboard.Disable();
+            inputActions.Player.ShieldMouse.Disable();
+            inputActions.Player.AtackKeyboard.Disable();
+            inputActions.Player.AtackMouse.Disable();
         }
-    */
+
+        // 점프시 벽멈춤 현상은 마찰력으로 인해 발생함.
+        // Physic Material을 생성해서 Collider에 넣어줌으로 해결.
+        // https://mayquartet.tistory.com/47
     }
 
-    private void PlayerUse(InputAction.CallbackContext obj)
-    {
-    
-    }
-    private void PlayerViewChange(InputAction.CallbackContext _)
-    {
+    private void PlayerViewChange(InputAction.CallbackContext _)    {
         lookModeThire = !lookModeThire;
     }
 
