@@ -72,6 +72,7 @@
     <Compile Include="Assets\Script\대성\Enemy\EnemyDetector.cs" />
     <Compile Include="Assets\Script\대성\Test\TestCollisionTrigger.cs" />
     <Compile Include="Assets\Script\대성\Enemy\EnemyBase.cs" />
+    <Compile Include="Assets\Script\대성\Player\ShieldGet.cs" />
     <Compile Include="Assets\Script\대성\ShopItemPotion.cs" />
     <Compile Include="Assets\Script\대성\Trap\HiddenDoorDetector.cs" />
     <Compile Include="Assets\Script\대성\Player\Potion.cs" />
@@ -83,6 +84,7 @@
     <Compile Include="Assets\Script\대성\Scene\MapManager.cs" />
     <Compile Include="Assets\Script\대성\Enemy\EnemyBullet.cs" />
     <Compile Include="Assets\Script\대성\ShopItemScrool.cs" />
+    <Compile Include="Assets\Script\대성\Player\WeaponGet.cs" />
     <Compile Include="Assets\Script\대성\Enemy\coin.cs" />
     <Compile Include="Assets\MobileWaterShader_EKV\Scripts\SimpleRotation.cs" />
     <Compile Include="Assets\InputSystem\PlayerInputActions.cs" />
