@@ -25,7 +25,7 @@ public class EnemyBullet : MonoBehaviour
     }
     private void Start()
     {
-        Destroy(gameObject,4f);                                     // 어쨋든 4초뒤에는 확정적으로 없어지게
+        Destroy(gameObject, 4f);                                     // 어쨋든 4초뒤에는 확정적으로 없어지게
         if (target != null)
         {
             dir = (target.transform.position - transform.position);     // 목표의 벡터를 구함 ( 방향, 크기 모두 가지고 있음 )
@@ -37,11 +37,11 @@ public class EnemyBullet : MonoBehaviour
             //Debug.Log("목표 존재하지 않음");
             dir = Vector3.right;                                      //목표가 없으면 앞으로 날아가도록
         }
-        
+
     }
     private void FixedUpdate()
     {
-        rigid.MovePosition(transform.position + Time.fixedDeltaTime * speed * dir );        // 해당 방향으로 일정한 시간마다 움직이게끔 설정.
+        rigid.MovePosition(transform.position + Time.fixedDeltaTime * speed * dir);        // 해당 방향으로 일정한 시간마다 움직이게끔 설정.
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -52,3 +52,4 @@ public class EnemyBullet : MonoBehaviour
         Destroy(this.gameObject);                                           // 본인 오브젝트 즉시 제거
     }
 }
+
