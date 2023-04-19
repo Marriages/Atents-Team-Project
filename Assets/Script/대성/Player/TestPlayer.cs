@@ -12,7 +12,7 @@ public class TestPlayer : MonoBehaviour
     public float jumpPower = 5f;
     int heart;
     int maxHeart = 3;
-    int coin = 0;
+    public int coin = 0;
 
     public int Heart
     {
@@ -40,7 +40,7 @@ public class TestPlayer : MonoBehaviour
             }
         }
     }
-    public int COin
+    public int Coin
     {
         get => coin;
         set => coin = value;
@@ -100,12 +100,12 @@ public class TestPlayer : MonoBehaviour
         {
             if (value == true)
             {
-                PotionChange(true);         //UI에 신호보내기
+                PotionChange?.Invoke(true);         //UI에 신호보내기
                 potionGet = value;
             }
             else
             {
-                PotionChange(false);        //UI에 신호보내기
+                PotionChange?.Invoke(false);        //UI에 신호보내기
                 potionGet = value;
             }
         }
@@ -366,7 +366,7 @@ public class TestPlayer : MonoBehaviour
     {
         if (isGodMode == false)
         {
-            Debug.Log("Defense Success");
+            //Debug.Log("Defense Success");
             anim.SetTrigger("Defense");
             GodModeOn();
             rigid.AddForce(-transform.forward, ForceMode.Impulse);
@@ -374,7 +374,7 @@ public class TestPlayer : MonoBehaviour
     }
     void DefenseSuccessEnd()
     {
-        Debug.Log("Defense Motion End");
+        //Debug.Log("Defense Motion End");
         rigid.velocity = Vector3.zero;
         GodModeOff();
     }
@@ -382,21 +382,21 @@ public class TestPlayer : MonoBehaviour
 
     private void PlayerPotion(InputAction.CallbackContext obj)
     {
-        if (PotionSetting == true)
+        if (PotionSetting == true)      //포션이 있는 상태에서만
         {
             anim.SetTrigger("Potion");
 
-            PotionSetting = false;
         }
     }
-    void PotionStart()
+    void PotionApply()
     {
-        potionEffect.SetActive(false);
+        potionEffect.SetActive(true);
+        Heart = Heart + 2;
+        PotionSetting = false;
     }
     void PotionEnd()
     {
         potionEffect.SetActive(false);
-        Heart = Heart + 2;
     }
 
     //-----------------------------------------------------------------------
@@ -433,13 +433,13 @@ public class TestPlayer : MonoBehaviour
     void GodModeOn()
     {
         isGodMode = true;
-        Debug.Log("God Mode");
+        //Debug.Log("God Mode");
         //gameObject.layer = 10;      //적과 충돌하지 않게끔 레이어 변경
     }
     void GodModeOff()
     {
         isGodMode = false;
-        Debug.Log("God Mode End");
+        //Debug.Log("God Mode End");
         //gameObject.layer = 6;       //적과 충돌하게끔 원래 Player 레이어 변경
     }
     void RestoreState()
