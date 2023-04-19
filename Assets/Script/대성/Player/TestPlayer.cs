@@ -19,19 +19,19 @@ public class TestPlayer : MonoBehaviour
         get => heart;
         set
         {
-            if(value-heart==1)        //1 회복
+            if (value - heart == 1)        //1 회복
             {
-                heart= value % maxHeart;
+                heart = value % maxHeart;
                 healEffect.SetActive(true);
             }
-            else if(value-heart==2)
+            else if (value - heart == 2)
             {
                 heart = value % maxHeart;
                 potionEffect.SetActive(true);
             }
             else
             {
-                if(value<1)
+                if (value < 1)
                 {
                     heart = 0;
                     PlayerDie();
@@ -54,14 +54,15 @@ public class TestPlayer : MonoBehaviour
     bool weaponGet = false;
     bool shieldGet = false;
     bool potionGet = false;
+    bool isGodMode = false;
     public bool lookModeThire = true;     //3인칭시점 꺼져있음. 원하면 킬 것.
-   
+
     public bool WeaponSetting
     {
         get => weaponGet;
         set
         {
-            if(value==true)
+            if (value == true)
             {
                 //Debug.Log("무기 활성화");
                 weapon.gameObject.SetActive(true);
@@ -94,13 +95,13 @@ public class TestPlayer : MonoBehaviour
     }
     public bool PotionSetting
     {
-        get=> potionGet;
+        get => potionGet;
         set
         {
-            if(value==true)
+            if (value == true)
             {
                 PotionChange(true);         //UI에 신호보내기
-                potionGet= value;
+                potionGet = value;
             }
             else
             {
@@ -127,12 +128,13 @@ public class TestPlayer : MonoBehaviour
     [Header("GameObject & Collider")]
     GameObject weapon;
     Collider weaponCollider;
-    GameObject shield;
+    Shield shield;
     Collider shieldCollider;
     GameObject potion;
     GameObject potionEffect;
     GameObject cameraMain;
     GameObject healEffect;
+    Collider playerCollider;
 
 
     [Header("Action")]
@@ -154,26 +156,27 @@ public class TestPlayer : MonoBehaviour
         anim = GetComponent<Animator>();
         inputActions = new InputSystemController();
         rigid = GetComponent<Rigidbody>();
-        
+
         weapon = transform.GetComponentInChildren<Weapon>().gameObject;
         weaponCollider = weapon.GetComponent<Collider>();
-        shield = transform.GetComponentInChildren<Shield>().gameObject;
+        shield = transform.GetComponentInChildren<Shield>();
         shieldCollider = shield.GetComponent<Collider>();
         potion = transform.GetComponentInChildren<Potion>(true).gameObject;
         potionEffect = transform.GetChild(3).gameObject;
         healEffect = transform.GetChild(4).gameObject;
+        playerCollider = transform.GetComponent<Collider>();
 
         cameraMain = FindObjectOfType<MainCamera_Action>().transform.GetChild(0).gameObject;
     }
     private void FixedUpdate()
     {
         //키보드로 화면 회전하는 탑뷰모드
-        if(isMoving==true && lookModeThire==true && isShilding==false )
+        if (isMoving == true && lookModeThire == true && isShilding == false)
         {
             rigid.MovePosition(rigid.position + moveDir * moveSpeed * Time.fixedDeltaTime);
-            transform.LookAt(transform.position + moveDir,Vector3.up);
+            transform.LookAt(transform.position + moveDir, Vector3.up);
         }
-        else if(isMoving == true && lookModeThire==false && isShilding == false)
+        else if (isMoving == true && lookModeThire == false && isShilding == false)
         {
             forward = transform.TransformDirection(Vector3.forward);
             right = transform.TransformDirection(Vector3.right);
@@ -182,7 +185,7 @@ public class TestPlayer : MonoBehaviour
             rigid.MovePosition(rigid.position + moveDirMouse * moveSpeed * Time.fixedDeltaTime);
 
             playerRotate = Vector3.Scale(cameraMain.transform.forward, new(1, 0, 1));
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(playerRotate),Time.deltaTime * smoothness);
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(playerRotate), Time.deltaTime * smoothness);
         }
 
 
@@ -205,7 +208,7 @@ public class TestPlayer : MonoBehaviour
         //weaponCollider.enabled=false;
         //shieldCollider.enabled = false;
 
-        heart=maxHeart;
+        heart = maxHeart;
         coin = 0;
 
         isAlive = true;
@@ -231,6 +234,8 @@ public class TestPlayer : MonoBehaviour
         inputActions.Player.Jump.performed += PlayerJump;
         inputActions.Player.ViewChange.performed += PlayerViewChange;
         inputActions.Player.Use.performed += (_) => PlayerUseTry?.Invoke();
+
+        shield.SuccessDefense += DefenseSuccess;
     }
     void InitializeUnConnecting()
     {
@@ -251,19 +256,21 @@ public class TestPlayer : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.CompareTag("Enemy") && isAlive==true )
+        // 맞더라도 GodMode에서는 맞지말자!
+        if (other.gameObject.CompareTag("Enemy") && isAlive == true && isGodMode == false)
         {
-            anim.SetTrigger("isHit");
+            Debug.Log($"{other.gameObject.name} 에게 한대 처맞음");
+            anim.SetTrigger("Hit");
             --heart;
         }
     }
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.CompareTag("Ground"))
+        if (collision.gameObject.CompareTag("Ground"))
         {
             isJumping = false;
 
-            rigid.velocity= Vector3.zero;
+            rigid.velocity = Vector3.zero;
 
             //inputActions.Player.Move.Enable();
             inputActions.Player.PotionKeyboard.Enable();
@@ -278,7 +285,7 @@ public class TestPlayer : MonoBehaviour
     private void PlayerMove(InputAction.CallbackContext obj)
     {
         Vector3 dir = obj.ReadValue<Vector3>();
-        if(dir != Vector3.zero )
+        if (dir != Vector3.zero)
         {
             moveDir = dir.normalized;
             isMoving = true;
@@ -293,22 +300,26 @@ public class TestPlayer : MonoBehaviour
 
     //-----------------------------------------------------------------------
 
-    private void PlayerAttack(InputAction.CallbackContext obj)    {
-        if(weaponGet==true)
+    private void PlayerAttack(InputAction.CallbackContext obj)
+    {
+        if (weaponGet == true)
         {
             isMoving = false;
             inputActions.Player.Disable();
             anim.SetTrigger("Atack");
         }
     }
-    void AtackEnd()    {
+    void AtackEnd()
+    {
         isMoving = true;
         inputActions.Player.Enable();
     }
-    void WeaponColliderOn()    {
+    void WeaponColliderOn()
+    {
         weaponCollider.enabled = true;
     }
-    void WeaponColliderOff()    {
+    void WeaponColliderOff()
+    {
         weaponCollider.enabled = false;
     }
 
@@ -316,9 +327,9 @@ public class TestPlayer : MonoBehaviour
 
     private void PlayerShield(InputAction.CallbackContext obj)
     {
-        if(shieldGet==true)
+        if (shieldGet == true)
         {
-            if(isShilding==false)
+            if (isShilding == false)
             {
                 isShilding = true;
                 anim.SetBool("Shield", isShilding);
@@ -346,20 +357,32 @@ public class TestPlayer : MonoBehaviour
             }
         }
     }
+
     void ShieldStart()
     {
         shieldCollider.enabled = true;
     }
-    void ShieldEnd()
+    void DefenseSuccess()
     {
-        
+        if (isGodMode == false)
+        {
+            Debug.Log("Defense Success");
+            anim.SetTrigger("Defense");
+            GodModeOn();
+            rigid.AddForce(-transform.forward, ForceMode.Impulse);
+        }
     }
-
+    void DefenseSuccessEnd()
+    {
+        Debug.Log("Defense Motion End");
+        rigid.velocity = Vector3.zero;
+        GodModeOff();
+    }
     //-----------------------------------------------------------------------
 
     private void PlayerPotion(InputAction.CallbackContext obj)
     {
-        if(PotionSetting == true)
+        if (PotionSetting == true)
         {
             anim.SetTrigger("Potion");
 
@@ -380,7 +403,7 @@ public class TestPlayer : MonoBehaviour
 
     private void PlayerJump(InputAction.CallbackContext obj)
     {
-        if(isJumping == false)
+        if (isJumping == false)
         {
             isJumping = true;
             rigid.AddForce(Vector3.up * jumpPower, ForceMode.Impulse);
@@ -401,9 +424,29 @@ public class TestPlayer : MonoBehaviour
 
     //-----------------------------------------------------------------------
 
-    private void PlayerViewChange(InputAction.CallbackContext _)    {
+    private void PlayerViewChange(InputAction.CallbackContext _)
+    {
         lookModeThire = !lookModeThire;
     }
 
     //---------------Animation Event
+    void GodModeOn()
+    {
+        isGodMode = true;
+        Debug.Log("God Mode");
+        //gameObject.layer = 10;      //적과 충돌하지 않게끔 레이어 변경
+    }
+    void GodModeOff()
+    {
+        isGodMode = false;
+        Debug.Log("God Mode End");
+        //gameObject.layer = 6;       //적과 충돌하게끔 원래 Player 레이어 변경
+    }
+    void RestoreState()
+    {
+        isMoving = false;
+        inputActions.Player.Enable();
+        weaponCollider.enabled = false;
+        shieldCollider.enabled = false;
+    }
 }
