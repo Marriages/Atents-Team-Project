@@ -12,7 +12,8 @@ public class UIController : MonoBehaviour
     TextMeshProUGUI heartText;      // UI에 표시되는 ♥ 의 텍스트상자
     public int heartNum=3;          // 생명 수를 카운트
     TextMeshProUGUI coinText;       // UI에 표시되는 코인 개수의 텍스트 상자
-    int coinNum;      
+    Image gameOverPanel;
+     
 
     [Header("무기,방패,포션 초기 활성화")]// 코인 개수를 카운트
     Image weaponImage;
@@ -31,59 +32,49 @@ public class UIController : MonoBehaviour
 
 
     [Header("Component")]
-    Player player;                  //-----------------------------------------------------------수정함. DsTestPlayer -> Player
+    TestPlayer player;                  //-----------------------------------------------------------수정함. DsTestPlayer -> Player
 
 
 
 
     private void Awake()
     {
-        player = FindObjectOfType<Player>();          //Start의 델리게이트 연결을 위하여 객체를 찾아둠.
+        player = FindObjectOfType<TestPlayer>();          //Start의 델리게이트 연결을 위하여 객체를 찾아둠.
                                     //-----------------------------------------------------------수정함. DsTestPlayer -> Player
         //canvasChildCount = transform.childCount;
         heartText = transform.GetChild(0).GetComponent<TextMeshProUGUI>();      //heartText.TMP 찾기
         coinText = transform.GetChild(3).GetComponent<TextMeshProUGUI>();       //coinText.TMP 찾기
         weaponImage=transform.GetChild(4).GetComponent<Image>();
-        shieldImage = transform.GetChild(5).GetComponent<Image>(); ;
-        potionImage = transform.GetChild(6).GetComponent<Image>(); ;
+        shieldImage = transform.GetChild(5).GetComponent<Image>();
+        potionImage = transform.GetChild(6).GetComponent<Image>();
+        gameOverPanel = transform.GetChild(8).GetComponent<Image>();
     }
 
     private void OnEnable()//-----------------------------------------------------------수정함. Start-> Enabled
     {
-        player.HeartPlus += HeartPlusUpdate;
-        player.HeartMinus += HeartMinusUpdate;
-        player.CoinPlus += CoinPlusUpdate;
-        player.CoinMinus += CoinMinusUpdate;
-        player.PotionGet += PotionGetUpdate;
-        player.PotionUse += PotionUseUpdate;
-        player.WeaponGet += WeaponGetUpdate;
-        player.ShieldGet += ShieldGetUpdate;
-        player.PlayerDie += PlayerDieUpdate;
+        player.HeartChange += HeartUpdate;
+        player.CoinChange += CoinUpdate;
+        player.PotionChange += PotionUpdate;
+        player.WeaponChange += WeaponGetUpdate;
+        player.ShieldChange += ShieldGetUpdate;
         //player.EnemyDetectPlayer += CoinMinusUpdate;
     }
     private void OnDisable()//-----------------------------------------------------------추가함함. Delegate Disabled
     {
-        player.HeartPlus -= HeartPlusUpdate;
-        player.HeartMinus -= HeartMinusUpdate;
-        player.CoinPlus -= CoinPlusUpdate;
-        player.CoinMinus -= CoinMinusUpdate;
-        player.PotionGet -= PotionGetUpdate;
-        player.PotionUse -= PotionUseUpdate;
-        player.WeaponGet -= WeaponGetUpdate;
-        player.ShieldGet -= ShieldGetUpdate;
-        player.PlayerDie -= PlayerDieUpdate;
+        player.HeartChange -= HeartUpdate;
+        player.CoinChange -= CoinUpdate;
+        player.PotionChange -= PotionUpdate;
+        player.WeaponChange -= WeaponGetUpdate;
+        player.ShieldChange -= ShieldGetUpdate;
 
     }
     private void Start()
     {
+        gameOverPanel.gameObject.SetActive(false);
         heartNum = 3;
         heartText.text = null;
         for (int i = 0; i < heartNum; i++)
             heartText.text = heartText.text + "♥";
-        coinNum = 0;
-        
-
-        
 
         //초기 셋팅. False로 설정되어있음.
         weaponImage.gameObject.SetActive(weaponGet);
@@ -94,50 +85,34 @@ public class UIController : MonoBehaviour
 
 
 
-    private void HeartPlusUpdate(int x)
+    private void HeartUpdate(int x)
     {
-        heartNum = heartNum + x;
-        heartText.text = null;
-        for (int i = 0; i < heartNum; i++)
-            heartText.text = heartText.text + "♥";
+        if(x>0)
+        {
+            heartText.text = null;
+            for (int i = 0; i < x; i++)
+                heartText.text = heartText.text + "♥";
+        }
+        else
+        {
+            PlayerDieUpdate();
+        }
     }
-    private void HeartMinusUpdate(int x)
+    private void CoinUpdate(int x)
     {
-        heartNum = heartNum - x;
-        heartText.text = null;
-        for (int i = 0; i < heartNum; i++)
-            heartText.text = heartText.text + "♥";
-    }
-    private void CoinPlusUpdate(int x)
-    {
-        
-        coinNum += x;
-        coinText.text = (coinNum).ToString();
-    }
-    private void CoinMinusUpdate(int x)
-    {
-        coinNum -= x;
-        coinText.text = (coinNum).ToString();
+        coinText.text = $"{x}";
     }
     
-    private void WeaponGetUpdate()
+    private void WeaponGetUpdate(bool weaponGet)
     {
-        weaponGet = true;
         weaponImage.gameObject.SetActive(weaponGet);
     }
-    private void ShieldGetUpdate()
+    private void ShieldGetUpdate(bool shieldGet)
     {
-        shieldGet = true;
         shieldImage.gameObject.SetActive(shieldGet);
     }
-    private void PotionGetUpdate()
+    private void PotionUpdate(bool potionGet)
     {
-        potionGet = true;
-        potionImage.gameObject.SetActive(potionGet);
-    }
-    private void PotionUseUpdate()
-    {
-        potionGet = false;
         potionImage.gameObject.SetActive(potionGet);
     }
     private void BattleModeUpdate()
@@ -145,6 +120,31 @@ public class UIController : MonoBehaviour
     }  
     private void PlayerDieUpdate()
     {
-        heartText.text = "You Died";
+        Debug.Log("Die Message");
+        heartText.text = "";
+        StartCoroutine(PrintDiePanel());
+    }
+    IEnumerator PrintDiePanel()
+    {
+        TextMeshProUGUI panelText = gameOverPanel.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+        Color panelColor = gameOverPanel.color;
+        Color txtColor = panelText.color;
+        float a = 0.02f;
+        panelColor.a = 0;
+        txtColor.a = 0;
+        gameOverPanel.color = panelColor;
+
+        yield return new WaitForSeconds(2f);
+        gameOverPanel.gameObject.SetActive(true);
+
+        while (a < 1f)
+        {
+            panelColor.a += a;
+            txtColor.a += a;
+            gameOverPanel.color = panelColor;
+            panelText.color = txtColor;
+            yield return null;
+        }
+        
     }
 }

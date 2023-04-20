@@ -412,7 +412,7 @@ public class EnemyBase : MonoBehaviour
     }
     void PlayerOut()
     {
-        if(isAlive==true)
+        if(isAlive==true && playerDetect==true)
             State = EnemyState.RETURN;
     }
 

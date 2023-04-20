@@ -9,8 +9,9 @@ public class TestPlayer : MonoBehaviour
 {
     [Header("Player Information")]
     public float moveSpeed = 5f;
+    float repairMoveSpeed;
     public float jumpPower = 5f;
-    int heart;
+    int heart=3;
     int maxHeart = 3;
     public int coin = 0;
 
@@ -21,12 +22,18 @@ public class TestPlayer : MonoBehaviour
         {
             if (value - heart == 1)        //1 회복
             {
-                heart = value % maxHeart;
+                if (value > maxHeart)
+                    heart = maxHeart;
+                else
+                    heart = value;
                 healEffect.SetActive(true);
             }
             else if (value - heart == 2)
             {
-                heart = value % maxHeart;
+                if (value > maxHeart)
+                    heart = maxHeart;
+                else
+                    heart = value;
                 potionEffect.SetActive(true);
             }
             else
@@ -34,16 +41,25 @@ public class TestPlayer : MonoBehaviour
                 if (value < 1)
                 {
                     heart = 0;
-                    PlayerDie();
-                    anim.SetTrigger("Die");
+                    Die();
+                }
+                else
+                {
+                    heart = value;
                 }
             }
+            Debug.Log($"Heart : {heart}");
+            HeartChange?.Invoke(heart);
         }
     }
     public int Coin
     {
         get => coin;
-        set => coin = value;
+        set
+        {
+            coin = value;
+            CoinChange(coin);
+        }
     }
 
     [Header("Flag")]
@@ -73,6 +89,7 @@ public class TestPlayer : MonoBehaviour
                 weapon.gameObject.SetActive(false);
                 weaponGet = value;
             }
+            WeaponChange?.Invoke(weaponGet);
         }
     }
     public bool ShieldSetting
@@ -91,6 +108,7 @@ public class TestPlayer : MonoBehaviour
                 shield.gameObject.SetActive(false);
                 shieldGet = value;
             }
+            ShieldChange?.Invoke(shieldGet);
         }
     }
     public bool PotionSetting
@@ -100,14 +118,15 @@ public class TestPlayer : MonoBehaviour
         {
             if (value == true)
             {
-                PotionChange?.Invoke(true);         //UI에 신호보내기
+                PotionGet?.Invoke();         //UI에 신호보내기
                 potionGet = value;
             }
             else
             {
-                PotionChange?.Invoke(false);        //UI에 신호보내기
+                PotionUse?.Invoke();        //UI에 신호보내기
                 potionGet = value;
             }
+            PotionChange?.Invoke(potionGet);
         }
     }
 
@@ -136,16 +155,24 @@ public class TestPlayer : MonoBehaviour
     GameObject potionEffect;
     GameObject cameraMain;
     GameObject healEffect;
+    GameObject playerHitEffect;
     Collider playerCollider;
 
 
     [Header("Action")]
+    //public Action<int> HeartChange;
+    //public Action<int> CoinChange;
+    //public Action<bool> PotionChange;
     public Action<int> HeartChange;
     public Action<int> CoinChange;
+    public Action PotionGet;
+    public Action PotionUse;
+
+    public Action<bool> WeaponChange;
+    public Action<bool> ShieldChange;
     public Action<bool> PotionChange;
-    public Action WeaponGet;
-    public Action ShieldGet;
     public Action PlayerDie;
+
     public Action PlayerUseTry;         //아이템 상호작용
 
 
@@ -166,6 +193,7 @@ public class TestPlayer : MonoBehaviour
         potion = transform.GetComponentInChildren<Potion>(true).gameObject;
         potionEffect = transform.GetChild(3).gameObject;
         healEffect = transform.GetChild(4).gameObject;
+        playerHitEffect = transform.GetChild(5).gameObject;
         playerCollider = transform.GetComponent<Collider>();
 
         cameraMain = FindObjectOfType<MainCamera_Action>().transform.GetChild(0).gameObject;
@@ -213,7 +241,7 @@ public class TestPlayer : MonoBehaviour
 
         heart = maxHeart;
         coin = 0;
-
+        repairMoveSpeed = moveSpeed;
         isAlive = true;
         isJumping = false;
         isShilding = false;
@@ -265,9 +293,21 @@ public class TestPlayer : MonoBehaviour
             Debug.Log($"{other.gameObject.name} 에게 한대 처맞음");
             anim.SetTrigger("Hit");
 
+            //rigid.velocity = Vector3.zero;
+            playerHitEffect.SetActive(true);
             potion.SetActive(false);
 
-            --heart;
+            Heart -= 1;
+        }
+        else if(other.gameObject.CompareTag("Coin") && isAlive==true)
+        {
+            Destroy(other.gameObject);
+            Coin += 1;
+        }
+        else if (other.gameObject.CompareTag("Heart") && isAlive == true)
+        {
+            Destroy(other.gameObject);
+            Heart += 1;
         }
     }
     private void OnCollisionEnter(Collision collision)
@@ -393,17 +433,22 @@ public class TestPlayer : MonoBehaviour
         {
             anim.SetTrigger("Potion");
             potion.SetActive(true);
+            if(shieldGet==true)
+                shield.gameObject.SetActive(false);
         }
     }
     void PotionApply()
     {
+        Debug.Log($"Potion Before Heart : {Heart}");
         potionEffect.SetActive(true);
         Heart = Heart + 2;
         PotionSetting = false;
     }
     void PotionEnd()
     {
-        potionEffect.SetActive(false);
+        potion.SetActive(false);
+        if(shieldGet==true)
+            shield.gameObject.SetActive(true);
     }
 
     //-----------------------------------------------------------------------
@@ -440,20 +485,35 @@ public class TestPlayer : MonoBehaviour
     void GodModeOn()
     {
         isGodMode = true;
+        moveSpeed = 0;
         //Debug.Log("God Mode");
         //gameObject.layer = 10;      //적과 충돌하지 않게끔 레이어 변경
     }
     void GodModeOff()
     {
         isGodMode = false;
+        moveSpeed = repairMoveSpeed;
         //Debug.Log("God Mode End");
         //gameObject.layer = 6;       //적과 충돌하게끔 원래 Player 레이어 변경
     }
     void RestoreState()
     {
-        isMoving = false;
         inputActions.Player.Enable();
         weaponCollider.enabled = false;
+
+        potion.SetActive(false);
+        
         shieldCollider.enabled = false;
+        if (shieldGet == true)
+            shield.gameObject.SetActive(true);      // 포션마실때방패 끄는데, 처맞으면 다시복구
+    }
+
+    void Die()
+    {
+        rigid.velocity=Vector3.zero;
+        isAlive = false;
+        anim.SetTrigger("Die");
+        PlayerDie?.Invoke();
+        InitializeUnConnecting();
     }
 }
