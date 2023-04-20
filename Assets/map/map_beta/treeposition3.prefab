@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 1628479534776911017}
   - component: {fileID: 3262505914125310381}
   - component: {fileID: 3703054675308958738}
-  - component: {fileID: 1261987520238651610}
   m_Layer: 0
   m_Name: leaf (21)
   m_TagString: Untagged
@@ -51,7 +50,7 @@ MeshRenderer:
   m_GameObject: {fileID: 134480650263791023}
   m_Enabled: 1
   m_CastShadows: 1
-  m_ReceiveShadows: 1
+  m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
@@ -84,20 +83,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &1261987520238651610
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 134480650263791023}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &136361148665686325
 GameObject:
   m_ObjectHideFlags: 0
@@ -109,7 +94,6 @@ GameObject:
   - component: {fileID: 2046742868896549068}
   - component: {fileID: 3314476793181442014}
   - component: {fileID: 501490599967079921}
-  - component: {fileID: 8866765815749366216}
   m_Layer: 0
   m_Name: leaf (23)
   m_TagString: Untagged
@@ -149,7 +133,7 @@ MeshRenderer:
   m_GameObject: {fileID: 136361148665686325}
   m_Enabled: 1
   m_CastShadows: 1
-  m_ReceiveShadows: 1
+  m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
@@ -182,20 +166,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &8866765815749366216
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 136361148665686325}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &593513141463639468
 GameObject:
   m_ObjectHideFlags: 0
@@ -246,7 +216,7 @@ MeshRenderer:
   m_GameObject: {fileID: 593513141463639468}
   m_Enabled: 1
   m_CastShadows: 1
-  m_ReceiveShadows: 1
+  m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
@@ -290,7 +260,6 @@ GameObject:
   - component: {fileID: 8382989301096157376}
   - component: {fileID: 1865456775327470807}
   - component: {fileID: 8308994691444432543}
-  - component: {fileID: 2467768713667618285}
   m_Layer: 0
   m_Name: leaf (7)
   m_TagString: Untagged
@@ -330,7 +299,7 @@ MeshRenderer:
   m_GameObject: {fileID: 735362869425814076}
   m_Enabled: 1
   m_CastShadows: 1
-  m_ReceiveShadows: 1
+  m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
@@ -363,20 +332,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &2467768713667618285
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 735362869425814076}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &2185999157893441342
 GameObject:
   m_ObjectHideFlags: 0
@@ -388,7 +343,6 @@ GameObject:
   - component: {fileID: 7895635782583735118}
   - component: {fileID: 9216846411184417646}
   - component: {fileID: 2694388283672631839}
-  - component: {fileID: 7970948081765620202}
   m_Layer: 0
   m_Name: leaf (16)
   m_TagString: Untagged
@@ -428,7 +382,7 @@ MeshRenderer:
   m_GameObject: {fileID: 2185999157893441342}
   m_Enabled: 1
   m_CastShadows: 1
-  m_ReceiveShadows: 1
+  m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
@@ -461,20 +415,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &7970948081765620202
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2185999157893441342}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &2295621518955652064
 GameObject:
   m_ObjectHideFlags: 0
@@ -500,8 +440,8 @@ Transform:
   m_GameObject: {fileID: 2295621518955652064}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1.2, y: 1.2, z: 1.2}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 7801265577685087304}
   - {fileID: 7144477651863054658}
@@ -544,7 +484,6 @@ GameObject:
   - component: {fileID: 1874301249821690505}
   - component: {fileID: 7568609745732508708}
   - component: {fileID: 2676396841543568272}
-  - component: {fileID: 7734354059078910075}
   m_Layer: 0
   m_Name: leaf (11)
   m_TagString: Untagged
@@ -584,7 +523,7 @@ MeshRenderer:
   m_GameObject: {fileID: 2825270038938597587}
   m_Enabled: 1
   m_CastShadows: 1
-  m_ReceiveShadows: 1
+  m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
@@ -617,20 +556,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &7734354059078910075
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2825270038938597587}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &2825361885807616092
 GameObject:
   m_ObjectHideFlags: 0
@@ -642,7 +567,6 @@ GameObject:
   - component: {fileID: 4691686681833912435}
   - component: {fileID: 9117095160591240562}
   - component: {fileID: 6774768163200865235}
-  - component: {fileID: 5048786517103096827}
   m_Layer: 0
   m_Name: leaf (6)
   m_TagString: Untagged
@@ -682,7 +606,7 @@ MeshRenderer:
   m_GameObject: {fileID: 2825361885807616092}
   m_Enabled: 1
   m_CastShadows: 1
-  m_ReceiveShadows: 1
+  m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
@@ -715,20 +639,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &5048786517103096827
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2825361885807616092}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &3005980638603378692
 GameObject:
   m_ObjectHideFlags: 0
@@ -740,7 +650,6 @@ GameObject:
   - component: {fileID: 8544139305617269094}
   - component: {fileID: 7852941962858906784}
   - component: {fileID: 2922499136367826716}
-  - component: {fileID: 5319422326788226098}
   m_Layer: 0
   m_Name: leaf (24)
   m_TagString: Untagged
@@ -780,7 +689,7 @@ MeshRenderer:
   m_GameObject: {fileID: 3005980638603378692}
   m_Enabled: 1
   m_CastShadows: 1
-  m_ReceiveShadows: 1
+  m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
@@ -813,20 +722,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &5319422326788226098
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3005980638603378692}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &3181263264222301126
 GameObject:
   m_ObjectHideFlags: 0
@@ -838,7 +733,6 @@ GameObject:
   - component: {fileID: 620856543949881390}
   - component: {fileID: 2474296291170107049}
   - component: {fileID: 8464433329061779124}
-  - component: {fileID: 4199949817188417037}
   m_Layer: 0
   m_Name: leaf (4)
   m_TagString: Untagged
@@ -878,7 +772,7 @@ MeshRenderer:
   m_GameObject: {fileID: 3181263264222301126}
   m_Enabled: 1
   m_CastShadows: 1
-  m_ReceiveShadows: 1
+  m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
@@ -911,20 +805,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &4199949817188417037
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3181263264222301126}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &3649710806145315238
 GameObject:
   m_ObjectHideFlags: 0
@@ -936,7 +816,6 @@ GameObject:
   - component: {fileID: 3417294495095586259}
   - component: {fileID: 6355429090865492148}
   - component: {fileID: 2758405589841108282}
-  - component: {fileID: 3473952751264816701}
   m_Layer: 0
   m_Name: leaf (22)
   m_TagString: Untagged
@@ -976,7 +855,7 @@ MeshRenderer:
   m_GameObject: {fileID: 3649710806145315238}
   m_Enabled: 1
   m_CastShadows: 1
-  m_ReceiveShadows: 1
+  m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
@@ -1009,20 +888,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &3473952751264816701
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3649710806145315238}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &5090170180441367232
 GameObject:
   m_ObjectHideFlags: 0
@@ -1034,7 +899,6 @@ GameObject:
   - component: {fileID: 7621536012534363690}
   - component: {fileID: 3772148184154460384}
   - component: {fileID: 7798068723540587003}
-  - component: {fileID: 6267285758817712990}
   m_Layer: 0
   m_Name: leaf (15)
   m_TagString: Untagged
@@ -1074,7 +938,7 @@ MeshRenderer:
   m_GameObject: {fileID: 5090170180441367232}
   m_Enabled: 1
   m_CastShadows: 1
-  m_ReceiveShadows: 1
+  m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
@@ -1107,20 +971,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &6267285758817712990
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5090170180441367232}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &5201899362601330221
 GameObject:
   m_ObjectHideFlags: 0
@@ -1132,7 +982,6 @@ GameObject:
   - component: {fileID: 7144477651863054658}
   - component: {fileID: 1126697128624342342}
   - component: {fileID: 8658427773959603665}
-  - component: {fileID: 4408538166188578188}
   m_Layer: 0
   m_Name: leaf
   m_TagString: Untagged
@@ -1172,7 +1021,7 @@ MeshRenderer:
   m_GameObject: {fileID: 5201899362601330221}
   m_Enabled: 1
   m_CastShadows: 1
-  m_ReceiveShadows: 1
+  m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
@@ -1205,20 +1054,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &4408538166188578188
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5201899362601330221}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &5245450723858247125
 GameObject:
   m_ObjectHideFlags: 0
@@ -1230,7 +1065,6 @@ GameObject:
   - component: {fileID: 4724229453595126587}
   - component: {fileID: 7389129859518837556}
   - component: {fileID: 344388425318158498}
-  - component: {fileID: 494729046898532622}
   m_Layer: 0
   m_Name: leaf (13)
   m_TagString: Untagged
@@ -1270,7 +1104,7 @@ MeshRenderer:
   m_GameObject: {fileID: 5245450723858247125}
   m_Enabled: 1
   m_CastShadows: 1
-  m_ReceiveShadows: 1
+  m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
@@ -1303,20 +1137,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &494729046898532622
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5245450723858247125}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &6059798956329977875
 GameObject:
   m_ObjectHideFlags: 0
@@ -1328,7 +1148,6 @@ GameObject:
   - component: {fileID: 3374809010011495251}
   - component: {fileID: 1429040671578959570}
   - component: {fileID: 6669071508687440562}
-  - component: {fileID: 4961251443825294225}
   m_Layer: 0
   m_Name: leaf (12)
   m_TagString: Untagged
@@ -1368,7 +1187,7 @@ MeshRenderer:
   m_GameObject: {fileID: 6059798956329977875}
   m_Enabled: 1
   m_CastShadows: 1
-  m_ReceiveShadows: 1
+  m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
@@ -1401,20 +1220,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &4961251443825294225
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6059798956329977875}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &6093550483362067601
 GameObject:
   m_ObjectHideFlags: 0
@@ -1426,7 +1231,6 @@ GameObject:
   - component: {fileID: 5046659847252751290}
   - component: {fileID: 6405252025293742454}
   - component: {fileID: 6686428637944948907}
-  - component: {fileID: 8944101326704946592}
   m_Layer: 0
   m_Name: leaf (14)
   m_TagString: Untagged
@@ -1466,7 +1270,7 @@ MeshRenderer:
   m_GameObject: {fileID: 6093550483362067601}
   m_Enabled: 1
   m_CastShadows: 1
-  m_ReceiveShadows: 1
+  m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
@@ -1499,20 +1303,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &8944101326704946592
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6093550483362067601}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &6107791401172292708
 GameObject:
   m_ObjectHideFlags: 0
@@ -1524,7 +1314,6 @@ GameObject:
   - component: {fileID: 2414393273341715305}
   - component: {fileID: 1184806608842693963}
   - component: {fileID: 8869985592293677959}
-  - component: {fileID: 4444749172630706665}
   m_Layer: 0
   m_Name: leaf (20)
   m_TagString: Untagged
@@ -1564,7 +1353,7 @@ MeshRenderer:
   m_GameObject: {fileID: 6107791401172292708}
   m_Enabled: 1
   m_CastShadows: 1
-  m_ReceiveShadows: 1
+  m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
@@ -1597,20 +1386,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &4444749172630706665
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6107791401172292708}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &6360196135322839512
 GameObject:
   m_ObjectHideFlags: 0
@@ -1622,7 +1397,6 @@ GameObject:
   - component: {fileID: 5604258875520892461}
   - component: {fileID: 8602387756589580555}
   - component: {fileID: 3212765172834953870}
-  - component: {fileID: 6924982379592849049}
   m_Layer: 0
   m_Name: leaf (10)
   m_TagString: Untagged
@@ -1662,7 +1436,7 @@ MeshRenderer:
   m_GameObject: {fileID: 6360196135322839512}
   m_Enabled: 1
   m_CastShadows: 1
-  m_ReceiveShadows: 1
+  m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
@@ -1695,20 +1469,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &6924982379592849049
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6360196135322839512}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &6452542334727156330
 GameObject:
   m_ObjectHideFlags: 0
@@ -1720,7 +1480,6 @@ GameObject:
   - component: {fileID: 7402238247453296445}
   - component: {fileID: 1999280393079056467}
   - component: {fileID: 8443750021235094047}
-  - component: {fileID: 2796396929177983818}
   m_Layer: 0
   m_Name: leaf (18)
   m_TagString: Untagged
@@ -1760,7 +1519,7 @@ MeshRenderer:
   m_GameObject: {fileID: 6452542334727156330}
   m_Enabled: 1
   m_CastShadows: 1
-  m_ReceiveShadows: 1
+  m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
@@ -1793,20 +1552,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &2796396929177983818
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6452542334727156330}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &6506091131201664168
 GameObject:
   m_ObjectHideFlags: 0
@@ -1818,7 +1563,6 @@ GameObject:
   - component: {fileID: 5582226345704397239}
   - component: {fileID: 2265562541947338514}
   - component: {fileID: 7830902374380313659}
-  - component: {fileID: 3454865681345267659}
   m_Layer: 0
   m_Name: leaf (9)
   m_TagString: Untagged
@@ -1858,7 +1602,7 @@ MeshRenderer:
   m_GameObject: {fileID: 6506091131201664168}
   m_Enabled: 1
   m_CastShadows: 1
-  m_ReceiveShadows: 1
+  m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
@@ -1891,20 +1635,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &3454865681345267659
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6506091131201664168}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &7549583949092968297
 GameObject:
   m_ObjectHideFlags: 0
@@ -1916,7 +1646,6 @@ GameObject:
   - component: {fileID: 8482127417587858586}
   - component: {fileID: 8392872761615875766}
   - component: {fileID: 8093602262054431452}
-  - component: {fileID: 1729906122573012491}
   m_Layer: 0
   m_Name: leaf (25)
   m_TagString: Untagged
@@ -1956,7 +1685,7 @@ MeshRenderer:
   m_GameObject: {fileID: 7549583949092968297}
   m_Enabled: 1
   m_CastShadows: 1
-  m_ReceiveShadows: 1
+  m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
@@ -1989,20 +1718,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &1729906122573012491
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7549583949092968297}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &7692181215211725698
 GameObject:
   m_ObjectHideFlags: 0
@@ -2014,7 +1729,6 @@ GameObject:
   - component: {fileID: 2332669902737047136}
   - component: {fileID: 628450429435488883}
   - component: {fileID: 2847263605075175495}
-  - component: {fileID: 2247424044890748901}
   m_Layer: 0
   m_Name: leaf (19)
   m_TagString: Untagged
@@ -2054,7 +1768,7 @@ MeshRenderer:
   m_GameObject: {fileID: 7692181215211725698}
   m_Enabled: 1
   m_CastShadows: 1
-  m_ReceiveShadows: 1
+  m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
@@ -2087,20 +1801,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &2247424044890748901
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7692181215211725698}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &7981642636510038677
 GameObject:
   m_ObjectHideFlags: 0
@@ -2112,7 +1812,6 @@ GameObject:
   - component: {fileID: 7219407297106923018}
   - component: {fileID: 400542579704311516}
   - component: {fileID: 4864850640184960517}
-  - component: {fileID: 2947107039845332659}
   m_Layer: 0
   m_Name: leaf (17)
   m_TagString: Untagged
@@ -2152,7 +1851,7 @@ MeshRenderer:
   m_GameObject: {fileID: 7981642636510038677}
   m_Enabled: 1
   m_CastShadows: 1
-  m_ReceiveShadows: 1
+  m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
@@ -2185,20 +1884,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &2947107039845332659
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7981642636510038677}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &8190613942883940245
 GameObject:
   m_ObjectHideFlags: 0
@@ -2210,7 +1895,6 @@ GameObject:
   - component: {fileID: 8224972217176970010}
   - component: {fileID: 8861336293815505789}
   - component: {fileID: 4112472135074461989}
-  - component: {fileID: 274753929990048130}
   m_Layer: 0
   m_Name: leaf (1)
   m_TagString: Untagged
@@ -2250,7 +1934,7 @@ MeshRenderer:
   m_GameObject: {fileID: 8190613942883940245}
   m_Enabled: 1
   m_CastShadows: 1
-  m_ReceiveShadows: 1
+  m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
@@ -2283,20 +1967,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &274753929990048130
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8190613942883940245}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &8460551480576639146
 GameObject:
   m_ObjectHideFlags: 0
@@ -2308,7 +1978,6 @@ GameObject:
   - component: {fileID: 4323131838769813343}
   - component: {fileID: 2704519442975137361}
   - component: {fileID: 7193481007365711703}
-  - component: {fileID: 7526443165316288103}
   m_Layer: 0
   m_Name: leaf (8)
   m_TagString: Untagged
@@ -2348,7 +2017,7 @@ MeshRenderer:
   m_GameObject: {fileID: 8460551480576639146}
   m_Enabled: 1
   m_CastShadows: 1
-  m_ReceiveShadows: 1
+  m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
@@ -2381,20 +2050,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &7526443165316288103
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8460551480576639146}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &8608616624673979375
 GameObject:
   m_ObjectHideFlags: 0
@@ -2406,7 +2061,6 @@ GameObject:
   - component: {fileID: 3610808385322539968}
   - component: {fileID: 4575763093315849686}
   - component: {fileID: 7672063419738065756}
-  - component: {fileID: 1693138360786191066}
   m_Layer: 0
   m_Name: leaf (2)
   m_TagString: Untagged
@@ -2446,7 +2100,7 @@ MeshRenderer:
   m_GameObject: {fileID: 8608616624673979375}
   m_Enabled: 1
   m_CastShadows: 1
-  m_ReceiveShadows: 1
+  m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
@@ -2479,20 +2133,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &1693138360786191066
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8608616624673979375}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &8641898763484846236
 GameObject:
   m_ObjectHideFlags: 0
@@ -2504,7 +2144,6 @@ GameObject:
   - component: {fileID: 980868464425280003}
   - component: {fileID: 8039753435277977201}
   - component: {fileID: 5762898691844091285}
-  - component: {fileID: 4831773090518287864}
   m_Layer: 0
   m_Name: leaf (5)
   m_TagString: Untagged
@@ -2544,7 +2183,7 @@ MeshRenderer:
   m_GameObject: {fileID: 8641898763484846236}
   m_Enabled: 1
   m_CastShadows: 1
-  m_ReceiveShadows: 1
+  m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
@@ -2577,20 +2216,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &4831773090518287864
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8641898763484846236}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &8773080178851894015
 GameObject:
   m_ObjectHideFlags: 0
@@ -2602,7 +2227,6 @@ GameObject:
   - component: {fileID: 3463154462616249643}
   - component: {fileID: 7087368627502492073}
   - component: {fileID: 1589454915004463749}
-  - component: {fileID: 5950733969372704542}
   m_Layer: 0
   m_Name: leaf (3)
   m_TagString: Untagged
@@ -2642,7 +2266,7 @@ MeshRenderer:
   m_GameObject: {fileID: 8773080178851894015}
   m_Enabled: 1
   m_CastShadows: 1
-  m_ReceiveShadows: 1
+  m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
@@ -2675,17 +2299,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &5950733969372704542
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8773080178851894015}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}

@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8c74a3b4816425468efdb2a203b42fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PlayerToFollow: {fileID: 0}
   followSpeed: 10
   sensitivity: 3
   clamAngle: 50
@@ -95,19 +96,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1617445743041127503, guid: a8c4d74292d917e439fd0395fb314ef7, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 2.13
       objectReference: {fileID: 0}
     - target: {fileID: 1617445743041127503, guid: a8c4d74292d917e439fd0395fb314ef7, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -3.76
       objectReference: {fileID: 0}
     - target: {fileID: 1617445743041127503, guid: a8c4d74292d917e439fd0395fb314ef7, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.9659258
       objectReference: {fileID: 0}
     - target: {fileID: 1617445743041127503, guid: a8c4d74292d917e439fd0395fb314ef7, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: 0.2588191
       objectReference: {fileID: 0}
     - target: {fileID: 1617445743041127503, guid: a8c4d74292d917e439fd0395fb314ef7, type: 3}
       propertyPath: m_LocalRotation.y
@@ -119,7 +120,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1617445743041127503, guid: a8c4d74292d917e439fd0395fb314ef7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 1617445743041127503, guid: a8c4d74292d917e439fd0395fb314ef7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y

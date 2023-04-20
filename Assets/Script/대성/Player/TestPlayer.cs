@@ -290,7 +290,7 @@ public class TestPlayer : MonoBehaviour
         // 맞더라도 GodMode에서는 맞지말자!
         if (other.gameObject.CompareTag("Enemy") && isAlive == true && isGodMode == false)
         {
-            Debug.Log($"{other.gameObject.name} 에게 한대 처맞음");
+            //Debug.Log($"{other.gameObject.name} 에게 한대 처맞음");
             anim.SetTrigger("Hit");
 
             //rigid.velocity = Vector3.zero;
