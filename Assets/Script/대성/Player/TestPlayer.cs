@@ -118,6 +118,8 @@ public class TestPlayer : MonoBehaviour
     Vector3 playerRotate = Vector3.zero;        //카메라회전
     Vector3 forward = Vector3.zero;
     Vector3 right = Vector3.zero;
+    float turnSpeed = 10f;
+    Quaternion turnDir=Quaternion.identity;
     public float smoothness = 5f;           // 마우스가 보는 시점을 따라 회전하는 속도
 
     [Header("Component")]
@@ -174,7 +176,8 @@ public class TestPlayer : MonoBehaviour
         if (isMoving == true && lookModeThire == true && isShilding == false)
         {
             rigid.MovePosition(rigid.position + moveDir * moveSpeed * Time.fixedDeltaTime);
-            transform.LookAt(transform.position + moveDir, Vector3.up);
+            //transform.LookAt(transform.position + moveDir, Vector3.up);
+            transform.rotation = Quaternion.Slerp(transform.rotation , turnDir, Time.fixedDeltaTime * turnSpeed);
         }
         else if (isMoving == true && lookModeThire == false && isShilding == false)
         {
@@ -261,6 +264,9 @@ public class TestPlayer : MonoBehaviour
         {
             Debug.Log($"{other.gameObject.name} 에게 한대 처맞음");
             anim.SetTrigger("Hit");
+
+            potion.SetActive(false);
+
             --heart;
         }
     }
@@ -289,6 +295,7 @@ public class TestPlayer : MonoBehaviour
         {
             moveDir = dir.normalized;
             isMoving = true;
+            turnDir = Quaternion.LookRotation(moveDir, transform.up);
         }
         else
         {
@@ -385,7 +392,7 @@ public class TestPlayer : MonoBehaviour
         if (PotionSetting == true)      //포션이 있는 상태에서만
         {
             anim.SetTrigger("Potion");
-
+            potion.SetActive(true);
         }
     }
     void PotionApply()
