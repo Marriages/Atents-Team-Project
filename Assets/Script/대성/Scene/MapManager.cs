@@ -26,7 +26,7 @@ public class MapManager : MonoBehaviour
     private void Awake()
     {
         SceneManager.sceneLoaded += SearchGateway;
-        //DontDestroyOnLoad(this.gameObject);
+        DontDestroyOnLoad(this.gameObject);
     }
     private void OnEnable()
     {

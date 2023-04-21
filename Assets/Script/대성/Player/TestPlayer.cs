@@ -4,7 +4,29 @@ using UnityEngine;
 using System;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
-
+/*
+ * 1. JUMP하며 움직이던 중 사망시, 미끄러지듯이 사망함.
+ *    Velocity를 OnGround에서 초기화가되지만, fixedUPdate가 계속 실행됨.  -> DIe할 경우 MoveSpeed=0을 하던 IsALive로 제어를 하던
+ *    해결
+ *    
+ * 2. 포션을 먹는 도중 처맞게 될 경우 문제 발생함
+ * 3. JUMP할떄 Disable -> OnGround의 Enable하는 것의 개수가 차이가 남.
+ *    HIT가 끝났을 때, 점프가 끝났을 떄, Restore함수를 호출함으로써 초기 상태로 되돌리는 방법을 "생각"해보기 / God모드 끝날때도
+ *    해결
+ *    
+ * 4. 플레이어가 씬 이동한 후, 초기 위치 지정하는..... Virtual Camera를 LookMode가 바뀔떄 같이 바꿔보기 ( 3인칭, 탑뷰모드 )
+ * 5. 상점 / 서브신 플레이어 정상적으로 움직이고, MapManager가 시점을 변경할 수 있게끔?
+ * 6. 메인맵의 나무들에 콜라이더 넣어주기
+ * 7. 메인맵의 끝에서 일정시간 가만히 있을 시, 주위를 쫙 둘러봐주는 Dolly 구현하기.
+ * 8. 사망 패널은 구현했으나, Button을 만들어서 처음부터 할 수 있도록 할 것.
+ * 9. Enemy가 플레이어 발견시(특히 SwardMan) 바로 공격할 수 있도록 할 것
+ * 10. 효과음 / 배경음
+ * 11. 로딩씬, 엔딩씬 구현하기
+ * 12. 맞으면 카메라 흔들기?
+ * 13. 이동시 카메라 기준으로 캐릭터가 회전하게 만들기(20일 수업시간에 배움)
+ * 14. 
+ * 
+ */
 public class TestPlayer : MonoBehaviour
 {
     [Header("Player Information")]
@@ -71,6 +93,7 @@ public class TestPlayer : MonoBehaviour
     bool shieldGet = false;
     bool potionGet = false;
     bool isGodMode = false;
+    public  bool haveScroll = false; // test를 위하여 public으로 선언하였음. 테스트 종료 후 private로 변환할 것
     public bool lookModeThire = true;     //3인칭시점 꺼져있음. 원하면 킬 것.
 
     public bool WeaponSetting
@@ -129,6 +152,18 @@ public class TestPlayer : MonoBehaviour
             PotionChange?.Invoke(potionGet);
         }
     }
+    public bool ScrollSetting
+    {
+        get => haveScroll;
+        set
+        {
+            if(value==true)
+            {
+                Debug.Log("스크롤 구입 완료. 비밀문이 열립니다.");
+                OpenSecretDoor?.Invoke();
+            }
+        }
+    }
 
 
     [Header("Input & Move")]
@@ -173,6 +208,8 @@ public class TestPlayer : MonoBehaviour
     public Action<bool> PotionChange;
     public Action PlayerDie;
 
+    public Action OpenSecretDoor;
+
     public Action PlayerUseTry;         //아이템 상호작용
 
 
@@ -201,13 +238,13 @@ public class TestPlayer : MonoBehaviour
     private void FixedUpdate()
     {
         //키보드로 화면 회전하는 탑뷰모드
-        if (isMoving == true && lookModeThire == true && isShilding == false)
+        if (isMoving == true && lookModeThire == true && isShilding == false && isAlive==true)
         {
             rigid.MovePosition(rigid.position + moveDir * moveSpeed * Time.fixedDeltaTime);
             //transform.LookAt(transform.position + moveDir, Vector3.up);
             transform.rotation = Quaternion.Slerp(transform.rotation , turnDir, Time.fixedDeltaTime * turnSpeed);
         }
-        else if (isMoving == true && lookModeThire == false && isShilding == false)
+        else if (isMoving == true && lookModeThire == false && isShilding == false && isAlive==true)
         {
             forward = transform.TransformDirection(Vector3.forward);
             right = transform.TransformDirection(Vector3.right);
@@ -293,7 +330,8 @@ public class TestPlayer : MonoBehaviour
             //Debug.Log($"{other.gameObject.name} 에게 한대 처맞음");
             anim.SetTrigger("Hit");
 
-            //rigid.velocity = Vector3.zero;
+            rigid.velocity = Vector3.zero;
+
             playerHitEffect.SetActive(true);
             potion.SetActive(false);
 
@@ -314,11 +352,12 @@ public class TestPlayer : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Ground"))
         {
+            //Debug.Log("Ground!");
             isJumping = false;
 
             rigid.velocity = Vector3.zero;
 
-            //inputActions.Player.Move.Enable();
+            inputActions.Player.Move.Enable();
             inputActions.Player.PotionKeyboard.Enable();
             inputActions.Player.PotionMouse.Enable();
             inputActions.Player.ShieldKeyboard.Enable();
@@ -439,7 +478,7 @@ public class TestPlayer : MonoBehaviour
     }
     void PotionApply()
     {
-        Debug.Log($"Potion Before Heart : {Heart}");
+        //Debug.Log($"Potion Before Heart : {Heart}");
         potionEffect.SetActive(true);
         Heart = Heart + 2;
         PotionSetting = false;
@@ -457,6 +496,7 @@ public class TestPlayer : MonoBehaviour
     {
         if (isJumping == false)
         {
+            //Debug.Log("Jump!");
             isJumping = true;
             rigid.AddForce(Vector3.up * jumpPower, ForceMode.Impulse);
             anim.SetTrigger("Jump");
@@ -484,6 +524,7 @@ public class TestPlayer : MonoBehaviour
     //---------------Animation Event
     void GodModeOn()
     {
+        //Debug.Log("God Mode On");
         isGodMode = true;
         moveSpeed = 0;
         //Debug.Log("God Mode");
@@ -491,6 +532,7 @@ public class TestPlayer : MonoBehaviour
     }
     void GodModeOff()
     {
+        //Debug.Log("God Mode Off");
         isGodMode = false;
         moveSpeed = repairMoveSpeed;
         //Debug.Log("God Mode End");
@@ -498,12 +540,16 @@ public class TestPlayer : MonoBehaviour
     }
     void RestoreState()
     {
+        //Debug.Log("Restore");
         inputActions.Player.Enable();
+        GodModeOff();
+        InitializeConnecting();     // 혹시몰라 다시실행함.
+
         weaponCollider.enabled = false;
+        shieldCollider.enabled = false;
 
         potion.SetActive(false);
-        
-        shieldCollider.enabled = false;
+
         if (shieldGet == true)
             shield.gameObject.SetActive(true);      // 포션마실때방패 끄는데, 처맞으면 다시복구
     }
