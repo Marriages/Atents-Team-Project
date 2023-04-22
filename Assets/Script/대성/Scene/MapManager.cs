@@ -1,11 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEditor.Build.Content;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class MapManager : MonoBehaviour
 {
+    private static MapManager mapManagerSingleton;
+    private MapManager() { }
+    public static MapManager MapmanagerSingleton
+    {
+        get
+        {
+            if(mapManagerSingleton == null)
+            {
+                mapManagerSingleton = new MapManager();
+            }
+            return mapManagerSingleton;
+        }
+    }
+
     Player player;
 
     const int Title = 0;
@@ -23,10 +38,21 @@ public class MapManager : MonoBehaviour
     MainToSub mainToSub;
     bool findMainToSub = false;
 
+    
+
     private void Awake()
     {
         SceneManager.sceneLoaded += SearchGateway;
-        DontDestroyOnLoad(this.gameObject);
+        
+        if( mapManagerSingleton == null )
+        {
+            mapManagerSingleton = this;
+            DontDestroyOnLoad(this.gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
     private void OnEnable()
     {
@@ -50,7 +76,11 @@ public class MapManager : MonoBehaviour
             if(titleToMain != null)
             {
                 findTitleToMain = true;
-                titleToMain.titleToMain += () => SceneManager.LoadScene(Main);
+                titleToMain.titleToMain += () =>
+                {
+                    GameObject loadingSceneManager = FindObjectOfType<LoadingScene>(true).gameObject;
+                    loadingSceneManager.SetActive(true);
+                };
             }
         }
 
