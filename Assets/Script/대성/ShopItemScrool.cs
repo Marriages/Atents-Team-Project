@@ -27,7 +27,7 @@ public class ShopItemScrool : MonoBehaviour
         if (other.gameObject.CompareTag("Player"))
         {
             player = other.GetComponent<TestPlayer>();
-            player.PlayerUseTry += TryBuyPotion;
+            player.PlayerUseTry += TryBuyScroll;
             currentPlayerCoin = player.Coin;
             canvas.SetActive(true);
         }
@@ -39,23 +39,23 @@ public class ShopItemScrool : MonoBehaviour
         {
             canvas.SetActive(false);
             currentPlayerCoin = 0;
-            player.PlayerUseTry -= TryBuyPotion;
+            player.PlayerUseTry -= TryBuyScroll;
             player = null;
         }
     }
 
-    void TryBuyPotion()
+    void TryBuyScroll()
     {
         if (player.PotionSetting == true)
         {
             Debug.LogWarning("이미 포션이 있습니다.");
         }
-        else if (currentPlayerCoin > price)
+        else if (currentPlayerCoin >= price)
         {
             player.Coin -= price;
-            player.PotionSetting = true;
+            player.ScrollSetting = true;
 
-            player.PlayerUseTry -= TryBuyPotion;
+            player.PlayerUseTry -= TryBuyScroll;
             player = null;
             Destroy(this.gameObject);
 

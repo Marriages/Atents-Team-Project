@@ -3,32 +3,26 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UnityEngine.InputSystem;
-using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
+using Cinemachine;
 /*
- * 1. JUMP하며 움직이던 중 사망시, 미끄러지듯이 사망함.
- *    Velocity를 OnGround에서 초기화가되지만, fixedUPdate가 계속 실행됨.  -> DIe할 경우 MoveSpeed=0을 하던 IsALive로 제어를 하던
- *    해결
- *    
- * 2. 포션을 먹는 도중 처맞게 될 경우 문제 발생함
- * 3. JUMP할떄 Disable -> OnGround의 Enable하는 것의 개수가 차이가 남.
- *    HIT가 끝났을 때, 점프가 끝났을 떄, Restore함수를 호출함으로써 초기 상태로 되돌리는 방법을 "생각"해보기 / God모드 끝날때도
- *    해결
- *    
- * 4. 플레이어가 씬 이동한 후, 초기 위치 지정하는..... Virtual Camera를 LookMode가 바뀔떄 같이 바꿔보기 ( 3인칭, 탑뷰모드 )
- * 5. 상점 / 서브신 플레이어 정상적으로 움직이고, MapManager가 시점을 변경할 수 있게끔?
- * 6. 메인맵의 나무들에 콜라이더 넣어주기
- * 7. 메인맵의 끝에서 일정시간 가만히 있을 시, 주위를 쫙 둘러봐주는 Dolly 구현하기.
- * 8. 사망 패널은 구현했으나, Button을 만들어서 처음부터 할 수 있도록 할 것.
- * 9. Enemy가 플레이어 발견시(특히 SwardMan) 바로 공격할 수 있도록 할 것
- * 10. 효과음 / 배경음
- * 11. 로딩씬, 엔딩씬 구현하기
- * 12. 맞으면 카메라 흔들기?
- * 13. 이동시 카메라 기준으로 캐릭터가 회전하게 만들기(20일 수업시간에 배움)
- * 14. 
- * 
- */
+* 4. 플레이어가 씬 이동한 후, 초기 위치 지정하는..... Virtual Camera를 LookMode가 바뀔떄 같이 바꿔보기 ( 3인칭, 탑뷰모드 )
+* 5. 상점 / 서브신 플레이어 정상적으로 움직이고, MapManager가 시점을 변경할 수 있게끔?
+* 6. 메인맵의 나무들에 콜라이더 넣어주기
+* 7. 메인맵의 끝에서 일정시간 가만히 있을 시, 주위를 쫙 둘러봐주는 Dolly 구현하기.
+* 8. 사망 패널은 구현했으나, Button을 만들어서 처음부터 할 수 있도록 할 것.
+* 9. Enemy가 플레이어 발견시(특히 SwardMan) 바로 공격할 수 있도록 할 것
+* 10. 효과음 / 배경음
+* 11. 로딩씬, 엔딩씬 구현하기
+* 12. 맞으면 카메라 흔들기?
+* 13. 이동시 카메라 기준으로 캐릭터가 회전하게 만들기(20일 수업시간에 배움)
+* 14. 
+* 
+*/
 public class TestPlayer : MonoBehaviour
 {
+    public static TestPlayer player;
+
     [Header("Player Information")]
     public float moveSpeed = 5f;
     float repairMoveSpeed;
@@ -36,6 +30,69 @@ public class TestPlayer : MonoBehaviour
     int heart=3;
     int maxHeart = 3;
     public int coin = 0;
+
+    [Header("Flag")]
+    bool isAlive = true;
+    bool isJumping = false;
+    bool isShilding = false;
+    bool isMoving = false;
+    bool weaponGet = false;
+    bool shieldGet = false;
+    bool potionGet = false;
+    bool isGodMode = false;
+    public  bool haveScroll = false; // test를 위하여 public으로 선언하였음. 테스트 종료 후 private로 변환할 것
+    public bool lookModeThire = true;     //3인칭시점 꺼져있음. 원하면 킬 것.
+
+    [Header("Input & Move")]
+    Vector3 moveDir = Vector3.zero;
+    Vector3 moveDirMouse = Vector3.zero;
+    Vector3 playerRotate = Vector3.zero;        //카메라회전
+    Vector3 forward = Vector3.zero;
+    Vector3 right = Vector3.zero;
+    float turnSpeed = 10f;
+    Quaternion turnDir=Quaternion.identity;
+    public float smoothness = 5f;           // 마우스가 보는 시점을 따라 회전하는 속도
+
+    [Header("Component")]
+    Animator anim;
+    InputSystemController inputActions;
+    Rigidbody rigid;
+    Camera mainCamera;
+
+    [Header("GameObject & Collider")]
+    GameObject weapon;
+    Collider weaponCollider;
+    Shield shield;
+    Collider shieldCollider;
+    GameObject potion;
+    GameObject potionEffect;
+    //GameObject cameraMain;
+    GameObject healEffect;
+    GameObject playerHitEffect;
+    Collider playerCollider;
+    Light playerLight;
+
+
+    [Header("Action")]
+    //public Action<int> HeartChange;
+    //public Action<int> CoinChange;
+    //public Action<bool> PotionChange;
+    public Action<int> HeartChange;
+    public Action<int> CoinChange;
+    public Action PotionGet;
+    public Action PotionUse;
+
+    public Action<bool> WeaponChange;
+    public Action<bool> ShieldChange;
+    public Action<bool> PotionChange;
+    public Action PlayerDie;
+
+    public Action OpenSecretDoor;
+
+    public Action PlayerUseTry;         //아이템 상호작용
+    public Action CameraChange;
+
+    //-------------------------------------------------------------------------Property
 
     public int Heart
     {
@@ -83,18 +140,6 @@ public class TestPlayer : MonoBehaviour
             CoinChange(coin);
         }
     }
-
-    [Header("Flag")]
-    bool isAlive = true;
-    bool isJumping = false;
-    bool isShilding = false;
-    bool isMoving = false;
-    bool weaponGet = false;
-    bool shieldGet = false;
-    bool potionGet = false;
-    bool isGodMode = false;
-    public  bool haveScroll = false; // test를 위하여 public으로 선언하였음. 테스트 종료 후 private로 변환할 것
-    public bool lookModeThire = true;     //3인칭시점 꺼져있음. 원하면 킬 것.
 
     public bool WeaponSetting
     {
@@ -165,58 +210,63 @@ public class TestPlayer : MonoBehaviour
         }
     }
 
-
-    [Header("Input & Move")]
-    Vector3 moveDir = Vector3.zero;
-    Vector3 moveDirMouse = Vector3.zero;
-    Vector3 playerRotate = Vector3.zero;        //카메라회전
-    Vector3 forward = Vector3.zero;
-    Vector3 right = Vector3.zero;
-    float turnSpeed = 10f;
-    Quaternion turnDir=Quaternion.identity;
-    public float smoothness = 5f;           // 마우스가 보는 시점을 따라 회전하는 속도
-
-    [Header("Component")]
-    Animator anim;
-    InputSystemController inputActions;
-    Rigidbody rigid;
-
-    [Header("GameObject & Collider")]
-    GameObject weapon;
-    Collider weaponCollider;
-    Shield shield;
-    Collider shieldCollider;
-    GameObject potion;
-    GameObject potionEffect;
-    GameObject cameraMain;
-    GameObject healEffect;
-    GameObject playerHitEffect;
-    Collider playerCollider;
-
-
-    [Header("Action")]
-    //public Action<int> HeartChange;
-    //public Action<int> CoinChange;
-    //public Action<bool> PotionChange;
-    public Action<int> HeartChange;
-    public Action<int> CoinChange;
-    public Action PotionGet;
-    public Action PotionUse;
-
-    public Action<bool> WeaponChange;
-    public Action<bool> ShieldChange;
-    public Action<bool> PotionChange;
-    public Action PlayerDie;
-
-    public Action OpenSecretDoor;
-
-    public Action PlayerUseTry;         //아이템 상호작용
-
+    //-------------------------------------------------------------------------Property
 
     private void Awake()
     {
-        FindComponent();
+        if(player==null)
+        {
+            player = this;
+            SceneManager.sceneLoaded += PlayerSceneEnterSetting;
+            FindComponent();
+            DontDestroyOnLoad(this.gameObject);
+        }
+        else
+        {
+            Debug.Log("Player Bomg");
+            Destroy(gameObject);
+        }
     }
+
+    private void PlayerSceneEnterSetting(Scene scene, LoadSceneMode mode)
+    {
+        Transform initializePosition;
+        Transform mainToShop;
+        Transform shopToMain;
+        Transform mainToSub;
+        mainCamera = FindObjectOfType<Camera>();
+
+        int beforeScene = MapManager.beforeSceneIndex;
+        if(beforeScene == 0 && scene.buildIndex == 1)
+        {
+            initializePosition = GameObject.Find("FirstRespawnPosition").transform;     //Title -> Main일 경우
+            transform.position = initializePosition.position;
+            transform.rotation = initializePosition.rotation;
+        }
+        else if(beforeScene == 1 && scene.buildIndex ==2 )       //메인->상점일경우
+        {
+            mainToShop = GameObject.Find("MainToShopPosition").transform;
+            transform.position = mainToShop.position;
+            transform.rotation = mainToShop.rotation;
+
+        }
+        else if (beforeScene == 2 && scene.buildIndex == 1)       //메인->상점일경우
+        {
+            shopToMain = GameObject.Find("ShopToMainPosition").transform;
+            transform.position = shopToMain.position;
+            transform.rotation = shopToMain.rotation;
+        }
+        else if(beforeScene == 1 && scene.buildIndex == 3 && scene.buildIndex == 3)     //메인->sub일경우
+        {
+            mainToSub = GameObject.Find("MainToSubPosition").transform;
+            transform.position = mainToSub.position;
+            transform.rotation = mainToSub.rotation;
+            playerLight = transform.GetChild(7).GetComponent<Light>();
+            playerLight.gameObject.SetActive(true);
+        }
+
+    }
+
     void FindComponent()
     {
         anim = GetComponent<Animator>();
@@ -233,7 +283,7 @@ public class TestPlayer : MonoBehaviour
         playerHitEffect = transform.GetChild(5).gameObject;
         playerCollider = transform.GetComponent<Collider>();
 
-        cameraMain = FindObjectOfType<MainCamera_Action>().transform.GetChild(0).gameObject;
+        //cameraMain = FindObjectOfType<MainCamera_Action>().transform.GetChild(0).gameObject;
     }
     private void FixedUpdate()
     {
@@ -246,6 +296,7 @@ public class TestPlayer : MonoBehaviour
         }
         else if (isMoving == true && lookModeThire == false && isShilding == false && isAlive==true)
         {
+            /*
             forward = transform.TransformDirection(Vector3.forward);
             right = transform.TransformDirection(Vector3.right);
             moveDirMouse = forward * moveDir.z + right * moveDir.x;
@@ -253,7 +304,11 @@ public class TestPlayer : MonoBehaviour
             rigid.MovePosition(rigid.position + moveDirMouse * moveSpeed * Time.fixedDeltaTime);
 
             playerRotate = Vector3.Scale(cameraMain.transform.forward, new(1, 0, 1));
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(playerRotate), Time.deltaTime * smoothness);
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(playerRotate), Time.deltaTime * smoothness);*/
+
+            //이부분 구현하기가 너무 힘들다.
+            rigid.MovePosition(rigid.position + moveDir * moveSpeed * Time.fixedDeltaTime);
+            transform.rotation = Quaternion.Slerp(transform.rotation, turnDir, Time.fixedDeltaTime * turnSpeed);
         }
 
 
@@ -265,6 +320,7 @@ public class TestPlayer : MonoBehaviour
     }
     private void OnDisable()
     {
+        Debug.Log("i'm disable");
         InitializeUnConnecting();
     }
     void InitializeSetting()
@@ -519,7 +575,16 @@ public class TestPlayer : MonoBehaviour
     private void PlayerViewChange(InputAction.CallbackContext _)
     {
         lookModeThire = !lookModeThire;
+        CameraChange?.Invoke();
+
+        if (mainCamera.GetComponent<CinemachineBrain>() == null)
+        {
+            Debug.Log("전환실패");
+            lookModeThire = !lookModeThire;
+        }
     }
+
+    
 
     //---------------Animation Event
     void GodModeOn()

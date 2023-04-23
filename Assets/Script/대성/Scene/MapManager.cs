@@ -7,52 +7,45 @@ using UnityEngine.SceneManagement;
 
 public class MapManager : MonoBehaviour
 {
-    private static MapManager mapManagerSingleton;
-    private MapManager() { }
-    public static MapManager MapmanagerSingleton
-    {
-        get
-        {
-            if(mapManagerSingleton == null)
-            {
-                mapManagerSingleton = new MapManager();
-            }
-            return mapManagerSingleton;
-        }
-    }
+    public static MapManager mapManagerSingleton;
 
-    Player player;
+    public static int beforeSceneIndex;
+
+    TestPlayer player;
 
     const int Title = 0;
     const int Main = 1;
     const int Shop = 2;
     const int Sub=3;
+
     TitleToMain titleToMain;
-    bool findTitleToMain = false;
+    //bool findTitleToMain = false;
     SubToMain subToMain;
-    bool findSubToMain = false;
+    //bool findSubToMain = false;
     ShopToMain shopToMain;
-    bool findShopToMain = false;
+    //bool findShopToMain = false;
     MainToShop mainToShop;
-    bool findMainToShop = false;
+    //bool findMainToShop = false;
     MainToSub mainToSub;
-    bool findMainToSub = false;
+    //bool findMainToSub = false;
 
     
 
     private void Awake()
     {
-        SceneManager.sceneLoaded += SearchGateway;
         
         if( mapManagerSingleton == null )
         {
             mapManagerSingleton = this;
             DontDestroyOnLoad(this.gameObject);
+            SceneManager.sceneLoaded += SearchGateway;
         }
         else
         {
-            Destroy(gameObject);
+            Destroy(this.gameObject);
+            Destroy(this);
         }
+        
     }
     private void OnEnable()
     {
@@ -61,71 +54,74 @@ public class MapManager : MonoBehaviour
 
     void SearchGateway(Scene scene,LoadSceneMode mode)
     {
-        //Debug.Log("Hi. I'm map Manager");
 
-        
-        if(player==null)
+        Debug.Log(beforeSceneIndex);
+        Debug.Log(scene.name);
+
+        if (player==null)
         {
             //Debug.Log("Player를 찾았습니다.");
-            player=FindObjectOfType<Player>();
+            player=FindObjectOfType<TestPlayer>();
+            if(player==null)
+            {
+                Debug.Log("Player 없음!");
+            }
         }
-
-        if(findTitleToMain==false)
+        
+        titleToMain = FindObjectOfType<TitleToMain>();
+        if(titleToMain != null)
         {
-            titleToMain = FindObjectOfType<TitleToMain>();
-            if(titleToMain != null)
+            titleToMain.titleToMain += () =>
             {
-                findTitleToMain = true;
-                titleToMain.titleToMain += () =>
-                {
-                    GameObject loadingSceneManager = FindObjectOfType<LoadingScene>(true).gameObject;
-                    loadingSceneManager.SetActive(true);
-                };
-            }
+                Debug.Log($"현재씬 : {SceneManager.GetActiveScene().name}");
+                beforeSceneIndex = SceneManager.GetActiveScene().buildIndex;
+                GameObject loadingSceneManager = FindObjectOfType<LoadingScene>(true).gameObject;
+                loadingSceneManager.SetActive(true);
+            };
         }
 
-        if(findMainToShop==false)
+        mainToShop = FindObjectOfType<MainToShop>();
+        if (mainToShop != null)
         {
-            mainToShop = FindObjectOfType<MainToShop>();
-            if (mainToShop != null)
+            mainToShop.mainToShop += () =>
             {
-                findMainToShop = true;
-                mainToShop.mainToShop += () => SceneManager.LoadScene(Shop);
-            }
+                Debug.Log("Main->Shop");
+                beforeSceneIndex = SceneManager.GetActiveScene().buildIndex;
+                SceneManager.LoadScene(Shop);
+            };
         }
 
-        if (findShopToMain == false)
-        { 
-            shopToMain = FindObjectOfType<ShopToMain>();
-            if (shopToMain != null)
-            {
-                findShopToMain = true;
-                shopToMain.shopToMain += () => SceneManager.LoadScene(Main);
-            }
-        }
-
-        if(findSubToMain==false)
+        shopToMain = FindObjectOfType<ShopToMain>();
+        if (shopToMain != null)
         {
-            subToMain = FindObjectOfType<SubToMain>();
-            if (subToMain != null)
+            shopToMain.shopToMain += () =>
             {
-                findSubToMain = true;
-                subToMain.subToMain += () => SceneManager.LoadScene(Main);
-            }
+                Debug.Log("Shop->Main");
+                beforeSceneIndex = SceneManager.GetActiveScene().buildIndex;
+                SceneManager.LoadScene(Main);
+            };
         }
 
-        if(findMainToSub==false)
+        subToMain = FindObjectOfType<SubToMain>();
+        if (subToMain != null)
         {
-            mainToSub = FindObjectOfType<MainToSub>();
-            if (mainToSub != null)
+            subToMain.subToMain += () =>
             {
-                findMainToSub = true;
-                mainToSub.mainToSub += () => SceneManager.LoadScene(Sub);
-            }
+                Debug.Log("Sub->main");
+                beforeSceneIndex = SceneManager.GetActiveScene().buildIndex;
+                SceneManager.LoadScene(Main);
+            };
+        }
+
+        mainToSub = FindObjectOfType<MainToSub>();
+        if (mainToSub != null)
+        {
+            mainToSub.mainToSub += () =>
+            {
+                Debug.Log("Main->Shop");
+                beforeSceneIndex = SceneManager.GetActiveScene().buildIndex;
+                SceneManager.LoadScene(Sub);
+            };
         }
     }
-
-
-    
-
 }

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5570161017937798140}
   - component: {fileID: 5570161017937798143}
   m_Layer: 0
-  m_Name: TPS_Camera
+  m_Name: TPS_Camera(not use)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
