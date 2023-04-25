@@ -55,14 +55,14 @@ public class MapManager : MonoBehaviour
     void SearchGateway(Scene scene,LoadSceneMode mode)
     {
 
-        Debug.Log(beforeSceneIndex);
-        Debug.Log(scene.name);
+        //Debug.Log(beforeSceneIndex);
+        //Debug.Log(scene.name);
 
         if (player==null)
         {
             //Debug.Log("Player를 찾았습니다.");
-            player=FindObjectOfType<TestPlayer>();
-            if(player==null)
+            this.player = TestPlayer.player;
+            if (player==null)
             {
                 Debug.Log("Player 없음!");
             }
@@ -73,7 +73,7 @@ public class MapManager : MonoBehaviour
         {
             titleToMain.titleToMain += () =>
             {
-                Debug.Log($"현재씬 : {SceneManager.GetActiveScene().name}");
+                //Debug.Log($"현재씬 : {SceneManager.GetActiveScene().name}");
                 beforeSceneIndex = SceneManager.GetActiveScene().buildIndex;
                 GameObject loadingSceneManager = FindObjectOfType<LoadingScene>(true).gameObject;
                 loadingSceneManager.SetActive(true);
@@ -83,22 +83,33 @@ public class MapManager : MonoBehaviour
         mainToShop = FindObjectOfType<MainToShop>();
         if (mainToShop != null)
         {
+            if(beforeSceneIndex==2)     //상점에서 넘어온 경우에만 실행할 수 있도록 조건 걸음.
+            {
+                GameObject mainChange = FindObjectOfType<MainChange>(true).gameObject;
+                mainChange.SetActive(true);
+            }
+
             mainToShop.mainToShop += () =>
             {
-                Debug.Log("Main->Shop");
+                //Debug.Log("Main->Shop");
                 beforeSceneIndex = SceneManager.GetActiveScene().buildIndex;
-                SceneManager.LoadScene(Shop);
+                GameObject mainShopChange = FindObjectOfType<MainShopChange>(true).gameObject;
+                mainShopChange.SetActive(true);
             };
         }
 
         shopToMain = FindObjectOfType<ShopToMain>();
         if (shopToMain != null)
         {
+            GameObject shopChange = FindObjectOfType<ShopChange>(true).gameObject;
+            shopChange.SetActive(true);
+
             shopToMain.shopToMain += () =>
             {
                 Debug.Log("Shop->Main");
                 beforeSceneIndex = SceneManager.GetActiveScene().buildIndex;
-                SceneManager.LoadScene(Main);
+                GameObject shopMainChange = FindObjectOfType<ShopMainChange>(true).gameObject;
+                shopMainChange.SetActive(true);
             };
         }
 

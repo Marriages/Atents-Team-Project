@@ -11,7 +11,7 @@ public class MainToShop : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            Debug.Log("Main To Shop Trigger");
+            //Debug.Log("Main To Shop Trigger");
             mainToShop?.Invoke();
         }
     }

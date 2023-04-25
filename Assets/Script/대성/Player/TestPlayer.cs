@@ -41,6 +41,7 @@ public class TestPlayer : MonoBehaviour
     bool potionGet = false;
     bool isGodMode = false;
     public  bool haveScroll = false; // test를 위하여 public으로 선언하였음. 테스트 종료 후 private로 변환할 것
+    /// <summary>    /// lookModeThire가 true이면 탑뷰. false면 3인칭뷰    /// </summary>
     public bool lookModeThire = true;     //3인칭시점 꺼져있음. 원하면 킬 것.
 
     [Header("Input & Move")]
@@ -223,7 +224,7 @@ public class TestPlayer : MonoBehaviour
         }
         else
         {
-            Debug.Log("Player Bomg");
+            //Debug.Log("Player Bomg");
             Destroy(gameObject);
         }
     }
@@ -288,27 +289,19 @@ public class TestPlayer : MonoBehaviour
     private void FixedUpdate()
     {
         //키보드로 화면 회전하는 탑뷰모드
-        if (isMoving == true && lookModeThire == true && isShilding == false && isAlive==true)
+        if (isMoving == true && isShilding == false && isAlive==true)
         {
-            rigid.MovePosition(rigid.position + moveDir * moveSpeed * Time.fixedDeltaTime);
-            //transform.LookAt(transform.position + moveDir, Vector3.up);
-            transform.rotation = Quaternion.Slerp(transform.rotation , turnDir, Time.fixedDeltaTime * turnSpeed);
-        }
-        else if (isMoving == true && lookModeThire == false && isShilding == false && isAlive==true)
-        {
-            /*
-            forward = transform.TransformDirection(Vector3.forward);
-            right = transform.TransformDirection(Vector3.right);
-            moveDirMouse = forward * moveDir.z + right * moveDir.x;
+            if(lookModeThire == false)
+            {
+                rigid.MovePosition(rigid.position + mainCamera.transform.forward * moveSpeed * Time.fixedDeltaTime);
+            }
+            else
+            {
+                rigid.MovePosition(rigid.position + moveDir * moveSpeed * Time.fixedDeltaTime);
+            }
+                transform.rotation = Quaternion.Slerp(transform.rotation , turnDir, Time.fixedDeltaTime * turnSpeed);
 
-            rigid.MovePosition(rigid.position + moveDirMouse * moveSpeed * Time.fixedDeltaTime);
 
-            playerRotate = Vector3.Scale(cameraMain.transform.forward, new(1, 0, 1));
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(playerRotate), Time.deltaTime * smoothness);*/
-
-            //이부분 구현하기가 너무 힘들다.
-            rigid.MovePosition(rigid.position + moveDir * moveSpeed * Time.fixedDeltaTime);
-            transform.rotation = Quaternion.Slerp(transform.rotation, turnDir, Time.fixedDeltaTime * turnSpeed);
         }
 
 
@@ -320,7 +313,7 @@ public class TestPlayer : MonoBehaviour
     }
     private void OnDisable()
     {
-        Debug.Log("i'm disable");
+        //Debug.Log("i'm disable");
         InitializeUnConnecting();
     }
     void InitializeSetting()
@@ -363,18 +356,21 @@ public class TestPlayer : MonoBehaviour
     }
     void InitializeUnConnecting()
     {
-        inputActions.Player.Use.performed -= (_) => PlayerUseTry?.Invoke();
-        inputActions.Player.ViewChange.performed -= PlayerViewChange;
-        inputActions.Player.Jump.performed -= PlayerJump;
-        inputActions.Player.PotionMouse.performed -= PlayerPotion;
-        inputActions.Player.PotionKeyboard.performed -= PlayerPotion;
-        inputActions.Player.ShieldMouse.performed -= PlayerShield;
-        inputActions.Player.ShieldKeyboard.performed -= PlayerShield;
-        inputActions.Player.AtackMouse.performed -= PlayerAttack;
-        inputActions.Player.AtackKeyboard.performed -= PlayerAttack;
-        inputActions.Player.Move.canceled -= PlayerMove;
-        inputActions.Player.Move.performed -= PlayerMove;
-        inputActions.Player.Disable();
+        if(inputActions!=null)
+        {
+            inputActions.Player.Use.performed -= (_) => PlayerUseTry?.Invoke();
+            inputActions.Player.ViewChange.performed -= PlayerViewChange;
+            inputActions.Player.Jump.performed -= PlayerJump;
+            inputActions.Player.PotionMouse.performed -= PlayerPotion;
+            inputActions.Player.PotionKeyboard.performed -= PlayerPotion;
+            inputActions.Player.ShieldMouse.performed -= PlayerShield;
+            inputActions.Player.ShieldKeyboard.performed -= PlayerShield;
+            inputActions.Player.AtackMouse.performed -= PlayerAttack;
+            inputActions.Player.AtackKeyboard.performed -= PlayerAttack;
+            inputActions.Player.Move.canceled -= PlayerMove;
+            inputActions.Player.Move.performed -= PlayerMove;
+            inputActions.Player.Disable();
+        }
     }
 
 
@@ -406,12 +402,12 @@ public class TestPlayer : MonoBehaviour
     }
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Ground"))
+        if (collision.gameObject.CompareTag("Ground") && inputActions != null)
         {
             //Debug.Log("Ground!");
             isJumping = false;
-
-            rigid.velocity = Vector3.zero;
+            if(rigid !=null)
+                rigid.velocity = Vector3.zero;
 
             inputActions.Player.Move.Enable();
             inputActions.Player.PotionKeyboard.Enable();
@@ -430,7 +426,16 @@ public class TestPlayer : MonoBehaviour
         {
             moveDir = dir.normalized;
             isMoving = true;
-            turnDir = Quaternion.LookRotation(moveDir, transform.up);
+            if(lookModeThire == true)
+            {
+                turnDir = Quaternion.LookRotation(moveDir, transform.up);
+
+            }
+            else
+            {
+
+                turnDir = Quaternion.LookRotation(mainCamera.transform.forward, transform.up);
+            }
         }
         else
         {

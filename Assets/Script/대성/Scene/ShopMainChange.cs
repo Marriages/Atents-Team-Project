@@ -1,10 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
-public class MainShopChange : MonoBehaviour
+public class ShopMainChange : MonoBehaviour
 {
     Color pictureColor;
     Image picture;
@@ -25,7 +25,7 @@ public class MainShopChange : MonoBehaviour
     }
     private void Start()
     {
-        sceneoperation = SceneManager.LoadSceneAsync(2,LoadSceneMode.Single);
+        sceneoperation = SceneManager.LoadSceneAsync(1, LoadSceneMode.Single);
         sceneoperation.allowSceneActivation = false;
         StartCoroutine(ChangePicrueAlpha());
     }
@@ -33,9 +33,9 @@ public class MainShopChange : MonoBehaviour
     {
 
         picture.gameObject.SetActive(true);
-        
 
-        while (pictureColor.a<1)
+
+        while (pictureColor.a < 1)
         {
             //Debug.Log("증가중");
             pictureColor.a += alphaSpeed;
@@ -43,8 +43,8 @@ public class MainShopChange : MonoBehaviour
             yield return null;
         }
 
-        
-        while(sceneoperation.progress<0.9f)
+
+        while (sceneoperation.progress < 0.9f)
         {
             yield return null;
         }

@@ -9,7 +9,7 @@ public class ShieldGet : MonoBehaviour
 
     private void Awake()
     {
-        player = FindObjectOfType<TestPlayer>();
+        this.player = TestPlayer.player;
     }
     private void OnEnable()
     {
