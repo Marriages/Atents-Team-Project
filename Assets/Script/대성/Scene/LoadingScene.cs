@@ -18,7 +18,7 @@ public class LoadingScene : MonoBehaviour
 
     Image[] randomImages;
     int imageCount=0;
-    TextMeshProUGUI pressAnyKey;
+    GameObject pressAnyKey;
     TextMeshProUGUI smallTiptext;
 
     bool loadingCompleteCheck = false;
@@ -34,12 +34,12 @@ public class LoadingScene : MonoBehaviour
 
         loadingBar = transform.GetChild(1).GetComponent<Slider>();
 
-        pressAnyKey = transform.GetChild(2).GetComponent<TextMeshProUGUI>();
+        pressAnyKey = transform.GetChild(2).gameObject;
         smallTiptext = transform.GetChild(3).GetComponent<TextMeshProUGUI>();
     }
     private void OnEnable()
     {
-        pressAnyKey.enabled = false;
+        pressAnyKey.SetActive(false);
 
         loadingBar.value = 0f;
         foreach(Image image in randomImages)
@@ -83,7 +83,7 @@ public class LoadingScene : MonoBehaviour
             yield return null;
         }
 
-        pressAnyKey.enabled = true;
+        pressAnyKey.SetActive(true);
         loadingCompleteCheck = true;
 
     }

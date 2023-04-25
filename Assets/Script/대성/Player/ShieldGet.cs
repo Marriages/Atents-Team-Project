@@ -4,14 +4,25 @@ using UnityEngine;
 
 public class ShieldGet : MonoBehaviour
 {
-    bool playerEnter = false;
     TestPlayer player = null;
+    bool playerEnter = false;
+
+    private void Awake()
+    {
+        player = FindObjectOfType<TestPlayer>();
+    }
+    private void OnEnable()
+    {
+        if (player.ShieldSetting == true)
+        {
+            Destroy(gameObject);
+        }
+    }
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
         {
             playerEnter = true;
-            player = other.gameObject.GetComponent<TestPlayer>();
             player.PlayerUseTry += CheckItemGet;
         }
     }
@@ -20,9 +31,9 @@ public class ShieldGet : MonoBehaviour
         if (other.gameObject.CompareTag("Player"))
         {
             playerEnter = false;
-            player = null;
         }
     }
+
     private void CheckItemGet()
     {
         if (playerEnter == true)

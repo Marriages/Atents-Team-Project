@@ -4,14 +4,25 @@ using UnityEngine;
 
 public class WeaponGet : MonoBehaviour
 {
+    TestPlayer player=null;
     bool playerEnter = false;
-    TestPlayer player = null;
+
+    private void Awake()
+    {
+        player = FindObjectOfType<TestPlayer>();
+    }
+    private void OnEnable()
+    {
+        if(player.WeaponSetting==true)
+        {
+            Destroy(gameObject);
+        }
+    }
     private void OnTriggerEnter(Collider other)
     {
         if(other.gameObject.CompareTag("Player") )
         {
             playerEnter = true;
-            player = other.gameObject.GetComponent<TestPlayer>();
             player.PlayerUseTry += CheckItemGet;
         }
     }
@@ -20,7 +31,6 @@ public class WeaponGet : MonoBehaviour
         if (other.gameObject.CompareTag("Player"))
         {
             playerEnter = false;
-            player = null;
         }
     }
 
