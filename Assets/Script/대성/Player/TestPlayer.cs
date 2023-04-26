@@ -5,6 +5,7 @@ using System;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using Cinemachine;
+using Unity.VisualScripting.FullSerializer;
 /*
 * 4. 플레이어가 씬 이동한 후, 초기 위치 지정하는..... Virtual Camera를 LookMode가 바뀔떄 같이 바꿔보기 ( 3인칭, 탑뷰모드 )
 * 5. 상점 / 서브신 플레이어 정상적으로 움직이고, MapManager가 시점을 변경할 수 있게끔?
@@ -267,7 +268,7 @@ public class TestPlayer : MonoBehaviour
         }
 
     }
-
+    Transform followPosition;
     void FindComponent()
     {
         anim = GetComponent<Animator>();
@@ -283,6 +284,7 @@ public class TestPlayer : MonoBehaviour
         healEffect = transform.GetChild(4).gameObject;
         playerHitEffect = transform.GetChild(5).gameObject;
         playerCollider = transform.GetComponent<Collider>();
+        followPosition = transform.GetChild(2).transform;
 
         //cameraMain = FindObjectOfType<MainCamera_Action>().transform.GetChild(0).gameObject;
     }
@@ -293,13 +295,22 @@ public class TestPlayer : MonoBehaviour
         {
             if(lookModeThire == false)
             {
-                rigid.MovePosition(rigid.position + mainCamera.transform.forward * moveSpeed * Time.fixedDeltaTime);
+                Vector3 moveCamDir = mainCamera.transform.forward;
+                moveCamDir.y = 0;
+                moveCamDir = moveCamDir.normalized;
+                Quaternion camQuat = Quaternion.FromToRotation(Vector3.forward, moveCamDir);
+                Vector3 Dir = camQuat * moveDir;
+
+                rigid.MovePosition(rigid.position + Dir * moveSpeed * Time.fixedDeltaTime);
+                //transform.LookAt(moveCamDir);
+
+
             }
             else
             {
                 rigid.MovePosition(rigid.position + moveDir * moveSpeed * Time.fixedDeltaTime);
-            }
                 transform.rotation = Quaternion.Slerp(transform.rotation , turnDir, Time.fixedDeltaTime * turnSpeed);
+            }
 
 
         }
@@ -426,15 +437,14 @@ public class TestPlayer : MonoBehaviour
         {
             moveDir = dir.normalized;
             isMoving = true;
+                turnDir = Quaternion.LookRotation(moveDir, transform.up);
             if(lookModeThire == true)
             {
-                turnDir = Quaternion.LookRotation(moveDir, transform.up);
 
             }
             else
             {
-
-                turnDir = Quaternion.LookRotation(mainCamera.transform.forward, transform.up);
+                //turnDir = Quaternion.LookRotation(mainCamera.transform.forward, transform.up);
             }
         }
         else
