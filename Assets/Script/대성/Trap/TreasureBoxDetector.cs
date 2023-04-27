@@ -1,3 +1,4 @@
+using Cinemachine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,6 +15,8 @@ public class TreasureBoxDetector : MonoBehaviour
         {
             //Debug.Log("Player in");
             treasurezoneEnter?.Invoke();
+            CinemachineVirtualCamera cam = transform.parent.GetChild(5).GetChild(0).GetComponent<CinemachineVirtualCamera>();
+            cam.Priority = 10;
             Destroy(this.gameObject);
             Destroy(this);
         }

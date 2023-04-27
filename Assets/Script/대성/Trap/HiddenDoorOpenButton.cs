@@ -11,7 +11,7 @@ public class HiddenDoorOpenButton : MonoBehaviour
     {
         if(collision.gameObject.CompareTag("Player"))
         {
-            Debug.Log("Player감지");
+            //Debug.Log("Player감지");
             buttonPress?.Invoke(true);
         }
     }
@@ -19,7 +19,7 @@ public class HiddenDoorOpenButton : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            Debug.Log("Player떠남");
+            //Debug.Log("Player떠남");
             buttonPress?.Invoke(false);
         }
     }

@@ -22,10 +22,10 @@ public class TreasureController : MonoBehaviour
 
     private void Awake()
     {
-        detector = transform.GetChild(4).GetComponent<TreasureBoxDetector>();
+        detector = transform.GetChild(3).GetComponent<TreasureBoxDetector>();
         treasureBoxHinge = transform.GetChild(0).gameObject;
         treasureBoxLight = transform.GetChild(2).gameObject;
-        treasureZoneCover = transform.GetChild(6).gameObject;
+        treasureZoneCover = transform.GetChild(4).gameObject;
         //cameraTreasurePosition = transform.GetChild(7).transform;
     }
 

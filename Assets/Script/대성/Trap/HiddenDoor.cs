@@ -36,7 +36,7 @@ public class HiddenDoor : MonoBehaviour
     }
     IEnumerator OpenDoorCoroutine()
     {
-        Debug.Log("OpenDoor");
+        //Debug.Log("OpenDoor");
         while(transform.position.x < openPosition.position.x && activate==true)
         {
             if(doorLight.intensity<lightintensityMax)
