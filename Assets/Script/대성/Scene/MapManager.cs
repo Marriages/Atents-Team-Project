@@ -28,8 +28,10 @@ public class MapManager : MonoBehaviour
     //bool findMainToShop = false;
     MainToSub mainToSub;
     //bool findMainToSub = false;
+    SubChange subChange;
 
-    
+
+
 
     private void Awake()
     {
@@ -113,26 +115,26 @@ public class MapManager : MonoBehaviour
             };
         }
 
-        subToMain = FindObjectOfType<SubToMain>();
-        if (subToMain != null)
-        {
-            subToMain.subToMain += () =>
-            {
-                Debug.Log("Sub->main");
-                beforeSceneIndex = SceneManager.GetActiveScene().buildIndex;
-                SceneManager.LoadScene(Main);
-            };
-        }
-
         mainToSub = FindObjectOfType<MainToSub>();
         if (mainToSub != null)
         {
             mainToSub.mainToSub += () =>
             {
-                Debug.Log("Main->Shop");
+                Debug.Log("Main->Sub");
                 beforeSceneIndex = SceneManager.GetActiveScene().buildIndex;
-                SceneManager.LoadScene(Sub);
+                GameObject mainToSubChange = FindObjectOfType<MainToSubChange>(true).gameObject;
+                mainToSubChange.SetActive(true);
             };
+        }
+
+        // sub씬인 경우 재생
+        subChange = FindObjectOfType<SubChange>(true);
+        //Debug.Log(subChange);
+        if (subChange != null)
+        {
+            Debug.Log("Sub Effect On");
+            GameObject subChange = FindObjectOfType<SubChange>(true).gameObject;
+            subChange.SetActive(true);
         }
     }
 }

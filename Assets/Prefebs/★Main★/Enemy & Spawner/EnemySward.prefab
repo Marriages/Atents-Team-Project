@@ -2105,6 +2105,7 @@ GameObject:
   - component: {fileID: -8500129303534823811}
   - component: {fileID: -4984240073141080446}
   - component: {fileID: 9154950254566014595}
+  - component: {fileID: 1258291647101098218}
   m_Layer: 8
   m_Name: EnemySward
   m_TagString: Enemy
@@ -2148,13 +2149,6 @@ MonoBehaviour:
   enemyCollider: {fileID: 9154950254566014595}
   enemyWeaponCollider: {fileID: 7291103981313077631}
   enemyDetectorCollider: {fileID: 2478118918740422630}
-  enemyDropHeart: {fileID: 6413524075618905324, guid: d1741b418a55fc14b83f372b1ae1fec4, type: 3}
-  enemyDropCoin: {fileID: 8015432215044261129, guid: a147ea3d5d4561c4093e5f4b5c28a51b, type: 3}
-  heart: 0
-  maxHeart: 0
-  normalSpeed: 0
-  chaseSpeed: 0
-  arriveDistance: 0
   scoutIndex: 0
   drawGizmo: 0
   checkPath: 0
@@ -2171,6 +2165,13 @@ MonoBehaviour:
   getHitWaitTime: 0
   disappearTimeMax: 4
   disappearTime: 0
+  enemyDropHeart: {fileID: 6413524075618905324, guid: d1741b418a55fc14b83f372b1ae1fec4, type: 3}
+  enemyDropHeartRate: 0.5
+  enemyDropCoin: {fileID: 8015432215044261129, guid: a147ea3d5d4561c4093e5f4b5c28a51b, type: 3}
+  enemyDropCoinRate: 0.5
+  atackSound: {fileID: 0}
+  hitSound: {fileID: 8300000, guid: 4515803da63ee6b4db0ea97607998dc6, type: 3}
+  deadSound: {fileID: 8300000, guid: 995006188cc9c15429923f9c26b92ee5, type: 3}
   _heart: 2
   _maxHeart: 2
   _normalSpeed: 2
@@ -2256,6 +2257,102 @@ CapsuleCollider:
   m_Height: 1.5
   m_Direction: 1
   m_Center: {x: 0, y: 0.5, z: 0}
+--- !u!82 &1258291647101098218
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3305193717099281616}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &3305219542585422908
 GameObject:
   m_ObjectHideFlags: 0

@@ -49,6 +49,10 @@ public class EnemyWizard  : EnemyBase
     {
         base.StateAtack(value);
         anim.SetTrigger("Atack1");
+
+        audio.clip = atackSound;
+        audio.Play();
+
         StartCoroutine(AtackDelayTime());           //총알 발사시간을 제어하기 위해 코루틴 실행
     }
     IEnumerator AtackDelayTime()

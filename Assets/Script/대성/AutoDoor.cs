@@ -7,9 +7,13 @@ public class AutoDoor : MonoBehaviour
     Animator anim;
     GameObject hinge;
 
+    AudioSource audio;
+    public AudioClip openDoor;
+    public AudioClip closeDoor;
+
     private void Awake()
     {
-
+        audio= GetComponent<AudioSource>();
         hinge = transform.parent.transform.GetChild(1).gameObject;
         anim=hinge.gameObject.GetComponent<Animator>();
     }
@@ -22,7 +26,11 @@ public class AutoDoor : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if(other.CompareTag("Player"))
+        {
+            audio.clip = openDoor;
+            audio.Play();
             anim.SetBool("IsOpen", true);
+        }
 
         
     }
@@ -30,7 +38,11 @@ public class AutoDoor : MonoBehaviour
     private void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Player"))
+        {
+            audio.clip = closeDoor;
+            audio.Play();
             anim.SetBool("IsOpen", false);
+        }
 
     }
 }

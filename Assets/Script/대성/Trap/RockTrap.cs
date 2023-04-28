@@ -9,9 +9,19 @@ public class RockTrap : MonoBehaviour
     public float rockMoveSpeed = 2f;
     public float rockRotateSpeed = 360f;
 
+    public AudioClip rockSound;
+    AudioSource audio;
+
     private void Awake()
     {
         rigid = transform.GetComponent<Rigidbody>();
+        audio = GetComponent<AudioSource>();
+    }
+    private void OnEnable()
+    {
+        audio.clip = rockSound;
+        audio.loop = true;
+        audio.Play();
     }
     private void FixedUpdate()
     {
@@ -31,7 +41,7 @@ public class RockTrap : MonoBehaviour
         else if (other.gameObject.CompareTag("Player"))
         {
             //Debug.Log("Player Destroy");
-            Player player = other.gameObject.GetComponent<Player>();
+            //Player player = other.gameObject.GetComponent<Player>();
             // 플레이어가 죽을 수 있도록 조치를 취할 것
             Rigidbody rigid = other.transform.GetComponent<Rigidbody>();
             //rigid.constraints = RigidbodyConstraints.None;

@@ -87,6 +87,12 @@ public class EnemyBase : MonoBehaviour
     public GameObject enemyDropCoin;
     public float enemyDropCoinRate = 0.5f;
 
+    [Header("Audio")]
+    public AudioClip atackSound;
+    public AudioClip hitSound;
+    public AudioClip deadSound;
+    protected AudioSource audio;
+
     
 
     //--------Value----------------Value----------------Value----------------Value----------------Value----------------Value----------------Value----------------Value----------------Value----------------Value-
@@ -240,6 +246,13 @@ public class EnemyBase : MonoBehaviour
 
         if (debugOnOff)
             Debug.LogWarning("Get Hit");
+
+        if( hitSound!=null)
+        {
+            audio.clip = hitSound;
+            audio.Play();
+        }
+
         enemyWeaponCollider.enabled = false;                                            // 맞고 있는 중 플레이어에게 공격이 가해지면 안되기에, 무기 콜라이더 해제
         enemyCollider.enabled = false;                                          // 맞고 있는 중 또 맞지 않게 하기 위하여 적 콜라이더 해제. FixedUpdate의 EnemyModeGetHit에서 피격무적 적용
 
@@ -304,6 +317,11 @@ public class EnemyBase : MonoBehaviour
         anim.SetBool("ArrivePlayer", false);
         anim.SetBool("ChasePlayer", false);
 
+        if(deadSound !=null)
+        {
+            audio.clip = deadSound;
+            audio.Play();
+        }
         
         if (debugOnOff)
             Debug.Log("Enemy disappearTime 설정 완료.");
@@ -354,6 +372,8 @@ public class EnemyBase : MonoBehaviour
         enemyDetectorCollider = detector.GetComponent<Collider>();
         spawner = transform.parent.GetComponent<Spawner>();
         rigid = GetComponent<Rigidbody>();
+        audio = GetComponent<AudioSource>();
+        audio.loop = false;
 
     }
     void SetupPath()
@@ -490,7 +510,14 @@ public class EnemyBase : MonoBehaviour
     protected virtual void EnemyModeAtack()                  //  ---------- Atack ---------- Atack ---------- Atack ---------- Atack ---------- Atack ---------- Atack ---------- Atack ---------- Atack ---------- Atack ---------- Atack ----------
     {
         if (Time.time - atackStayTime > atackStayTImeMax)               // 공격하는 시간(약 1초)동안 아무것도 실행하지 않고, 공격 시간이 지난 후 AtackWait상태로 변경
+        {
+            if(atackSound!=null)
+            {
+                audio.clip = atackSound;
+                audio.Play();
+            }
             State = EnemyState.ATACKWAIT;
+        }
     }
     protected virtual void EnemyModeGetHit()                  //  ---------- GetHit ---------- GetHit ---------- GetHit ---------- GetHit ---------- GetHit ---------- GetHit ---------- GetHit ---------- GetHit ---------- GetHit ---------- GetHit
     {

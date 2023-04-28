@@ -10,6 +10,7 @@ public class ShopItemScrool : MonoBehaviour
     TextMeshProUGUI priceText;
     GameObject canvas;
     TestPlayer player;
+    static bool scroolGet=false;
 
     private void Awake()
     {
@@ -19,6 +20,11 @@ public class ShopItemScrool : MonoBehaviour
     private void OnEnable()
     {
         priceText.text = $"{price} Coins";
+    }
+    private void Start()
+    {
+        if (scroolGet == true)
+            gameObject.SetActive(false);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -46,9 +52,9 @@ public class ShopItemScrool : MonoBehaviour
 
     void TryBuyScroll()
     {
-        if (player.PotionSetting == true)
+        if (player.ScrollSetting == true)
         {
-            Debug.LogWarning("이미 포션이 있습니다.");
+            Debug.LogWarning("이미 스크롤이 있습니다.");
         }
         else if (currentPlayerCoin >= price)
         {
@@ -57,6 +63,7 @@ public class ShopItemScrool : MonoBehaviour
 
             player.PlayerUseTry -= TryBuyScroll;
             player = null;
+            scroolGet = true;
             Destroy(this.gameObject);
 
         }

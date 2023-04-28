@@ -5,7 +5,6 @@ using System;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using Cinemachine;
-using Unity.VisualScripting.FullSerializer;
 /*
 * 4. 플레이어가 씬 이동한 후, 초기 위치 지정하는..... Virtual Camera를 LookMode가 바뀔떄 같이 바꿔보기 ( 3인칭, 탑뷰모드 )
 * 5. 상점 / 서브신 플레이어 정상적으로 움직이고, MapManager가 시점을 변경할 수 있게끔?
@@ -94,6 +93,19 @@ public class TestPlayer : MonoBehaviour
     public Action PlayerUseTry;         //아이템 상호작용
     public Action CameraChange;
 
+    [Header("Audio Clip")]
+    AudioSource audio;
+    public AudioClip _hitSound1;
+    public AudioClip _hitSound2;
+    public AudioClip _walkSound1;
+    public AudioClip _walkSound2;
+    public AudioClip _walkSound3;
+    public AudioClip _atackSound;
+    public AudioClip _getCoin;
+    public AudioClip _potionUse;
+    public AudioClip _getHeart;
+    public AudioClip _secretDoorOpen;
+    public AudioClip _defenseSuccess;
     //-------------------------------------------------------------------------Property
 
     public int Heart
@@ -107,7 +119,10 @@ public class TestPlayer : MonoBehaviour
                     heart = maxHeart;
                 else
                     heart = value;
+                
                 healEffect.SetActive(true);
+                audio.clip = _getHeart;
+                audio.Play();
             }
             else if (value - heart == 2)
             {
@@ -116,6 +131,8 @@ public class TestPlayer : MonoBehaviour
                 else
                     heart = value;
                 potionEffect.SetActive(true);
+                audio.clip = _potionUse;
+                audio.Play();
             }
             else
             {
@@ -140,6 +157,8 @@ public class TestPlayer : MonoBehaviour
         {
             coin = value;
             CoinChange(coin);
+            audio.clip = _getCoin;
+            audio.Play();
         }
     }
 
@@ -207,7 +226,10 @@ public class TestPlayer : MonoBehaviour
             if(value==true)
             {
                 Debug.Log("스크롤 구입 완료. 비밀문이 열립니다.");
+                haveScroll = true;
                 OpenSecretDoor?.Invoke();
+                audio.clip = _secretDoorOpen;
+                audio.Play();
             }
         }
     }
@@ -266,14 +288,18 @@ public class TestPlayer : MonoBehaviour
             playerLight = transform.GetChild(7).GetComponent<Light>();
             playerLight.gameObject.SetActive(true);
         }
+        else if(scene.buildIndex ==4)
+        {
+            Destroy(this.gameObject);
+        }
 
     }
-    Transform followPosition;
     void FindComponent()
     {
         anim = GetComponent<Animator>();
         inputActions = new InputSystemController();
         rigid = GetComponent<Rigidbody>();
+        audio = GetComponent<AudioSource>();
 
         weapon = transform.GetComponentInChildren<Weapon>().gameObject;
         weaponCollider = weapon.GetComponent<Collider>();
@@ -284,7 +310,8 @@ public class TestPlayer : MonoBehaviour
         healEffect = transform.GetChild(4).gameObject;
         playerHitEffect = transform.GetChild(5).gameObject;
         playerCollider = transform.GetComponent<Collider>();
-        followPosition = transform.GetChild(2).transform;
+
+
 
         //cameraMain = FindObjectOfType<MainCamera_Action>().transform.GetChild(0).gameObject;
     }
@@ -399,6 +426,8 @@ public class TestPlayer : MonoBehaviour
             potion.SetActive(false);
 
             Heart -= 1;
+            audio.clip = _hitSound1;
+            audio.Play();
         }
         else if(other.gameObject.CompareTag("Coin") && isAlive==true)
         {
@@ -464,6 +493,8 @@ public class TestPlayer : MonoBehaviour
             isMoving = false;
             inputActions.Player.Disable();
             anim.SetTrigger("Atack");
+            audio.clip = _atackSound;
+            audio.Play();
         }
     }
     void AtackEnd()
@@ -525,6 +556,8 @@ public class TestPlayer : MonoBehaviour
         {
             //Debug.Log("Defense Success");
             anim.SetTrigger("Defense");
+            audio.clip = _defenseSuccess;
+            audio.Play();
             GodModeOn();
             rigid.AddForce(-transform.forward, ForceMode.Impulse);
         }

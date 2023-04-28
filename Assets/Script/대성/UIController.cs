@@ -32,14 +32,14 @@ public class UIController : MonoBehaviour
 
 
     [Header("Component")]
-    TestPlayer player;                  //-----------------------------------------------------------수정함. DsTestPlayer -> Player
+    TestPlayer players;                  //-----------------------------------------------------------수정함. DsTestPlayer -> Player
 
 
 
 
     private void Awake()
     {
-        player = FindObjectOfType<TestPlayer>();          //Start의 델리게이트 연결을 위하여 객체를 찾아둠.
+        players = TestPlayer.player;          //Start의 델리게이트 연결을 위하여 객체를 찾아둠.
                                     //-----------------------------------------------------------수정함. DsTestPlayer -> Player
         //canvasChildCount = transform.childCount;
         heartText = transform.GetChild(0).GetComponent<TextMeshProUGUI>();      //heartText.TMP 찾기
@@ -52,34 +52,40 @@ public class UIController : MonoBehaviour
 
     private void OnEnable()//-----------------------------------------------------------수정함. Start-> Enabled
     {
-        player.HeartChange += HeartUpdate;
-        player.CoinChange += CoinUpdate;
-        player.PotionChange += PotionUpdate;
-        player.WeaponChange += WeaponGetUpdate;
-        player.ShieldChange += ShieldGetUpdate;
+        if (players == null)
+            players = FindObjectOfType<TestPlayer>();
+
+        players.HeartChange += HeartUpdate;
+        players.CoinChange += CoinUpdate;
+        players.PotionChange += PotionUpdate;
+        players.WeaponChange += WeaponGetUpdate;
+        players.ShieldChange += ShieldGetUpdate;
         //player.EnemyDetectPlayer += CoinMinusUpdate;
+
+        
     }
     private void OnDisable()//-----------------------------------------------------------추가함함. Delegate Disabled
     {
-        player.HeartChange -= HeartUpdate;
-        player.CoinChange -= CoinUpdate;
-        player.PotionChange -= PotionUpdate;
-        player.WeaponChange -= WeaponGetUpdate;
-        player.ShieldChange -= ShieldGetUpdate;
+        players.HeartChange -= HeartUpdate;
+        players.CoinChange -= CoinUpdate;
+        players.PotionChange -= PotionUpdate;
+        players.WeaponChange -= WeaponGetUpdate;
+        players.ShieldChange -= ShieldGetUpdate;
 
     }
     private void Start()
     {
         gameOverPanel.gameObject.SetActive(false);
-        heartNum = 3;
+
         heartText.text = null;
-        for (int i = 0; i < heartNum; i++)
+        for (int i = 0; i < players.Heart; i++)
             heartText.text = heartText.text + "♥";
 
-        //초기 셋팅. False로 설정되어있음.
-        weaponImage.gameObject.SetActive(weaponGet);
-        shieldImage.gameObject.SetActive(shieldGet);
-        potionImage.gameObject.SetActive(potionGet);
+        coinText.text = $"{players.Coin}";
+
+        potionImage.gameObject.SetActive(players.PotionSetting);
+        shieldImage.gameObject.SetActive(players.ShieldSetting);
+        weaponImage.gameObject.SetActive(players.WeaponSetting);
 
     }
 
