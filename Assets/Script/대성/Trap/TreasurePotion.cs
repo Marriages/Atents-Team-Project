@@ -14,10 +14,6 @@ public class TreasurePotion : MonoBehaviour
         treasure = transform.parent.GetComponent<TreasureController>();
         player = FindObjectOfType<TestPlayer>().gameObject;
     }
-    private void OnEnable()
-    {
-        treasure.potionMove += PotionMove;
-    }
 
     private void PotionMove()
     {

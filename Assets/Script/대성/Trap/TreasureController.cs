@@ -5,10 +5,7 @@ using UnityEngine;
 
 public class TreasureController : MonoBehaviour
 {
-    public Action potionMove;
-
-    public new GameObject camera;
-    //Transform cameraTreasurePosition;
+    public Action EndingCreditStart;
     TreasureBoxDetector detector;
     GameObject treasureZoneCover;
     GameObject treasureBoxHinge;
@@ -26,7 +23,6 @@ public class TreasureController : MonoBehaviour
         treasureBoxHinge = transform.GetChild(0).gameObject;
         treasureBoxLight = transform.GetChild(2).gameObject;
         treasureZoneCover = transform.GetChild(4).gameObject;
-        //cameraTreasurePosition = transform.GetChild(7).transform;
     }
 
     private void OnEnable()
@@ -42,7 +38,6 @@ public class TreasureController : MonoBehaviour
         treasureZoneCover.SetActive(true);
         treasureBoxLight.SetActive(true);
         StartCoroutine(OpenHinge());
-        //StartCoroutine(CameraMove());
     }
     IEnumerator OpenHinge()
     {
@@ -54,17 +49,6 @@ public class TreasureController : MonoBehaviour
             treasureBoxHinge.transform.rotation *= Quaternion.Euler(-hingeOpenSpeed * Time.deltaTime, 0, 0);
             yield return null;
         }
-        potionMove?.Invoke();
-
+        EndingCreditStart?.Invoke();
     }
-    /*
-    IEnumerator CameraMove()
-    {
-        camera.transform.rotation = cameraTreasurePosition.rotation;
-        while((cameraTreasurePosition.position - camera.transform.position).sqrMagnitude > 0.1f )
-        {
-            camera.transform.position = Vector3.Lerp(camera.transform.position, cameraTreasurePosition.position, cameraMoveSpeed);
-            yield return null;
-        }
-    }*/
 }
