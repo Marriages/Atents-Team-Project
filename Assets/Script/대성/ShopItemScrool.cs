@@ -9,7 +9,7 @@ public class ShopItemScrool : MonoBehaviour
     int currentPlayerCoin = 0;
     TextMeshProUGUI priceText;
     GameObject canvas;
-    TestPlayer player;
+    Player player;
     static bool scroolGet=false;
 
     private void Awake()
@@ -32,7 +32,7 @@ public class ShopItemScrool : MonoBehaviour
         Debug.Log("플레이어 들어옴");
         if (other.gameObject.CompareTag("Player"))
         {
-            player = other.GetComponent<TestPlayer>();
+            player = other.GetComponent<Player>();
             player.PlayerUseTry += TryBuyScroll;
             currentPlayerCoin = player.Coin;
             canvas.SetActive(true);

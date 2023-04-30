@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
-
+public class PlayerNotUse : MonoBehaviour
+{ }
 //강대성 UI 테스트용 Script 코드
 
 /*
@@ -15,7 +16,7 @@ using UnityEngine.InputSystem;
  * 
  */
 
-
+/*
 public class Player : MonoBehaviour
 {
     // 플레이어 이동 속도
@@ -409,3 +410,4 @@ public class Player : MonoBehaviour
     }
 
 }
+*/

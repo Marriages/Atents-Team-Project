@@ -39,7 +39,7 @@ public class MainCamera_Action : MonoBehaviour
 
     private void Awake()
     {
-        PlayerToFollow = FindObjectOfType<TestPlayer>().transform.GetChild(2).transform;
+        PlayerToFollow = FindObjectOfType<Player>().transform.GetChild(2).transform;
         realCamera = transform.GetChild(0);
         inputActions = new PlayerInputActions();
     }

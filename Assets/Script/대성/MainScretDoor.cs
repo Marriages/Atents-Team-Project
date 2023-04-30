@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class MainScretDoor : MonoBehaviour
 {
-    TestPlayer player;
+    Player player;
     GameObject canvas;
 
     private void Awake()
     {
-        player = TestPlayer.player;
+        player = Player.player;
         canvas = transform.GetChild(0).gameObject;
     }
     private void OnEnable()

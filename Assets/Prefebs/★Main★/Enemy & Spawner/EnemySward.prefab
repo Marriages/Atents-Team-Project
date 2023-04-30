@@ -2157,7 +2157,7 @@ MonoBehaviour:
   debugOnOff: 0
   idleWaitTimeMax: 3
   idleWaitTime: 0
-  atackWaitTimeMax: 2
+  atackWaitTimeMax: 1
   atackWaitTime: 0
   atackStayTImeMax: 1
   atackStayTime: 0
@@ -2178,7 +2178,7 @@ MonoBehaviour:
   _chaseSpeed: 4
   _arriveDistance: 2
   _idleWaitTimeMax: 3
-  _atackWaitTimeMax: 2
+  _atackWaitTimeMax: 1
   _atackStayTImeMax: 1
   _getHitWaitTimeMax: 1.5
 --- !u!195 &1111680375149091678

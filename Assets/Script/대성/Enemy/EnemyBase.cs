@@ -50,7 +50,7 @@ public class EnemyBase : MonoBehaviour
 
     [Header("Scout Position Information")]
     Vector3[] scoutPoint;                                       // 정찰 포인트. 최초 Awake시 SetPath 함수를 통해서 초기화됨.
-    public int scoutIndex = 0;                                  // 정찰 포인트를 제어할 인덱스
+    int scoutIndex = 0;                                  // 정찰 포인트를 제어할 인덱스
     Transform spownPoint;                                       // 초기 
 
 
@@ -85,13 +85,13 @@ public class EnemyBase : MonoBehaviour
     public GameObject enemyDropHeart;
     public float enemyDropHeartRate=0.5f;
     public GameObject enemyDropCoin;
-    public float enemyDropCoinRate = 0.5f;
+    public float enemyDropCoinRate = 0.8f;
 
     [Header("Audio")]
     public AudioClip atackSound;
     public AudioClip hitSound;
     public AudioClip deadSound;
-    protected AudioSource audio;
+    protected AudioSource audios;
 
     
 
@@ -249,8 +249,8 @@ public class EnemyBase : MonoBehaviour
 
         if( hitSound!=null)
         {
-            audio.clip = hitSound;
-            audio.Play();
+            audios.clip = hitSound;
+            audios.Play();
         }
 
         enemyWeaponCollider.enabled = false;                                            // 맞고 있는 중 플레이어에게 공격이 가해지면 안되기에, 무기 콜라이더 해제
@@ -319,8 +319,8 @@ public class EnemyBase : MonoBehaviour
 
         if(deadSound !=null)
         {
-            audio.clip = deadSound;
-            audio.Play();
+            audios.clip = deadSound;
+            audios.Play();
         }
         
         if (debugOnOff)
@@ -333,7 +333,7 @@ public class EnemyBase : MonoBehaviour
             if(debugOnOff)
                 Debug.Log($"{gameObject.name}가 Coin을 드랍했다.");
             GameObject obj = Instantiate(enemyDropCoin);
-            obj.transform.position = transform.position;
+            obj.transform.position = transform.position + Vector3.up; ;
             Destroy(obj, 10f);
         }
         else if (UnityEngine.Random.Range(0f, 1f) > enemyDropHeartRate)
@@ -341,7 +341,7 @@ public class EnemyBase : MonoBehaviour
             if (debugOnOff)
                 Debug.Log($"{gameObject.name}가 Heart을 드랍했다.");
             GameObject obj = Instantiate(enemyDropHeart);
-            obj.transform.position = transform.position;
+            obj.transform.position = transform.position+Vector3.up;
             Destroy(obj, 10f);
         }
 
@@ -372,8 +372,8 @@ public class EnemyBase : MonoBehaviour
         enemyDetectorCollider = detector.GetComponent<Collider>();
         spawner = transform.parent.GetComponent<Spawner>();
         rigid = GetComponent<Rigidbody>();
-        audio = GetComponent<AudioSource>();
-        audio.loop = false;
+        audios = GetComponent<AudioSource>();
+        audios.loop = false;
 
     }
     void SetupPath()
@@ -513,8 +513,8 @@ public class EnemyBase : MonoBehaviour
         {
             if(atackSound!=null)
             {
-                audio.clip = atackSound;
-                audio.Play();
+                audios.clip = atackSound;
+                audios.Play();
             }
             State = EnemyState.ATACKWAIT;
         }

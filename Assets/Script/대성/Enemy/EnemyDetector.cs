@@ -7,7 +7,7 @@ using UnityEngine;
 public class EnemyDetector : MonoBehaviour
 {
     public Action<GameObject> detectPlayer;                     // EnemyBase에 델리게이트를 송신하기 위한 목적의 액션
-    public SphereCollider col;                                  // 콜라이더를 끄고켜기 위한 목적의 변수
+    SphereCollider col;                                  // 콜라이더를 끄고켜기 위한 목적의 변수
     Spawner spawner;
     EnemyBase eb;
 

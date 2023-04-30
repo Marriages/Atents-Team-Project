@@ -11,7 +11,7 @@ public class MapManager : MonoBehaviour
 
     public static int beforeSceneIndex;
 
-    TestPlayer player;
+    Player player;
 
     const int Title = 0;
     const int Main = 1;
@@ -63,7 +63,7 @@ public class MapManager : MonoBehaviour
         if (player==null)
         {
             //Debug.Log("Player를 찾았습니다.");
-            this.player = TestPlayer.player;
+            this.player = Player.player;
             if (player==null)
             {
                 Debug.Log("Player 없음!");

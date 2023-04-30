@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class WeaponGet : MonoBehaviour
 {
-    TestPlayer player=null;
+    Player player=null;
     bool playerEnter = false;
+    GameObject pressF;
 
     private void Awake()
     {
-        this.player = TestPlayer.player;
+        this.player = Player.player;
+        pressF = transform.GetChild(2).gameObject;
     }
     private void OnEnable()
     {
@@ -24,6 +26,7 @@ public class WeaponGet : MonoBehaviour
         {
             playerEnter = true;
             player.PlayerUseTry += CheckItemGet;
+            pressF.SetActive(true);
         }
     }
     private void OnTriggerExit(Collider other)
@@ -31,6 +34,7 @@ public class WeaponGet : MonoBehaviour
         if (other.gameObject.CompareTag("Player"))
         {
             playerEnter = false;
+            pressF.SetActive(false);
         }
     }
 

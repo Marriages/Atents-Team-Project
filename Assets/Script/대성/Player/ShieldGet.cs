@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class ShieldGet : MonoBehaviour
 {
-    TestPlayer player = null;
+    Player player = null;
     bool playerEnter = false;
 
     private void Awake()
     {
-        this.player = TestPlayer.player;
+        this.player = Player.player;
     }
     private void OnEnable()
     {

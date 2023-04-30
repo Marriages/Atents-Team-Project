@@ -12,7 +12,7 @@ public class TreasurePotion : MonoBehaviour
     private void Awake()
     {
         treasure = transform.parent.GetComponent<TreasureController>();
-        player = FindObjectOfType<TestPlayer>().gameObject;
+        player = FindObjectOfType<Player>().gameObject;
     }
 
     private void PotionMove()

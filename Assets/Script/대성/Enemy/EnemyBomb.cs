@@ -56,8 +56,8 @@ public class EnemyBomb : EnemyBase
             Debug.Log("2 second later...");
 
         yield return new WaitForSeconds(1.9f);
-        audio.clip = atackSound;
-        audio.Play();
+        audios.clip = atackSound;
+        audios.Play();
         GameObject obj = Instantiate(explosionEffect);                      // 폭팔 프리팹 생성 ( 충돌 없음 )
         obj.transform.position = transform.position+Vector3.up*2;           // 폭팔 프리팹 위치 조정
         enemyWeaponCollider.enabled = true;                                         // 본인의 Bomb 콜리더를 활성화 시켜 해당 범위 안에서 Enter 발생시 공격효과

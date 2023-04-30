@@ -9,13 +9,13 @@ public class EnemySward : EnemyBase
     public int _maxHeart = 3;
     public float _normalSpeed = 2f;
     public float _chaseSpeed = 4f;
-    public float _arriveDistance = 2f;
+    public float _arriveDistance = 10f;
 
 
-    public float _idleWaitTimeMax = 3f;              // Idle상태->정찰상태 로 가기전 대기시간
-    public float _atackWaitTimeMax = 2f;             // 공격을 하기 전까지의 대기시간
-    public float _atackStayTImeMax = 1f;               // 공격을 하는 시간
-    public float _getHitWaitTimeMax = 1.5f;          // 피격 후 무적시간
+    float _idleWaitTimeMax = 3f;              // Idle상태->정찰상태 로 가기전 대기시간
+    float _atackWaitTimeMax = 1f;             // 공격을 하기 전까지의 대기시간
+    float _atackStayTImeMax = 1f;             // 공격을 하는 시간
+    float _getHitWaitTimeMax = 1f;          // 피격 후 무적시간
 
 
     override protected void SettingInformation()

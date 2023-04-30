@@ -9,7 +9,7 @@ public class ShopItemPotion : MonoBehaviour
     int currentPlayerCoin=0;
     TextMeshProUGUI priceText;
     GameObject canvas;
-    TestPlayer player;
+    Player player;
 
     private void Awake()
     {
@@ -26,7 +26,7 @@ public class ShopItemPotion : MonoBehaviour
         Debug.Log("플레이어 들어옴");
         if (other.gameObject.CompareTag("Player"))
         {
-            player = other.GetComponent<TestPlayer>();
+            player = other.GetComponent<Player>();
             player.PlayerUseTry += TryBuyPotion;
             currentPlayerCoin = player.Coin;
             canvas.SetActive(true);

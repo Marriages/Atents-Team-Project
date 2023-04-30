@@ -19,9 +19,9 @@ using Cinemachine;
 * 14. 
 * 
 */
-public class TestPlayer : MonoBehaviour
+public class Player : MonoBehaviour
 {
-    public static TestPlayer player;
+    public static Player player;
 
     [Header("Player Information")]
     public float moveSpeed = 5f;
@@ -29,7 +29,7 @@ public class TestPlayer : MonoBehaviour
     public float jumpPower = 5f;
     int heart=3;
     int maxHeart = 3;
-    public int coin = 0;
+    int coin = 0;
 
     [Header("Flag")]
     bool isAlive = true;
@@ -41,15 +41,14 @@ public class TestPlayer : MonoBehaviour
     bool potionGet = false;
     bool isGodMode = false;
     public  bool haveScroll = false; // test를 위하여 public으로 선언하였음. 테스트 종료 후 private로 변환할 것
-    /// <summary>    /// lookModeThire가 true이면 탑뷰. false면 3인칭뷰    /// </summary>
-    public bool lookModeThire = true;     //3인칭시점 꺼져있음. 원하면 킬 것.
+
 
     [Header("Input & Move")]
     Vector3 moveDir = Vector3.zero;
-    Vector3 moveDirMouse = Vector3.zero;
-    Vector3 playerRotate = Vector3.zero;        //카메라회전
-    Vector3 forward = Vector3.zero;
-    Vector3 right = Vector3.zero;
+    //Vector3 moveDirMouse = Vector3.zero;
+    //Vector3 playerRotate = Vector3.zero;        //카메라회전
+    //Vector3 forward = Vector3.zero;
+    //Vector3 right = Vector3.zero;
     float turnSpeed = 10f;
     Quaternion turnDir=Quaternion.identity;
     public float smoothness = 5f;           // 마우스가 보는 시점을 따라 회전하는 속도
@@ -58,7 +57,6 @@ public class TestPlayer : MonoBehaviour
     Animator anim;
     InputSystemController inputActions;
     Rigidbody rigid;
-    Camera mainCamera;
 
     [Header("GameObject & Collider")]
     GameObject weapon;
@@ -67,7 +65,6 @@ public class TestPlayer : MonoBehaviour
     Collider shieldCollider;
     GameObject potion;
     GameObject potionEffect;
-    //GameObject cameraMain;
     GameObject healEffect;
     GameObject playerHitEffect;
     Collider playerCollider;
@@ -91,10 +88,9 @@ public class TestPlayer : MonoBehaviour
     public Action OpenSecretDoor;
 
     public Action PlayerUseTry;         //아이템 상호작용
-    public Action CameraChange;
 
     [Header("Audio Clip")]
-    AudioSource audio;
+    AudioSource audios;
     public AudioClip _hitSound1;
     public AudioClip _hitSound2;
     public AudioClip _walkSound1;
@@ -121,8 +117,8 @@ public class TestPlayer : MonoBehaviour
                     heart = value;
                 
                 healEffect.SetActive(true);
-                audio.clip = _getHeart;
-                audio.Play();
+                GetComponent<AudioSource>().clip = _getHeart;
+                GetComponent<AudioSource>().Play();
             }
             else if (value - heart == 2)
             {
@@ -131,8 +127,8 @@ public class TestPlayer : MonoBehaviour
                 else
                     heart = value;
                 potionEffect.SetActive(true);
-                audio.clip = _potionUse;
-                audio.Play();
+                GetComponent<AudioSource>().clip = _potionUse;
+                GetComponent<AudioSource>().Play();
             }
             else
             {
@@ -157,8 +153,8 @@ public class TestPlayer : MonoBehaviour
         {
             coin = value;
             CoinChange(coin);
-            audio.clip = _getCoin;
-            audio.Play();
+            GetComponent<AudioSource>().clip = _getCoin;
+            GetComponent<AudioSource>().Play();
         }
     }
 
@@ -228,8 +224,8 @@ public class TestPlayer : MonoBehaviour
                 Debug.Log("스크롤 구입 완료. 비밀문이 열립니다.");
                 haveScroll = true;
                 OpenSecretDoor?.Invoke();
-                audio.clip = _secretDoorOpen;
-                audio.Play();
+                GetComponent<AudioSource>().clip = _secretDoorOpen;
+                GetComponent<AudioSource>().Play();
             }
         }
     }
@@ -258,7 +254,6 @@ public class TestPlayer : MonoBehaviour
         Transform mainToShop;
         Transform shopToMain;
         Transform mainToSub;
-        mainCamera = FindObjectOfType<Camera>();
 
         int beforeScene = MapManager.beforeSceneIndex;
         if(beforeScene == 0 && scene.buildIndex == 1)
@@ -299,7 +294,7 @@ public class TestPlayer : MonoBehaviour
         anim = GetComponent<Animator>();
         inputActions = new InputSystemController();
         rigid = GetComponent<Rigidbody>();
-        audio = GetComponent<AudioSource>();
+        audios = GetComponent<AudioSource>();
 
         weapon = transform.GetComponentInChildren<Weapon>().gameObject;
         weaponCollider = weapon.GetComponent<Collider>();
@@ -313,36 +308,15 @@ public class TestPlayer : MonoBehaviour
 
 
 
-        //cameraMain = FindObjectOfType<MainCamera_Action>().transform.GetChild(0).gameObject;
     }
     private void FixedUpdate()
     {
         //키보드로 화면 회전하는 탑뷰모드
         if (isMoving == true && isShilding == false && isAlive==true)
         {
-            if(lookModeThire == false)
-            {
-                Vector3 moveCamDir = mainCamera.transform.forward;
-                moveCamDir.y = 0;
-                moveCamDir = moveCamDir.normalized;
-                Quaternion camQuat = Quaternion.FromToRotation(Vector3.forward, moveCamDir);
-                Vector3 Dir = camQuat * moveDir;
-
-                rigid.MovePosition(rigid.position + Dir * moveSpeed * Time.fixedDeltaTime);
-                //transform.LookAt(moveCamDir);
-
-
-            }
-            else
-            {
-                rigid.MovePosition(rigid.position + moveDir * moveSpeed * Time.fixedDeltaTime);
-                transform.rotation = Quaternion.Slerp(transform.rotation , turnDir, Time.fixedDeltaTime * turnSpeed);
-            }
-
-
+            rigid.MovePosition(rigid.position + moveDir * moveSpeed * Time.fixedDeltaTime);
+            transform.rotation = Quaternion.Slerp(transform.rotation , turnDir, Time.fixedDeltaTime * turnSpeed);
         }
-
-
     }
     private void OnEnable()
     {
@@ -387,7 +361,6 @@ public class TestPlayer : MonoBehaviour
         inputActions.Player.PotionKeyboard.performed += PlayerPotion;
         inputActions.Player.PotionMouse.performed += PlayerPotion;
         inputActions.Player.Jump.performed += PlayerJump;
-        inputActions.Player.ViewChange.performed += PlayerViewChange;
         inputActions.Player.Use.performed += (_) => PlayerUseTry?.Invoke();
 
         shield.SuccessDefense += DefenseSuccess;
@@ -397,7 +370,6 @@ public class TestPlayer : MonoBehaviour
         if(inputActions!=null)
         {
             inputActions.Player.Use.performed -= (_) => PlayerUseTry?.Invoke();
-            inputActions.Player.ViewChange.performed -= PlayerViewChange;
             inputActions.Player.Jump.performed -= PlayerJump;
             inputActions.Player.PotionMouse.performed -= PlayerPotion;
             inputActions.Player.PotionKeyboard.performed -= PlayerPotion;
@@ -426,8 +398,8 @@ public class TestPlayer : MonoBehaviour
             potion.SetActive(false);
 
             Heart -= 1;
-            audio.clip = _hitSound1;
-            audio.Play();
+            GetComponent<AudioSource>().clip = _hitSound1;
+            GetComponent<AudioSource>().Play();
         }
         else if(other.gameObject.CompareTag("Coin") && isAlive==true)
         {
@@ -466,15 +438,7 @@ public class TestPlayer : MonoBehaviour
         {
             moveDir = dir.normalized;
             isMoving = true;
-                turnDir = Quaternion.LookRotation(moveDir, transform.up);
-            if(lookModeThire == true)
-            {
-
-            }
-            else
-            {
-                //turnDir = Quaternion.LookRotation(mainCamera.transform.forward, transform.up);
-            }
+            turnDir = Quaternion.LookRotation(moveDir, transform.up);
         }
         else
         {
@@ -493,8 +457,8 @@ public class TestPlayer : MonoBehaviour
             isMoving = false;
             inputActions.Player.Disable();
             anim.SetTrigger("Atack");
-            audio.clip = _atackSound;
-            audio.Play();
+            GetComponent<AudioSource>().clip = _atackSound;
+            GetComponent<AudioSource>().Play();
         }
     }
     void AtackEnd()
@@ -556,8 +520,8 @@ public class TestPlayer : MonoBehaviour
         {
             //Debug.Log("Defense Success");
             anim.SetTrigger("Defense");
-            audio.clip = _defenseSuccess;
-            audio.Play();
+            GetComponent<AudioSource>().clip = _defenseSuccess;
+            GetComponent<AudioSource>().Play();
             GodModeOn();
             rigid.AddForce(-transform.forward, ForceMode.Impulse);
         }
@@ -620,19 +584,6 @@ public class TestPlayer : MonoBehaviour
 
     //-----------------------------------------------------------------------
 
-    private void PlayerViewChange(InputAction.CallbackContext _)
-    {
-        lookModeThire = !lookModeThire;
-        CameraChange?.Invoke();
-
-        if (mainCamera.GetComponent<CinemachineBrain>() == null)
-        {
-            Debug.Log("전환실패");
-            lookModeThire = !lookModeThire;
-        }
-    }
-
-    
 
     //---------------Animation Event
     void GodModeOn()
@@ -654,6 +605,8 @@ public class TestPlayer : MonoBehaviour
     void RestoreState()
     {
         //Debug.Log("Restore");
+
+        moveSpeed = repairMoveSpeed;
         inputActions.Player.Enable();
         GodModeOff();
         InitializeConnecting();     // 혹시몰라 다시실행함.

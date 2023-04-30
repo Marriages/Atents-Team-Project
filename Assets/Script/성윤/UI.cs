@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class UI : MonoBehaviour
-{
+{/*
     [Header("UI Contents")]
     //int canvasChildCount = 0;
     TextMeshProUGUI heartText;      // UI에 표시되는 ♥ 의 텍스트상자
@@ -58,7 +58,7 @@ public class UI : MonoBehaviour
         coinNum = 0;
 
 
-        player.HeartPlus += HeartPlusUpdate;
+        player.Heart += HeartPlusUpdate;
         player.HeartMinus += HeartMinusUpdate;
         player.CoinPlus += CoinPlusUpdate;
         player.CoinMinus += CoinMinusUpdate;
@@ -130,5 +130,5 @@ public class UI : MonoBehaviour
     private void PlayerDieUpdate()
     {
         heartText.text = "You Died";
-    }
+    }*/
 }

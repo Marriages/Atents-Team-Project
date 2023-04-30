@@ -32,14 +32,14 @@ public class UIController : MonoBehaviour
 
 
     [Header("Component")]
-    TestPlayer players;                  //-----------------------------------------------------------수정함. DsTestPlayer -> Player
+    Player players;                  //-----------------------------------------------------------수정함. DsTestPlayer -> Player
 
 
 
 
     private void Awake()
     {
-        players = TestPlayer.player;          //Start의 델리게이트 연결을 위하여 객체를 찾아둠.
+        players = Player.player;          //Start의 델리게이트 연결을 위하여 객체를 찾아둠.
                                     //-----------------------------------------------------------수정함. DsTestPlayer -> Player
         //canvasChildCount = transform.childCount;
         heartText = transform.GetChild(0).GetComponent<TextMeshProUGUI>();      //heartText.TMP 찾기
@@ -53,7 +53,7 @@ public class UIController : MonoBehaviour
     private void OnEnable()//-----------------------------------------------------------수정함. Start-> Enabled
     {
         if (players == null)
-            players = FindObjectOfType<TestPlayer>();
+            players = FindObjectOfType<Player>();
 
         players.HeartChange += HeartUpdate;
         players.CoinChange += CoinUpdate;

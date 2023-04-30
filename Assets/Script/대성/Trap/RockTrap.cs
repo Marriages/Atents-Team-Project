@@ -10,18 +10,18 @@ public class RockTrap : MonoBehaviour
     public float rockRotateSpeed = 360f;
 
     public AudioClip rockSound;
-    AudioSource audio;
+    AudioSource audios;
 
     private void Awake()
     {
         rigid = transform.GetComponent<Rigidbody>();
-        audio = GetComponent<AudioSource>();
+        audios = GetComponent<AudioSource>();
     }
     private void OnEnable()
     {
-        audio.clip = rockSound;
-        audio.loop = true;
-        audio.Play();
+        audios.clip = rockSound;
+        audios.loop = true;
+        audios.Play();
     }
     private void FixedUpdate()
     {
