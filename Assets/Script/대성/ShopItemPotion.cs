@@ -50,7 +50,7 @@ public class ShopItemPotion : MonoBehaviour
         {
             Debug.LogWarning("이미 포션이 있습니다.");
         }
-        else if(currentPlayerCoin > price)
+        else if(currentPlayerCoin >= price)
         {
             player.Coin -= price;
             player.PotionSetting = true;

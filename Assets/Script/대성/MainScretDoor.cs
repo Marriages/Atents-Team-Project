@@ -10,7 +10,7 @@ public class MainScretDoor : MonoBehaviour
 
     private void Awake()
     {
-        player = Player.player;
+        player = FindObjectOfType<Player>();
         canvas = transform.GetChild(0).gameObject;
     }
     private void OnEnable()

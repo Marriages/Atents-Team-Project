@@ -25,7 +25,7 @@ public class Player : MonoBehaviour
 
     [Header("Player Information")]
     public float moveSpeed = 5f;
-    float repairMoveSpeed;
+    float repairMoveSpeed=5f;
     public float jumpPower = 5f;
     int heart=3;
     int maxHeart = 3;
@@ -256,11 +256,18 @@ public class Player : MonoBehaviour
         Transform mainToSub;
 
         int beforeScene = MapManager.beforeSceneIndex;
-        if(beforeScene == 0 && scene.buildIndex == 1)
+        if(scene.buildIndex==0)
+        {
+            InitializeSetting();
+            InitializeConnecting();
+        }
+        else if(beforeScene == 0 && scene.buildIndex == 1)
         {
             initializePosition = GameObject.Find("FirstRespawnPosition").transform;     //Title -> Main일 경우
             transform.position = initializePosition.position;
             transform.rotation = initializePosition.rotation;
+            InitializeSetting();
+            InitializeConnecting();
         }
         else if(beforeScene == 1 && scene.buildIndex ==2 )       //메인->상점일경우
         {
@@ -285,7 +292,7 @@ public class Player : MonoBehaviour
         }
         else if(scene.buildIndex ==4)
         {
-            Destroy(this.gameObject);
+            //Destroy(this.gameObject);
         }
 
     }
@@ -318,11 +325,6 @@ public class Player : MonoBehaviour
             transform.rotation = Quaternion.Slerp(transform.rotation , turnDir, Time.fixedDeltaTime * turnSpeed);
         }
     }
-    private void OnEnable()
-    {
-        InitializeSetting();
-        InitializeConnecting();
-    }
     private void OnDisable()
     {
         //Debug.Log("i'm disable");
@@ -336,17 +338,27 @@ public class Player : MonoBehaviour
 
         //weaponCollider.enabled=false;
         //shieldCollider.enabled = false;
+        gameObject.SetActive(true);
 
         heart = maxHeart;
         coin = 0;
-        repairMoveSpeed = moveSpeed;
+        moveSpeed = repairMoveSpeed;
+
+
         isAlive = true;
         isJumping = false;
         isShilding = false;
         isMoving = false;
+
         WeaponSetting = false;
         ShieldSetting = false;
-        potionGet = false;
+        PotionSetting = false;
+        ScrollSetting = false;
+        anim.SetBool("Die", false);
+        anim.SetBool("Shield", false);
+        if(playerLight!=null)
+            playerLight.gameObject.SetActive(false);
+
     }
 
     void InitializeConnecting()
@@ -627,5 +639,12 @@ public class Player : MonoBehaviour
         anim.SetTrigger("Die");
         PlayerDie?.Invoke();
         InitializeUnConnecting();
+        StartCoroutine(playerRestart());
+    }
+    IEnumerator playerRestart()
+    {
+        yield return new WaitForSeconds(3f);
+        anim.SetTrigger("Restart");
+
     }
 }

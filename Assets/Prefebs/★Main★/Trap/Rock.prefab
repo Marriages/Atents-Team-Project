@@ -65,7 +65,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 1629ce7fad4ca7d4389b83537fa114fc, type: 2}
+  - {fileID: 2100000, guid: 18874ca7bc3160c42bb97eb3d4945138, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -130,7 +130,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   collisionEffect: {fileID: 9157105887711914197, guid: c4f829cb7dd4b864caf8832ec5b1ee55, type: 3}
   rockMoveSpeed: 8
-  rockRotateSpeed: 360
+  rockRotateSpeed: 540
   rockSound: {fileID: 8300000, guid: be7b5b50830fff840b75632b4e05e8e6, type: 3}
 --- !u!82 &8404683412846790826
 AudioSource:

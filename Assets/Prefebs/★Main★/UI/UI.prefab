@@ -196,17 +196,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
   m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 0
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
-  m_FillMethod: 4
+  m_FillMethod: 0
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
@@ -354,9 +354,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "W : \uC704\nS : \uC544\uB798\nA : \uC67C\uCABD\nD : \uC624\uB978\uCABD\nSpace
-    : \uC810\uD504\nZ / L Click : \uACF5\uACA9\nX / R Click : \uBC29\uC5B4\nC / M
-    Click : \uD3EC\uC158\n"
+  m_text: "\u2191 : \uC704\n\u2193 : \uC544\uB798\n\u2190: \uC67C\uCABD\n\u2192 :
+    \uC624\uB978\uCABD\nSpace : \uC810\uD504\nZ : \uACF5\uACA9\nX : \uBC29\uC5B4\nC
+    : \uD3EC\uC158\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d5fce18744274fe4087805e9752c71c5, type: 2}
   m_sharedMaterial: {fileID: -1932080388673955577, guid: d5fce18744274fe4087805e9752c71c5, type: 2}
@@ -513,7 +513,7 @@ GameObject:
   - component: {fileID: 1030580789}
   - component: {fileID: 1030580786}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: YouDied Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -567,7 +567,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: You DIed!
+  m_text: You Died!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d5fce18744274fe4087805e9752c71c5, type: 2}
   m_sharedMaterial: {fileID: -1932080388673955577, guid: d5fce18744274fe4087805e9752c71c5, type: 2}
@@ -600,7 +600,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -1150,7 +1150,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &7527365833329502515
 MonoBehaviour:
   m_ObjectHideFlags: 0

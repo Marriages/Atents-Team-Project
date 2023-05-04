@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class UIController : MonoBehaviour
 {
@@ -143,7 +144,7 @@ public class UIController : MonoBehaviour
         yield return new WaitForSeconds(2f);
         gameOverPanel.gameObject.SetActive(true);
 
-        while (a < 1f)
+        while (panelColor.a < 1f)
         {
             panelColor.a += a;
             txtColor.a += a;
@@ -151,6 +152,9 @@ public class UIController : MonoBehaviour
             panelText.color = txtColor;
             yield return null;
         }
+        yield return new WaitForSeconds(2f);
+        Debug.Log("재시작");
+        SceneManager.LoadScene(0, LoadSceneMode.Single);
         
     }
 }

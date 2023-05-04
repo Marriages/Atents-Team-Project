@@ -2,8 +2,6 @@ using System.Collections;
 using UnityEngine;
 using System;
 using UnityEngine.AI;
-using UnityEditor.SceneManagement;
-using Unity.VisualScripting;
 
 // ★★★★★★★★★★수정 및 개편사항★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 /* 해당 위치에 기재된 내용의 경우, 시간이 남을 경우 추가 기능으로써 구현할 것.

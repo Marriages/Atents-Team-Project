@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading;
-using UnityEditor.Build.Content;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -63,7 +59,7 @@ public class MapManager : MonoBehaviour
         if (player==null)
         {
             //Debug.Log("Player를 찾았습니다.");
-            this.player = Player.player;
+            this.player = FindObjectOfType<Player>();
             if (player==null)
             {
                 Debug.Log("Player 없음!");

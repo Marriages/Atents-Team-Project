@@ -10,7 +10,7 @@ public class WeaponGet : MonoBehaviour
 
     private void Awake()
     {
-        this.player = Player.player;
+        this.player = FindObjectOfType<Player>();
         pressF = transform.GetChild(2).gameObject;
     }
     private void OnEnable()
